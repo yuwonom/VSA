@@ -1,0 +1,34 @@
+name: vsa
+description: VSA is a mobile application as a visualisation and monitoring tool for Vehicle Situational Awareness research project.
+
+environment:
+  sdk: ">=2.1.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  built_value:
+  built_collection:
+  flutter_redux:
+  redux:
+  redux_epics:
+  rxdart: ^0.20.0
+
+  cupertino_icons: ^0.1.2
+  cached_network_image: ^0.5.1
+  google_maps_flutter: ^0.5.16
+  mqtt_client: ^5.5.3
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  mockito: ^3.0.0
+  build_runner:
+  built_value_generator:
+
+
+flutter:
+
+  uses-material-design: true

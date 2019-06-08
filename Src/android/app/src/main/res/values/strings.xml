@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">VSA</string>
+    <string name="facebook_app_id">2081281932171056</string>
+    <string name="fb_login_protocol_scheme">fb2081281932171056</string>
+</resources>
