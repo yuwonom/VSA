@@ -1,3 +1,5 @@
+/// Authored by `@yuwonom (Michael Yuwono)`
+
 import 'package:built_value/built_value.dart';
 
 part 'state.g.dart';

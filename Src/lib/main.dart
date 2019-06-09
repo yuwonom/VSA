@@ -1,3 +1,5 @@
+/// Authored by `@yuwonom (Michael Yuwono)`
+
 import 'package:vsa/composition.dart';
 import 'package:vsa/globals.dart' as globals;
 import 'package:flutter/material.dart';
@@ -10,9 +12,8 @@ void main() {
   ]);
   
   final apis = globals.Apis();
-  final navigatorObserver = CompositeNavigatorObserver();
 
-  final applicationInformation = createApplicationInformation(apis, navigatorObserver);
+  final applicationInformation = createApplicationInformation(apis);
 
   globals.applicationInformation = applicationInformation;
 

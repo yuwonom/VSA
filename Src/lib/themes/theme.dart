@@ -1,3 +1,5 @@
+/// Authored by `@yuwonom (Michael Yuwono)`
+
 import 'package:flutter/material.dart';
 
 class AppTheme {

@@ -1,3 +1,5 @@
+/// Authored by `@yuwonom (Michael Yuwono)`
+
 import 'package:vsa/globals.dart';
 import 'package:vsa/middleware.dart';
 import 'package:vsa/reducers.dart';
@@ -6,12 +8,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
 
-ApplicationInformation createApplicationInformation(Apis apis, NavigatorObserver navigatorObserver) {
+ApplicationInformation createApplicationInformation(Apis apis) {
   final appKey = GlobalKey(debugLabel: "app");
   final navigatorKey = GlobalKey<NavigatorState>(debugLabel: "navigator");
-
-  // Do not use this to navigate to tabs of TopLevelWidget, use NavigateMainTo action instead.
-  final routes = <String, WidgetBuilder>{};
+  final navigatorObserver = CompositeNavigatorObserver();
 
   final materialApp = MaterialApp(
     title: "VSA",
@@ -19,7 +19,6 @@ ApplicationInformation createApplicationInformation(Apis apis, NavigatorObserver
     home: Container(),
     navigatorKey: navigatorKey,
     navigatorObservers: [navigatorObserver],
-    routes: routes,
   );
 
   final middleware = getMiddleware(apis, navigatorKey);

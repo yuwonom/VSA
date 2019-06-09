@@ -1,3 +1,5 @@
+/// Authored by `@yuwonom (Michael Yuwono)`
+
 import 'package:vsa/state.dart';
 import 'package:flutter/material.dart';
 import 'package:redux/redux.dart';

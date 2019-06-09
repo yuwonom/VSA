@@ -1,3 +1,5 @@
+/// Authored by `@yuwonom (Michael Yuwono)`
+
 import 'package:vsa/globals.dart';
 import 'package:vsa/state.dart';
 import 'package:flutter/material.dart';

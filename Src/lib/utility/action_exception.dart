@@ -1,3 +1,5 @@
+/// Authored by `@yuwonom (Michael Yuwono)`
+
 import 'package:meta/meta.dart';
 
 /// An exception that was caused by the execution of an action.
