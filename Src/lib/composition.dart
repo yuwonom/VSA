@@ -1,5 +1,7 @@
 /// Authored by `@yuwonom (Michael Yuwono)`
 
+import 'package:vsa/features/map/geolocator.dart';
+import 'package:vsa/features/map/ui.dart';
 import 'package:vsa/globals.dart';
 import 'package:vsa/middleware.dart';
 import 'package:vsa/reducers.dart';
@@ -8,7 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
 
-ApplicationInformation createApplicationInformation(Apis apis) {
+ApplicationInformation createApplicationInformation(Apis apis, Geolocator geolocator) {
   final appKey = GlobalKey(debugLabel: "app");
   final navigatorKey = GlobalKey<NavigatorState>(debugLabel: "navigator");
   final navigatorObserver = CompositeNavigatorObserver();
@@ -16,12 +18,12 @@ ApplicationInformation createApplicationInformation(Apis apis) {
   final materialApp = MaterialApp(
     title: "VSA",
     key: appKey,
-    home: Container(),
+    home: MapPage(),
     navigatorKey: navigatorKey,
     navigatorObservers: [navigatorObserver],
   );
 
-  final middleware = getMiddleware(apis, navigatorKey);
+  final middleware = getMiddleware(apis, geolocator, navigatorKey);
 
   final store = Store<AppState>(
     appStateReducer,

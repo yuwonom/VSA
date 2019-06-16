@@ -7,10 +7,17 @@ part of 'state.dart';
 // **************************************************************************
 
 class _$AppState extends AppState {
+  @override
+  final MapState map;
+
   factory _$AppState([void updates(AppStateBuilder b)]) =>
       (new AppStateBuilder()..update(updates)).build();
 
-  _$AppState._() : super._();
+  _$AppState._({this.map}) : super._() {
+    if (map == null) {
+      throw new BuiltValueNullFieldError('AppState', 'map');
+    }
+  }
 
   @override
   AppState rebuild(void updates(AppStateBuilder b)) =>
@@ -22,24 +29,37 @@ class _$AppState extends AppState {
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is AppState;
+    return other is AppState && map == other.map;
   }
 
   @override
   int get hashCode {
-    return 134797703;
+    return $jf($jc(0, map.hashCode));
   }
 
   @override
   String toString() {
-    return newBuiltValueToStringHelper('AppState').toString();
+    return (newBuiltValueToStringHelper('AppState')..add('map', map))
+        .toString();
   }
 }
 
 class AppStateBuilder implements Builder<AppState, AppStateBuilder> {
   _$AppState _$v;
 
+  MapStateBuilder _map;
+  MapStateBuilder get map => _$this._map ??= new MapStateBuilder();
+  set map(MapStateBuilder map) => _$this._map = map;
+
   AppStateBuilder();
+
+  AppStateBuilder get _$this {
+    if (_$v != null) {
+      _map = _$v.map?.toBuilder();
+      _$v = null;
+    }
+    return this;
+  }
 
   @override
   void replace(AppState other) {
@@ -56,7 +76,20 @@ class AppStateBuilder implements Builder<AppState, AppStateBuilder> {
 
   @override
   _$AppState build() {
-    final _$result = _$v ?? new _$AppState._();
+    _$AppState _$result;
+    try {
+      _$result = _$v ?? new _$AppState._(map: map.build());
+    } catch (_) {
+      String _$failedField;
+      try {
+        _$failedField = 'map';
+        map.build();
+      } catch (e) {
+        throw new BuiltValueNestedFieldError(
+            'AppState', _$failedField, e.toString());
+      }
+      rethrow;
+    }
     replace(_$result);
     return _$result;
   }
