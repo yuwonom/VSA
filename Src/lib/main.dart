@@ -2,6 +2,7 @@
 
 import 'package:vsa/composition.dart';
 import 'package:vsa/features/map/geolocator.dart';
+import 'package:vsa/features/map/mqtt_api.dart';
 import 'package:vsa/globals.dart' as globals;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -12,10 +13,10 @@ void main() {
     DeviceOrientation.portraitDown,
   ]);
   
-  final apis = globals.Apis();
   final geolocator = Geolocator();
+  final mqttApi = MqttApi();
 
-  final applicationInformation = createApplicationInformation(apis, geolocator);
+  final applicationInformation = createApplicationInformation(geolocator, mqttApi);
 
   globals.applicationInformation = applicationInformation;
 

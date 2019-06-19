@@ -1,6 +1,7 @@
 /// Authored by `@yuwonom (Michael Yuwono)`
 
 import 'package:vsa/features/map/geolocator.dart';
+import 'package:vsa/features/map/mqtt_api.dart';
 import 'package:vsa/features/map/ui.dart';
 import 'package:vsa/globals.dart';
 import 'package:vsa/middleware.dart';
@@ -10,7 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
 
-ApplicationInformation createApplicationInformation(Apis apis, Geolocator geolocator) {
+ApplicationInformation createApplicationInformation(Geolocator geolocator, MqttApi mqttApi) {
   final appKey = GlobalKey(debugLabel: "app");
   final navigatorKey = GlobalKey<NavigatorState>(debugLabel: "navigator");
   final navigatorObserver = CompositeNavigatorObserver();
@@ -23,7 +24,7 @@ ApplicationInformation createApplicationInformation(Apis apis, Geolocator geoloc
     navigatorObservers: [navigatorObserver],
   );
 
-  final middleware = getMiddleware(apis, geolocator, navigatorKey);
+  final middleware = getMiddleware(geolocator, mqttApi, navigatorKey);
 
   final store = Store<AppState>(
     appStateReducer,
@@ -36,7 +37,7 @@ ApplicationInformation createApplicationInformation(Apis apis, Geolocator geoloc
     child: materialApp,
   );
 
-  return ApplicationInformation(apis, storeProvider, navigatorKey, store);
+  return ApplicationInformation(storeProvider, navigatorKey, store);
 }
 
 class CompositeNavigatorObserver extends NavigatorObserver {

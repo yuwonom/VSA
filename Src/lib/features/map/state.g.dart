@@ -10,6 +10,8 @@ class _$MapState extends MapState {
   @override
   final GpsPointDto userGpsPoint;
   @override
+  final MqttConnectionState connectionState;
+  @override
   final bool isBusy;
   @override
   final ActionException exception;
@@ -17,7 +19,12 @@ class _$MapState extends MapState {
   factory _$MapState([void updates(MapStateBuilder b)]) =>
       (new MapStateBuilder()..update(updates)).build();
 
-  _$MapState._({this.userGpsPoint, this.isBusy, this.exception}) : super._() {
+  _$MapState._(
+      {this.userGpsPoint, this.connectionState, this.isBusy, this.exception})
+      : super._() {
+    if (connectionState == null) {
+      throw new BuiltValueNullFieldError('MapState', 'connectionState');
+    }
     if (isBusy == null) {
       throw new BuiltValueNullFieldError('MapState', 'isBusy');
     }
@@ -35,13 +42,16 @@ class _$MapState extends MapState {
     if (identical(other, this)) return true;
     return other is MapState &&
         userGpsPoint == other.userGpsPoint &&
+        connectionState == other.connectionState &&
         isBusy == other.isBusy &&
         exception == other.exception;
   }
 
   @override
   int get hashCode {
-    return $jf($jc($jc($jc(0, userGpsPoint.hashCode), isBusy.hashCode),
+    return $jf($jc(
+        $jc($jc($jc(0, userGpsPoint.hashCode), connectionState.hashCode),
+            isBusy.hashCode),
         exception.hashCode));
   }
 
@@ -49,6 +59,7 @@ class _$MapState extends MapState {
   String toString() {
     return (newBuiltValueToStringHelper('MapState')
           ..add('userGpsPoint', userGpsPoint)
+          ..add('connectionState', connectionState)
           ..add('isBusy', isBusy)
           ..add('exception', exception))
         .toString();
@@ -64,6 +75,11 @@ class MapStateBuilder implements Builder<MapState, MapStateBuilder> {
   set userGpsPoint(GpsPointDtoBuilder userGpsPoint) =>
       _$this._userGpsPoint = userGpsPoint;
 
+  MqttConnectionState _connectionState;
+  MqttConnectionState get connectionState => _$this._connectionState;
+  set connectionState(MqttConnectionState connectionState) =>
+      _$this._connectionState = connectionState;
+
   bool _isBusy;
   bool get isBusy => _$this._isBusy;
   set isBusy(bool isBusy) => _$this._isBusy = isBusy;
@@ -77,6 +93,7 @@ class MapStateBuilder implements Builder<MapState, MapStateBuilder> {
   MapStateBuilder get _$this {
     if (_$v != null) {
       _userGpsPoint = _$v.userGpsPoint?.toBuilder();
+      _connectionState = _$v.connectionState;
       _isBusy = _$v.isBusy;
       _exception = _$v.exception;
       _$v = null;
@@ -104,6 +121,7 @@ class MapStateBuilder implements Builder<MapState, MapStateBuilder> {
       _$result = _$v ??
           new _$MapState._(
               userGpsPoint: _userGpsPoint?.build(),
+              connectionState: connectionState,
               isBusy: isBusy,
               exception: exception);
     } catch (_) {
