@@ -14,7 +14,7 @@ final Reducer<MapState> mapStateReducer = combineReducers([
   ]);
 
 MapState _updateUserGpsPointReducer(MapState state, UpdateUserGpsPoint action) => state.rebuild((b) => b
-  ..userGpsPoint.replace(action.point));
+  ..userVehicle.point.replace(action.point));
 
 MapState _connectToMqttBrokerReducer(MapState state, ConnectToMqttBroker action) => state.rebuild((b) => b
   ..isBusy = true

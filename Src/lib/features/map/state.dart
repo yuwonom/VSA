@@ -11,15 +11,14 @@ abstract class MapState implements Built<MapState, MapStateBuilder> {
   factory MapState([void updates(MapStateBuilder b)]) = _$MapState;
   
   factory MapState.initial() => _$MapState._(
+    userVehicle: VehicleDto.initial(),
     connectionState: MqttConnectionState.disconnected,
     isBusy: false,
   );
 
   MapState._();
 
-  @nullable
-  GpsPointDto get userGpsPoint;
-
+  VehicleDto get userVehicle;
   MqttConnectionState get connectionState;
 
   bool get isBusy;

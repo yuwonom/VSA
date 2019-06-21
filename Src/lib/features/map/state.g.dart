@@ -8,7 +8,7 @@ part of 'state.dart';
 
 class _$MapState extends MapState {
   @override
-  final GpsPointDto userGpsPoint;
+  final VehicleDto userVehicle;
   @override
   final MqttConnectionState connectionState;
   @override
@@ -20,8 +20,11 @@ class _$MapState extends MapState {
       (new MapStateBuilder()..update(updates)).build();
 
   _$MapState._(
-      {this.userGpsPoint, this.connectionState, this.isBusy, this.exception})
+      {this.userVehicle, this.connectionState, this.isBusy, this.exception})
       : super._() {
+    if (userVehicle == null) {
+      throw new BuiltValueNullFieldError('MapState', 'userVehicle');
+    }
     if (connectionState == null) {
       throw new BuiltValueNullFieldError('MapState', 'connectionState');
     }
@@ -41,7 +44,7 @@ class _$MapState extends MapState {
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
     return other is MapState &&
-        userGpsPoint == other.userGpsPoint &&
+        userVehicle == other.userVehicle &&
         connectionState == other.connectionState &&
         isBusy == other.isBusy &&
         exception == other.exception;
@@ -50,7 +53,7 @@ class _$MapState extends MapState {
   @override
   int get hashCode {
     return $jf($jc(
-        $jc($jc($jc(0, userGpsPoint.hashCode), connectionState.hashCode),
+        $jc($jc($jc(0, userVehicle.hashCode), connectionState.hashCode),
             isBusy.hashCode),
         exception.hashCode));
   }
@@ -58,7 +61,7 @@ class _$MapState extends MapState {
   @override
   String toString() {
     return (newBuiltValueToStringHelper('MapState')
-          ..add('userGpsPoint', userGpsPoint)
+          ..add('userVehicle', userVehicle)
           ..add('connectionState', connectionState)
           ..add('isBusy', isBusy)
           ..add('exception', exception))
@@ -69,11 +72,11 @@ class _$MapState extends MapState {
 class MapStateBuilder implements Builder<MapState, MapStateBuilder> {
   _$MapState _$v;
 
-  GpsPointDtoBuilder _userGpsPoint;
-  GpsPointDtoBuilder get userGpsPoint =>
-      _$this._userGpsPoint ??= new GpsPointDtoBuilder();
-  set userGpsPoint(GpsPointDtoBuilder userGpsPoint) =>
-      _$this._userGpsPoint = userGpsPoint;
+  VehicleDtoBuilder _userVehicle;
+  VehicleDtoBuilder get userVehicle =>
+      _$this._userVehicle ??= new VehicleDtoBuilder();
+  set userVehicle(VehicleDtoBuilder userVehicle) =>
+      _$this._userVehicle = userVehicle;
 
   MqttConnectionState _connectionState;
   MqttConnectionState get connectionState => _$this._connectionState;
@@ -92,7 +95,7 @@ class MapStateBuilder implements Builder<MapState, MapStateBuilder> {
 
   MapStateBuilder get _$this {
     if (_$v != null) {
-      _userGpsPoint = _$v.userGpsPoint?.toBuilder();
+      _userVehicle = _$v.userVehicle?.toBuilder();
       _connectionState = _$v.connectionState;
       _isBusy = _$v.isBusy;
       _exception = _$v.exception;
@@ -120,15 +123,15 @@ class MapStateBuilder implements Builder<MapState, MapStateBuilder> {
     try {
       _$result = _$v ??
           new _$MapState._(
-              userGpsPoint: _userGpsPoint?.build(),
+              userVehicle: userVehicle.build(),
               connectionState: connectionState,
               isBusy: isBusy,
               exception: exception);
     } catch (_) {
       String _$failedField;
       try {
-        _$failedField = 'userGpsPoint';
-        _userGpsPoint?.build();
+        _$failedField = 'userVehicle';
+        userVehicle.build();
       } catch (e) {
         throw new BuiltValueNestedFieldError(
             'MapState', _$failedField, e.toString());

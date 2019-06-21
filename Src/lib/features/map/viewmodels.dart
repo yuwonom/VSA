@@ -11,10 +11,12 @@ class MapViewModel {
 
   const MapViewModel(this._state) : assert(_state != null);
 
-  LatLng get userPoint => _state.userGpsPoint?.point ?? BRISBANE_LATLNG;
+  LatLng get userPoint => hasUserPoint
+    ? LatLng(_state.userVehicle.point.latitude, _state.userVehicle.point.longitude)
+    : BRISBANE_LATLNG;
   MqttConnectionState get connectionState => _state.connectionState;
 
-  bool get hasUserPoint => userPoint != null;
+  bool get hasUserPoint => _state.userVehicle.point != null;
 
   String get server => "203.101.227.137";
   String get clientId => "autocar1";

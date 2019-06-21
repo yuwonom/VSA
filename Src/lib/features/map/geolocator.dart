@@ -2,7 +2,6 @@
 
 import 'dart:async';
 
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:vsa/features/map/dtos.dart';
 
@@ -33,8 +32,11 @@ class Geolocator {
   }
 
   void _addGpsPoint(LocationData data) => _controller.add(GpsPointDto((b) => b
-    ..point = LatLng(data.latitude, data.longitude)
+    ..latitude = data.latitude
+    ..longitude = data.longitude
     ..altitude = data.altitude
     ..accuracy = data.accuracy
-    ..dateTime = DateTime.now().toUtc()));
+    ..dateTime = DateTime.now().toUtc()
+    ..speed = data.speed
+    ..heading = data.heading));
 }
