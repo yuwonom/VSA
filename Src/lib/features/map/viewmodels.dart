@@ -23,3 +23,9 @@ class MapViewModel {
   String get username => "qut";
   String get password => "qut";
 }
+
+class DetailsViewModel {
+  final MapState _state;
+
+  const DetailsViewModel(this._state) : assert(_state != null);
+}
