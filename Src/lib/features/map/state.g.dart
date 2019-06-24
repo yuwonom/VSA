@@ -16,6 +16,8 @@ class _$MapState extends MapState {
   @override
   final DateTime startTime;
   @override
+  final List<GpsPointDto> recordedPoints;
+  @override
   final bool isBusy;
   @override
   final ActionException exception;
@@ -28,6 +30,7 @@ class _$MapState extends MapState {
       this.connectionState,
       this.securityLevel,
       this.startTime,
+      this.recordedPoints,
       this.isBusy,
       this.exception})
       : super._() {
@@ -39,6 +42,9 @@ class _$MapState extends MapState {
     }
     if (securityLevel == null) {
       throw new BuiltValueNullFieldError('MapState', 'securityLevel');
+    }
+    if (recordedPoints == null) {
+      throw new BuiltValueNullFieldError('MapState', 'recordedPoints');
     }
     if (isBusy == null) {
       throw new BuiltValueNullFieldError('MapState', 'isBusy');
@@ -60,6 +66,7 @@ class _$MapState extends MapState {
         connectionState == other.connectionState &&
         securityLevel == other.securityLevel &&
         startTime == other.startTime &&
+        recordedPoints == other.recordedPoints &&
         isBusy == other.isBusy &&
         exception == other.exception;
   }
@@ -69,9 +76,13 @@ class _$MapState extends MapState {
     return $jf($jc(
         $jc(
             $jc(
-                $jc($jc($jc(0, userVehicle.hashCode), connectionState.hashCode),
-                    securityLevel.hashCode),
-                startTime.hashCode),
+                $jc(
+                    $jc(
+                        $jc($jc(0, userVehicle.hashCode),
+                            connectionState.hashCode),
+                        securityLevel.hashCode),
+                    startTime.hashCode),
+                recordedPoints.hashCode),
             isBusy.hashCode),
         exception.hashCode));
   }
@@ -83,6 +94,7 @@ class _$MapState extends MapState {
           ..add('connectionState', connectionState)
           ..add('securityLevel', securityLevel)
           ..add('startTime', startTime)
+          ..add('recordedPoints', recordedPoints)
           ..add('isBusy', isBusy)
           ..add('exception', exception))
         .toString();
@@ -112,6 +124,11 @@ class MapStateBuilder implements Builder<MapState, MapStateBuilder> {
   DateTime get startTime => _$this._startTime;
   set startTime(DateTime startTime) => _$this._startTime = startTime;
 
+  List<GpsPointDto> _recordedPoints;
+  List<GpsPointDto> get recordedPoints => _$this._recordedPoints;
+  set recordedPoints(List<GpsPointDto> recordedPoints) =>
+      _$this._recordedPoints = recordedPoints;
+
   bool _isBusy;
   bool get isBusy => _$this._isBusy;
   set isBusy(bool isBusy) => _$this._isBusy = isBusy;
@@ -128,6 +145,7 @@ class MapStateBuilder implements Builder<MapState, MapStateBuilder> {
       _connectionState = _$v.connectionState;
       _securityLevel = _$v.securityLevel;
       _startTime = _$v.startTime;
+      _recordedPoints = _$v.recordedPoints;
       _isBusy = _$v.isBusy;
       _exception = _$v.exception;
       _$v = null;
@@ -158,6 +176,7 @@ class MapStateBuilder implements Builder<MapState, MapStateBuilder> {
               connectionState: connectionState,
               securityLevel: securityLevel,
               startTime: startTime,
+              recordedPoints: recordedPoints,
               isBusy: isBusy,
               exception: exception);
     } catch (_) {

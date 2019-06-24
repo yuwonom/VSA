@@ -263,7 +263,7 @@ class DetailsBarState extends State<DetailsBar> with TickerProviderStateMixin {
         Column(
           children: <Widget>[
             _createItem(widget.viewModel.currentSpeedText, "Speed (km/h)"),
-            _createItem("42", "Avg (km/h)"),
+            _createItem(widget.viewModel.averageSpeedText, "Avg (km/h)"),
           ],
         ),
         divider,

@@ -21,6 +21,16 @@ class UpdateUserGpsPoint {
 }
 
 @immutable
+class RecordUserGpsPoint {
+  RecordUserGpsPoint(this.point) : assert (point != null);
+
+  final GpsPointDto point;
+  
+  @override
+  String toString() => "RecordUserGpsPoint $point";
+}
+
+@immutable
 class ConnectToMqttBroker {
   ConnectToMqttBroker(
     this.server,

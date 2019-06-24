@@ -7,6 +7,7 @@ import 'package:vsa/features/map/state.dart';
 
 final Reducer<MapState> mapStateReducer = combineReducers([
     TypedReducer<MapState, UpdateUserGpsPoint>(_updateUserGpsPointReducer),
+    TypedReducer<MapState, RecordUserGpsPoint>(_recordUserGpsPointReducer),
     TypedReducer<MapState, ConnectToMqttBroker>(_connectToMqttBrokerReducer),
     TypedReducer<MapState, ConnectToMqttBrokerSuccessful>(_connectToMqttBrokerSuccessfulReducer),
     TypedReducer<MapState, ConnectToMqttBrokerFailed>(_connectToMqttBrokerFailedReducer),
@@ -15,6 +16,9 @@ final Reducer<MapState> mapStateReducer = combineReducers([
 
 MapState _updateUserGpsPointReducer(MapState state, UpdateUserGpsPoint action) => state.rebuild((b) => b
   ..userVehicle.point.replace(action.point));
+
+MapState _recordUserGpsPointReducer(MapState state, RecordUserGpsPoint action) => state.rebuild((b) => b
+  ..recordedPoints.add(action.point));
 
 MapState _connectToMqttBrokerReducer(MapState state, ConnectToMqttBroker action) => state.rebuild((b) => b
   ..isBusy = true
@@ -33,4 +37,5 @@ MapState _connectToMqttBrokerFailedReducer(MapState state, ConnectToMqttBrokerFa
 
 MapState _disconnectFromMqttBrokerReducer(MapState state, DisconnectFromMqttBroker action) => state.rebuild((b) => b
   ..connectionState = MqttConnectionState.disconnected
-  ..startTime = null);
+  ..startTime = null
+  ..recordedPoints.clear());

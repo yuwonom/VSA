@@ -2,6 +2,7 @@
 
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:mqtt_client/mqtt_client.dart';
+import 'package:vsa/features/map/dtos.dart';
 import 'package:vsa/features/map/state.dart';
 
 class MapViewModel {
@@ -36,4 +37,20 @@ class DetailsViewModel {
   String get securityLevelText => connectedToBroker ? _state.securityLevel.toString() : "-";
 
   String get currentSpeedText => _state.userVehicle.point?.speed?.toStringAsFixed(2) ?? "0.0";
+
+  String get averageSpeedText {
+    if (!connectedToBroker) {
+      return "-";
+    }
+
+    if (_state.recordedPoints.isEmpty) {
+      return "0.0";
+    } else {
+      final totalSpeed = _state.recordedPoints
+        .map((GpsPointDto point) => point.speed)
+        .reduce((double speed1, double speed2) => speed1 + speed2);
+      final averageSpeed = totalSpeed / _state.recordedPoints.length;
+      return averageSpeed.toStringAsFixed(2);
+    }
+  }
 }
