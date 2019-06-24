@@ -23,7 +23,8 @@ MapState _connectToMqttBrokerReducer(MapState state, ConnectToMqttBroker action)
 
 MapState _connectToMqttBrokerSuccessfulReducer(MapState state, ConnectToMqttBrokerSuccessful action) => state.rebuild((b) => b
   ..isBusy = false
-  ..connectionState = MqttConnectionState.connected);
+  ..connectionState = MqttConnectionState.connected
+  ..startTime = DateTime.now());
 
 MapState _connectToMqttBrokerFailedReducer(MapState state, ConnectToMqttBrokerFailed action) => state.rebuild((b) => b
   ..isBusy = false
@@ -31,4 +32,5 @@ MapState _connectToMqttBrokerFailedReducer(MapState state, ConnectToMqttBrokerFa
   ..connectionState = MqttConnectionState.faulted);
 
 MapState _disconnectFromMqttBrokerReducer(MapState state, DisconnectFromMqttBroker action) => state.rebuild((b) => b
-  ..connectionState = MqttConnectionState.disconnected);
+  ..connectionState = MqttConnectionState.disconnected
+  ..startTime = null);

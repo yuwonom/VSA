@@ -28,4 +28,8 @@ class DetailsViewModel {
   final MapState _state;
 
   const DetailsViewModel(this._state) : assert(_state != null);
+
+  bool get timerIsRunning => _state.connectionState == MqttConnectionState.connected;
+  
+  DateTime get startTime => _state.startTime;
 }

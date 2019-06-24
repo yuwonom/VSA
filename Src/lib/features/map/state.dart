@@ -21,6 +21,9 @@ abstract class MapState implements Built<MapState, MapStateBuilder> {
   VehicleDto get userVehicle;
   MqttConnectionState get connectionState;
 
+  @nullable
+  DateTime get startTime;
+
   bool get isBusy;
   @nullable
   ActionException get exception;

@@ -12,6 +12,8 @@ class _$MapState extends MapState {
   @override
   final MqttConnectionState connectionState;
   @override
+  final DateTime startTime;
+  @override
   final bool isBusy;
   @override
   final ActionException exception;
@@ -20,7 +22,11 @@ class _$MapState extends MapState {
       (new MapStateBuilder()..update(updates)).build();
 
   _$MapState._(
-      {this.userVehicle, this.connectionState, this.isBusy, this.exception})
+      {this.userVehicle,
+      this.connectionState,
+      this.startTime,
+      this.isBusy,
+      this.exception})
       : super._() {
     if (userVehicle == null) {
       throw new BuiltValueNullFieldError('MapState', 'userVehicle');
@@ -46,6 +52,7 @@ class _$MapState extends MapState {
     return other is MapState &&
         userVehicle == other.userVehicle &&
         connectionState == other.connectionState &&
+        startTime == other.startTime &&
         isBusy == other.isBusy &&
         exception == other.exception;
   }
@@ -53,7 +60,9 @@ class _$MapState extends MapState {
   @override
   int get hashCode {
     return $jf($jc(
-        $jc($jc($jc(0, userVehicle.hashCode), connectionState.hashCode),
+        $jc(
+            $jc($jc($jc(0, userVehicle.hashCode), connectionState.hashCode),
+                startTime.hashCode),
             isBusy.hashCode),
         exception.hashCode));
   }
@@ -63,6 +72,7 @@ class _$MapState extends MapState {
     return (newBuiltValueToStringHelper('MapState')
           ..add('userVehicle', userVehicle)
           ..add('connectionState', connectionState)
+          ..add('startTime', startTime)
           ..add('isBusy', isBusy)
           ..add('exception', exception))
         .toString();
@@ -83,6 +93,10 @@ class MapStateBuilder implements Builder<MapState, MapStateBuilder> {
   set connectionState(MqttConnectionState connectionState) =>
       _$this._connectionState = connectionState;
 
+  DateTime _startTime;
+  DateTime get startTime => _$this._startTime;
+  set startTime(DateTime startTime) => _$this._startTime = startTime;
+
   bool _isBusy;
   bool get isBusy => _$this._isBusy;
   set isBusy(bool isBusy) => _$this._isBusy = isBusy;
@@ -97,6 +111,7 @@ class MapStateBuilder implements Builder<MapState, MapStateBuilder> {
     if (_$v != null) {
       _userVehicle = _$v.userVehicle?.toBuilder();
       _connectionState = _$v.connectionState;
+      _startTime = _$v.startTime;
       _isBusy = _$v.isBusy;
       _exception = _$v.exception;
       _$v = null;
@@ -125,6 +140,7 @@ class MapStateBuilder implements Builder<MapState, MapStateBuilder> {
           new _$MapState._(
               userVehicle: userVehicle.build(),
               connectionState: connectionState,
+              startTime: startTime,
               isBusy: isBusy,
               exception: exception);
     } catch (_) {

@@ -1,5 +1,6 @@
 /// Authored by `@yuwonom (Michael Yuwono)`
 
+import 'dart:async';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -46,7 +47,7 @@ class MapPageState extends State<MapPage> {
         alignment: Alignment.topCenter,
         children: <Widget>[
           RepaintBoundary(child: stack),
-          DetailsBar(),
+          DetailsBar(DetailsViewModel(store.state.map)),
         ],
       ),
     );
@@ -157,6 +158,10 @@ class MapPageState extends State<MapPage> {
 }
 
 class DetailsBar extends StatefulWidget {
+  DetailsBar(this.viewModel) : assert(viewModel != null);
+
+  final DetailsViewModel viewModel;
+
   @override
   DetailsBarState createState() => DetailsBarState();
 }
@@ -172,20 +177,31 @@ class DetailsBarState extends State<DetailsBar> with TickerProviderStateMixin {
   AnimationController _drawerController;
   Animation<double> _drawerAnimation;
 
+  String _timeDisplay = "00:00:00";
+  StreamSubscription _timerStream;
+
   @override
   void initState() {
     super.initState();
     _drawerController = AnimationController(duration: animationDuration, vsync: this);
     _drawerAnimation = Tween(begin: heightMinimized, end: heightMaximized).animate(_drawerController);
+
+    _timerStream = Stream.periodic(Duration(seconds: 1)).listen((_) {
+      if (!widget.viewModel.timerIsRunning) {
+        return;
+      }
+
+      setState(() {
+        final diff = DateTime.now().difference(widget.viewModel.startTime);
+        _timeDisplay = _getRideDurationDisplay(diff.inMilliseconds);
+      });
+    });
   }
 
   @override
-  Widget build(BuildContext context) => StoreConnector<AppState, DetailsViewModel>(
-      converter: (Store<AppState> store) => DetailsViewModel(store.state.map),
-      builder: (BuildContext context, DetailsViewModel viewModel) => _buildPage(context, StoreProvider.of(context), viewModel)
-    );
+  Widget build(BuildContext context) => StoreBuilder<AppState>(builder: _buildPage);
 
-  Widget _buildPage(BuildContext context, Store<AppState> store, DetailsViewModel viewModel) {
+  Widget _buildPage(BuildContext context, Store<AppState> store) {
     final content = Container(
       height: currentHeight,
       color: AppColors.white,
@@ -239,7 +255,7 @@ class DetailsBarState extends State<DetailsBar> with TickerProviderStateMixin {
       children: <Widget>[
         Column(
           children: <Widget>[
-            _createItem("42:00", "Elapsed Time"),
+            _createItem(_timeDisplay, "Elapsed Time"),
             _createItem("secured", "Security Level"),
           ],
         ),
@@ -292,9 +308,21 @@ class DetailsBarState extends State<DetailsBar> with TickerProviderStateMixin {
       ),
     );
 
+  String _getRideDurationDisplay(int milliseconds) {
+    var seconds = (milliseconds / 1000).truncate();
+    var minutes = (seconds / 60).truncate();
+    var hours = (minutes / 60).truncate();
+
+    var ss = (seconds % 60).toStringAsFixed(0).padLeft(2, "0");
+    var mm = (minutes % 60).toStringAsFixed(0).padLeft(2, "0");
+    var hh = hours.toStringAsFixed(0).padLeft(2, "0");
+    return "$hh:$mm:$ss";
+  }
+
   @override
   void dispose() {
     _drawerController.dispose();
+    _timerStream.cancel();
     super.dispose();
   }
 }
