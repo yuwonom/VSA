@@ -269,7 +269,7 @@ class DetailsBarState extends State<DetailsBar> with TickerProviderStateMixin {
         divider,
         Column(
           children: <Widget>[
-            _createItem("42", "Distance (km)"),
+            _createItem(widget.viewModel.distanceText, "Distance (km)"),
             _createItem("42%", "Accuracy"),
           ],
         ),
