@@ -29,7 +29,9 @@ class DetailsViewModel {
 
   const DetailsViewModel(this._state) : assert(_state != null);
 
-  bool get timerIsRunning => _state.connectionState == MqttConnectionState.connected;
+  bool get connectedToBroker => _state.connectionState == MqttConnectionState.connected;
   
   DateTime get startTime => _state.startTime;
+
+  String get securityLevelText => connectedToBroker ? _state.securityLevel.toString() : "-";
 }

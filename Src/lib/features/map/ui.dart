@@ -187,7 +187,7 @@ class DetailsBarState extends State<DetailsBar> with TickerProviderStateMixin {
     _drawerAnimation = Tween(begin: heightMinimized, end: heightMaximized).animate(_drawerController);
 
     _timerStream = Stream.periodic(Duration(seconds: 1)).listen((_) {
-      if (!widget.viewModel.timerIsRunning) {
+      if (!widget.viewModel.connectedToBroker) {
         return;
       }
 
@@ -256,7 +256,7 @@ class DetailsBarState extends State<DetailsBar> with TickerProviderStateMixin {
         Column(
           children: <Widget>[
             _createItem(_timeDisplay, "Elapsed Time"),
-            _createItem("secured", "Security Level"),
+            _createItem(widget.viewModel.securityLevelText, "Security Level"),
           ],
         ),
         divider,

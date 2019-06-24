@@ -13,6 +13,7 @@ abstract class MapState implements Built<MapState, MapStateBuilder> {
   factory MapState.initial() => _$MapState._(
     userVehicle: VehicleDto.initial(),
     connectionState: MqttConnectionState.disconnected,
+    securityLevel: SecurityLevelDto.unknown,
     isBusy: false,
   );
 
@@ -20,6 +21,7 @@ abstract class MapState implements Built<MapState, MapStateBuilder> {
 
   VehicleDto get userVehicle;
   MqttConnectionState get connectionState;
+  SecurityLevelDto get securityLevel;
 
   @nullable
   DateTime get startTime;

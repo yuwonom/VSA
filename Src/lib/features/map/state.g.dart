@@ -12,6 +12,8 @@ class _$MapState extends MapState {
   @override
   final MqttConnectionState connectionState;
   @override
+  final SecurityLevelDto securityLevel;
+  @override
   final DateTime startTime;
   @override
   final bool isBusy;
@@ -24,6 +26,7 @@ class _$MapState extends MapState {
   _$MapState._(
       {this.userVehicle,
       this.connectionState,
+      this.securityLevel,
       this.startTime,
       this.isBusy,
       this.exception})
@@ -33,6 +36,9 @@ class _$MapState extends MapState {
     }
     if (connectionState == null) {
       throw new BuiltValueNullFieldError('MapState', 'connectionState');
+    }
+    if (securityLevel == null) {
+      throw new BuiltValueNullFieldError('MapState', 'securityLevel');
     }
     if (isBusy == null) {
       throw new BuiltValueNullFieldError('MapState', 'isBusy');
@@ -52,6 +58,7 @@ class _$MapState extends MapState {
     return other is MapState &&
         userVehicle == other.userVehicle &&
         connectionState == other.connectionState &&
+        securityLevel == other.securityLevel &&
         startTime == other.startTime &&
         isBusy == other.isBusy &&
         exception == other.exception;
@@ -61,7 +68,9 @@ class _$MapState extends MapState {
   int get hashCode {
     return $jf($jc(
         $jc(
-            $jc($jc($jc(0, userVehicle.hashCode), connectionState.hashCode),
+            $jc(
+                $jc($jc($jc(0, userVehicle.hashCode), connectionState.hashCode),
+                    securityLevel.hashCode),
                 startTime.hashCode),
             isBusy.hashCode),
         exception.hashCode));
@@ -72,6 +81,7 @@ class _$MapState extends MapState {
     return (newBuiltValueToStringHelper('MapState')
           ..add('userVehicle', userVehicle)
           ..add('connectionState', connectionState)
+          ..add('securityLevel', securityLevel)
           ..add('startTime', startTime)
           ..add('isBusy', isBusy)
           ..add('exception', exception))
@@ -93,6 +103,11 @@ class MapStateBuilder implements Builder<MapState, MapStateBuilder> {
   set connectionState(MqttConnectionState connectionState) =>
       _$this._connectionState = connectionState;
 
+  SecurityLevelDto _securityLevel;
+  SecurityLevelDto get securityLevel => _$this._securityLevel;
+  set securityLevel(SecurityLevelDto securityLevel) =>
+      _$this._securityLevel = securityLevel;
+
   DateTime _startTime;
   DateTime get startTime => _$this._startTime;
   set startTime(DateTime startTime) => _$this._startTime = startTime;
@@ -111,6 +126,7 @@ class MapStateBuilder implements Builder<MapState, MapStateBuilder> {
     if (_$v != null) {
       _userVehicle = _$v.userVehicle?.toBuilder();
       _connectionState = _$v.connectionState;
+      _securityLevel = _$v.securityLevel;
       _startTime = _$v.startTime;
       _isBusy = _$v.isBusy;
       _exception = _$v.exception;
@@ -140,6 +156,7 @@ class MapStateBuilder implements Builder<MapState, MapStateBuilder> {
           new _$MapState._(
               userVehicle: userVehicle.build(),
               connectionState: connectionState,
+              securityLevel: securityLevel,
               startTime: startTime,
               isBusy: isBusy,
               exception: exception);
