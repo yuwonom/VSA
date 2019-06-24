@@ -34,4 +34,6 @@ class DetailsViewModel {
   DateTime get startTime => _state.startTime;
 
   String get securityLevelText => connectedToBroker ? _state.securityLevel.toString() : "-";
+
+  String get currentSpeedText => _state.userVehicle.point?.speed?.toStringAsFixed(2) ?? "0.0";
 }

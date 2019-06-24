@@ -37,6 +37,6 @@ class Geolocator {
     ..altitude = data.altitude
     ..accuracy = data.accuracy
     ..dateTime = DateTime.now().toUtc()
-    ..speed = data.speed
+    ..speed = data.speed * 3.6 // Converts from m/s to km/h
     ..heading = data.heading));
 }
