@@ -270,7 +270,7 @@ class DetailsBarState extends State<DetailsBar> with TickerProviderStateMixin {
         Column(
           children: <Widget>[
             _createItem(widget.viewModel.distanceText, "Distance (km)"),
-            _createItem("42%", "Accuracy"),
+            _createItem("${widget.viewModel.accuracyText}%", "Accuracy"),
           ],
         ),
       ],

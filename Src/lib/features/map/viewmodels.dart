@@ -57,4 +57,6 @@ class DetailsViewModel {
       ? GpsHelper.totalDistance(_state.recordedPoints).toStringAsFixed(2)
       : "0.0";
   }
+
+  String get accuracyText => _state.userVehicle.point?.accuracy?.toStringAsFixed(2) ?? "0";
 }
