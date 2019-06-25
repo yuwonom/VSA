@@ -20,6 +20,10 @@ class MapPage extends StatefulWidget {
 }
 
 class MapPageState extends State<MapPage> {
+  final double _defaultZoom = 24;
+  final double _defaultBearing = 50;
+  final double _defaultTilt = 90;
+
   GoogleMapController _mapController;
 
   @override
@@ -189,7 +193,7 @@ class MapPageState extends State<MapPage> {
 
     final myLocation = FloatingActionButton(
       backgroundColor: AppColors.white,
-      onPressed: () {},
+      onPressed: () => _moveMapCamera(viewModel.userPoint),
       child: Icon(Icons.my_location, color: AppColors.black),
     );
 
@@ -221,10 +225,10 @@ class MapPageState extends State<MapPage> {
     return Container(
       child: GoogleMap(
         initialCameraPosition: CameraPosition(
-          target: MapViewModel.BRISBANE_LATLNG,
-          zoom: 24,
-          bearing: 50,
-          tilt: 90,
+          target: viewModel.userPoint,
+          zoom: _defaultZoom,
+          bearing: _defaultBearing,
+          tilt: _defaultTilt,
         ),
         onMapCreated: (GoogleMapController controller) => _mapController = controller,
         mapType: MapType.normal,
@@ -233,6 +237,23 @@ class MapPageState extends State<MapPage> {
         myLocationEnabled: false,
         myLocationButtonEnabled: false,
         tiltGesturesEnabled: false,
+      ),
+    );
+  }
+
+  void _moveMapCamera(LatLng point) {
+    if (_mapController == null || point == null) {
+      return;
+    }
+
+    _mapController.animateCamera(
+      CameraUpdate.newCameraPosition(
+        CameraPosition(
+          target: point,
+          zoom: _defaultZoom,
+          bearing: _defaultBearing,
+          tilt: _defaultTilt,
+        ),
       ),
     );
   }
