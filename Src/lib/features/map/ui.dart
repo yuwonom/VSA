@@ -9,6 +9,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:redux/redux.dart';
 import 'package:vsa/features/map/actions.dart';
+import 'package:vsa/features/map/dtos.dart';
 import 'package:vsa/features/map/viewmodels.dart';
 import 'package:vsa/state.dart';
 import 'package:vsa/themes/theme.dart';
@@ -29,15 +30,15 @@ class MapPageState extends State<MapPage> {
     );
   
   Widget _buildPage(BuildContext context, Store<AppState> store, MapViewModel viewModel) {
-    final playButton = _buildPlayButton(store, viewModel);
+    final actionButtons = _buildActionButtons(store, viewModel);
     
     final stack = Stack(
       alignment: Alignment.bottomCenter,
       children: <Widget>[
         _buildMap(store, viewModel),
         Padding(
-          padding: AppEdges.mediumVertical,
-          child: playButton,
+          padding: AppEdges.mediumAll,
+          child: actionButtons,
         ),
       ],
     );
@@ -77,7 +78,9 @@ class MapPageState extends State<MapPage> {
     return scaffold;
   }
 
-  Widget _buildPlayButton(Store<AppState> store, MapViewModel viewModel) {
+  Widget _buildActionButtons(Store<AppState> store, MapViewModel viewModel) {
+    Widget playButton;
+
     final VoidCallback connectCallback =
       () => store.dispatch(ConnectToMqttBroker(
           viewModel.server,
@@ -94,25 +97,28 @@ class MapPageState extends State<MapPage> {
 
     switch (viewModel.connectionState) {
       case MqttConnectionState.connected:
-        return FloatingActionButton(
+        playButton = FloatingActionButton(
           backgroundColor: AppColors.blue,
           onPressed: disconnectCallback,
           child: Icon(Icons.stop, color: AppColors.white),
         );
+      break;
       case MqttConnectionState.disconnected:
-        return FloatingActionButton(
+        playButton = FloatingActionButton(
           backgroundColor: AppColors.blue,
           onPressed: connectCallback,
           child: Icon(Icons.play_arrow, color: AppColors.white),
         );
+      break;
       case MqttConnectionState.faulted:
-        return FloatingActionButton(
+        playButton = FloatingActionButton(
           backgroundColor: AppColors.blue,
           onPressed: connectCallback,
           child: Icon(Icons.play_arrow, color: AppColors.white),
         );
+      break;
       default:
-        return FloatingActionButton(
+        playButton = FloatingActionButton(
           backgroundColor: AppColors.gray,
           onPressed: null,
           child: Padding(
@@ -121,6 +127,81 @@ class MapPageState extends State<MapPage> {
           ),
         );
     }
+
+    const double iconSize = 50.0;
+    Widget securityIndicatorIcon = Icon(
+      Icons.signal_wifi_off,
+      color: AppColors.gray,
+      size: iconSize,
+    );
+
+    if (viewModel.connectionState == MqttConnectionState.connected) {
+      switch (viewModel.securityLevel) {
+        case (SecurityLevelDto.secured):
+          securityIndicatorIcon = Icon(
+            Icons.security,
+            color: AppColors.green,
+            size: iconSize,
+          );
+          break;
+        case (SecurityLevelDto.controlled):
+          securityIndicatorIcon = Icon(
+            Icons.security,
+            color: AppColors.lightGreen,
+            size: iconSize,
+          );
+          break;
+        case (SecurityLevelDto.cautious):
+          securityIndicatorIcon = Icon(
+            Icons.warning,
+            color: AppColors.yellow,
+            size: iconSize,
+          );
+          break;
+        case (SecurityLevelDto.dangerous):
+          securityIndicatorIcon = Icon(
+            Icons.warning,
+            color: AppColors.orange,
+            size: iconSize,
+          );
+          break;
+        case (SecurityLevelDto.critical):
+          securityIndicatorIcon = Icon(
+            Icons.warning,
+            color: AppColors.red,
+            size: iconSize,
+          );
+          break;
+        case (SecurityLevelDto.unknown):
+          securityIndicatorIcon = Icon(
+            Icons.signal_wifi_off,
+            color: AppColors.red,
+            size: iconSize,
+          );
+          break;
+      }
+    }
+
+    final securityIndicator = Tooltip(
+      message: viewModel.securityLevel.toString(),
+      child: securityIndicatorIcon,
+    );
+
+    final myLocation = FloatingActionButton(
+      backgroundColor: AppColors.white,
+      onPressed: () {},
+      child: Icon(Icons.my_location, color: AppColors.black),
+    );
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: <Widget>[
+        securityIndicator,
+        playButton,
+        myLocation,
+      ],
+    );
   }
 
   Widget _buildMap(Store<AppState> store, MapViewModel viewModel) {

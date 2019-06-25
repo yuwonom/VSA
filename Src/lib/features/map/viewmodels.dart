@@ -2,6 +2,7 @@
 
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:mqtt_client/mqtt_client.dart';
+import 'package:vsa/features/map/dtos.dart';
 import 'package:vsa/features/map/state.dart';
 import 'package:vsa/utility/gps_helper.dart';
 
@@ -15,7 +16,10 @@ class MapViewModel {
   LatLng get userPoint => hasUserPoint
     ? LatLng(_state.userVehicle.point.latitude, _state.userVehicle.point.longitude)
     : BRISBANE_LATLNG;
+
   MqttConnectionState get connectionState => _state.connectionState;
+
+  SecurityLevelDto get securityLevel => _state.securityLevel;
 
   bool get hasUserPoint => _state.userVehicle.point != null;
 

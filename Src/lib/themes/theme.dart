@@ -18,8 +18,11 @@ class AppColors {
   static Color get transparent => const Color(0x00000000);
   static Color get black => const Color(0xFF161616);
   static Color get white => const Color(0xFFFFFFFF);
+  static Color get yellow => const Color(0xFFF1C40F);
+  static Color get orange => const Color(0xFFD35400);
   static Color get red => const Color(0xFFFF3838);
   static Color get green => const Color(0xFF27AE60);
+  static Color get lightGreen => const Color(0xFFBADC58);
   static Color get blue => const Color(0xFF22A7F0);
   static Color get gray => const Color(0xFFE9E9E9);
   static Color get lightGray => const Color(0xFFBDBDBD);
