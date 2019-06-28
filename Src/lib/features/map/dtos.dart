@@ -3,6 +3,7 @@
 import 'package:built_collection/built_collection.dart';
 import 'package:built_value/built_value.dart';
 import 'package:built_value/serializer.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 part 'dtos.g.dart';
 
@@ -20,6 +21,8 @@ abstract class GpsPointDto implements Built<GpsPointDto, GpsPointDtoBuilder> {
   double get heading;
 
   static Serializer<GpsPointDto> get serializer => _$gpsPointDtoSerializer;
+
+  LatLng toLatLng() => LatLng(latitude, longitude);
 }
 
 abstract class VehicleDto implements Built<VehicleDto, VehicleDtoBuilder> {

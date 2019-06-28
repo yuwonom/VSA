@@ -209,19 +209,15 @@ class MapPageState extends State<MapPage> {
   }
 
   Widget _buildMap(Store<AppState> store, MapViewModel viewModel) {
-    final userCircle = Circle(
-      circleId: CircleId("user"),
-      center: viewModel.userPoint,
-      visible: viewModel.hasUserPoint,
-      fillColor: AppColors.blue,
-      radius: 5.0,
-      strokeWidth: 1,
-    );
+    final markers = Set<Marker>();
 
-    final circles = Set<Circle>.of(<Circle>[
-      userCircle,
-    ]);
-
+    if (viewModel.hasUserPoint) {
+      _buildVehicleMarker(
+        viewModel.userVehicle,
+        true,
+      ).then((Marker userMarker) => setState(() => markers.add(userMarker)));
+    }
+    
     return Container(
       child: GoogleMap(
         initialCameraPosition: CameraPosition(
@@ -232,13 +228,33 @@ class MapPageState extends State<MapPage> {
         ),
         onMapCreated: (GoogleMapController controller) => _mapController = controller,
         mapType: MapType.normal,
-        circles: circles,
+        markers: markers,
         compassEnabled: false,
         myLocationEnabled: false,
         myLocationButtonEnabled: false,
         tiltGesturesEnabled: false,
       ),
     );
+  }
+
+  Future<Marker> _buildVehicleMarker(VehicleDto vehicle, bool isUser) async {
+    final rotation = vehicle.point?.heading ?? 90;
+
+    final iconPath = "assets/images/vehicles/";
+    final icon = BitmapDescriptor.fromAssetImage(
+      const ImageConfiguration(size: const Size(25.0, 25.0)),
+      isUser ? "${iconPath}car_blue.png" : "${iconPath}car_red.png",
+    );
+
+    final marker = Marker(
+      markerId: MarkerId(vehicle.id),
+      flat: true,
+      rotation: rotation,
+      position: vehicle.point.toLatLng(),
+      icon: await icon,
+    );
+
+    return marker;
   }
 
   void _moveMapCamera(LatLng point) {

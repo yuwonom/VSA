@@ -13,6 +13,8 @@ class MapViewModel {
 
   const MapViewModel(this._state) : assert(_state != null);
 
+  VehicleDto get userVehicle => _state.userVehicle;
+
   LatLng get userPoint => hasUserPoint
     ? LatLng(_state.userVehicle.point.latitude, _state.userVehicle.point.longitude)
     : BRISBANE_LATLNG;
