@@ -9,13 +9,18 @@ part of 'state.dart';
 class _$AppState extends AppState {
   @override
   final MapState map;
+  @override
+  final SettingsState settings;
 
   factory _$AppState([void updates(AppStateBuilder b)]) =>
       (new AppStateBuilder()..update(updates)).build();
 
-  _$AppState._({this.map}) : super._() {
+  _$AppState._({this.map, this.settings}) : super._() {
     if (map == null) {
       throw new BuiltValueNullFieldError('AppState', 'map');
+    }
+    if (settings == null) {
+      throw new BuiltValueNullFieldError('AppState', 'settings');
     }
   }
 
@@ -29,17 +34,19 @@ class _$AppState extends AppState {
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is AppState && map == other.map;
+    return other is AppState && map == other.map && settings == other.settings;
   }
 
   @override
   int get hashCode {
-    return $jf($jc(0, map.hashCode));
+    return $jf($jc($jc(0, map.hashCode), settings.hashCode));
   }
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('AppState')..add('map', map))
+    return (newBuiltValueToStringHelper('AppState')
+          ..add('map', map)
+          ..add('settings', settings))
         .toString();
   }
 }
@@ -51,11 +58,17 @@ class AppStateBuilder implements Builder<AppState, AppStateBuilder> {
   MapStateBuilder get map => _$this._map ??= new MapStateBuilder();
   set map(MapStateBuilder map) => _$this._map = map;
 
+  SettingsStateBuilder _settings;
+  SettingsStateBuilder get settings =>
+      _$this._settings ??= new SettingsStateBuilder();
+  set settings(SettingsStateBuilder settings) => _$this._settings = settings;
+
   AppStateBuilder();
 
   AppStateBuilder get _$this {
     if (_$v != null) {
       _map = _$v.map?.toBuilder();
+      _settings = _$v.settings?.toBuilder();
       _$v = null;
     }
     return this;
@@ -78,12 +91,15 @@ class AppStateBuilder implements Builder<AppState, AppStateBuilder> {
   _$AppState build() {
     _$AppState _$result;
     try {
-      _$result = _$v ?? new _$AppState._(map: map.build());
+      _$result =
+          _$v ?? new _$AppState._(map: map.build(), settings: settings.build());
     } catch (_) {
       String _$failedField;
       try {
         _$failedField = 'map';
         map.build();
+        _$failedField = 'settings';
+        settings.build();
       } catch (e) {
         throw new BuiltValueNestedFieldError(
             'AppState', _$failedField, e.toString());

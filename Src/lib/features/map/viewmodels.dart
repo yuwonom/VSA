@@ -4,31 +4,32 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:vsa/features/map/dtos.dart';
 import 'package:vsa/features/map/state.dart';
+import 'package:vsa/features/settings/dtos.dart';
+import 'package:vsa/features/settings/state.dart';
 import 'package:vsa/utility/gps_helper.dart';
 
 class MapViewModel {
   static const LatLng BRISBANE_LATLNG = const LatLng(-27.4698, 153.0251);
   
-  final MapState _state;
+  final MapState _mapState;
+  final SettingsState _settingsState;
 
-  const MapViewModel(this._state) : assert(_state != null);
+  const MapViewModel(this._mapState, this._settingsState)
+    : assert(_mapState != null && _settingsState != null);
 
-  VehicleDto get userVehicle => _state.userVehicle;
+  VehicleDto get userVehicle => _mapState.userVehicle;
 
   LatLng get userPoint => hasUserPoint
-    ? LatLng(_state.userVehicle.point.latitude, _state.userVehicle.point.longitude)
+    ? LatLng(_mapState.userVehicle.point.latitude, _mapState.userVehicle.point.longitude)
     : BRISBANE_LATLNG;
 
-  MqttConnectionState get connectionState => _state.connectionState;
+  MqttConnectionState get connectionState => _mapState.connectionState;
 
-  SecurityLevelDto get securityLevel => _state.securityLevel;
+  SecurityLevelDto get securityLevel => _mapState.securityLevel;
 
-  bool get hasUserPoint => _state.userVehicle.point != null;
+  bool get hasUserPoint => _mapState.userVehicle.point != null;
 
-  String get server => "203.101.227.137";
-  String get clientId => "autocar1";
-  String get username => "qut";
-  String get password => "qut";
+  BrokerDto get broker => _settingsState.broker;
 }
 
 class DetailsViewModel {

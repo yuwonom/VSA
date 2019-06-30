@@ -14,6 +14,7 @@ import 'package:redux/redux.dart';
 import 'package:vsa/features/map/actions.dart';
 import 'package:vsa/features/map/dtos.dart';
 import 'package:vsa/features/map/viewmodels.dart';
+import 'package:vsa/features/settings/ui.dart';
 import 'package:vsa/state.dart';
 import 'package:vsa/themes/theme.dart';
 
@@ -42,8 +43,8 @@ class MapPageState extends State<MapPage> {
   @override
   Widget build(BuildContext context) => StoreConnector<AppState, MapViewModel>(
       onInit: (Store<AppState> store) => store.dispatch(ListenToGeolocator()),
-      converter: (Store<AppState> store) => MapViewModel(store.state.map),
-      builder: (BuildContext context, MapViewModel viewModel) => _buildPage(context, StoreProvider.of(context), viewModel)
+      converter: (Store<AppState> store) => MapViewModel(store.state.map, store.state.settings),
+      builder: (BuildContext context, MapViewModel viewModel) => _buildPage(context, StoreProvider.of(context), viewModel),
     );
   
   Widget _buildPage(BuildContext context, Store<AppState> store, MapViewModel viewModel) {
@@ -81,7 +82,7 @@ class MapPageState extends State<MapPage> {
       color: AppColors.black,
       iconSize: 20.0,
       tooltip: "Settings",
-      onPressed: () {},
+      onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => SettingsPage())),
     );
 
     final appBar = AppBar(
@@ -106,10 +107,10 @@ class MapPageState extends State<MapPage> {
 
     final VoidCallback connectCallback =
       () => store.dispatch(ConnectToMqttBroker(
-          viewModel.server,
-          viewModel.clientId,
-          username: viewModel.username,
-          password: viewModel.password,
+          viewModel.broker.address,
+          viewModel.broker.clientId,
+          username: viewModel.broker.username,
+          password: viewModel.broker.password,
         ));
     final VoidCallback disconnectCallback =
       () => store.dispatch(DisconnectFromMqttBroker());
@@ -121,6 +122,7 @@ class MapPageState extends State<MapPage> {
     switch (viewModel.connectionState) {
       case MqttConnectionState.connected:
         playButton = FloatingActionButton(
+          heroTag: "playButton",
           backgroundColor: AppColors.blue,
           onPressed: disconnectCallback,
           child: Icon(Icons.stop, color: AppColors.white),
@@ -128,6 +130,7 @@ class MapPageState extends State<MapPage> {
       break;
       case MqttConnectionState.disconnected:
         playButton = FloatingActionButton(
+          heroTag: "playButton",
           backgroundColor: AppColors.blue,
           onPressed: connectCallback,
           child: Icon(Icons.play_arrow, color: AppColors.white),
@@ -135,6 +138,7 @@ class MapPageState extends State<MapPage> {
       break;
       case MqttConnectionState.faulted:
         playButton = FloatingActionButton(
+          heroTag: "playButton",
           backgroundColor: AppColors.blue,
           onPressed: connectCallback,
           child: Icon(Icons.play_arrow, color: AppColors.white),
@@ -142,6 +146,7 @@ class MapPageState extends State<MapPage> {
       break;
       default:
         playButton = FloatingActionButton(
+          heroTag: "playButton",
           backgroundColor: AppColors.gray,
           onPressed: null,
           child: Padding(
@@ -214,6 +219,7 @@ class MapPageState extends State<MapPage> {
     );
 
     final myLocation = FloatingActionButton(
+      heroTag: "myLocationButton",
       backgroundColor: AppColors.white,
       onPressed: () => _animateMapCamera(viewModel.userPoint)
           .then((_) => setState(() => _isSticky = true)),
