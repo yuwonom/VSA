@@ -13,7 +13,7 @@ dependencies:
   flutter_redux:
   redux:
   redux_epics:
-  rxdart: ^0.20.0
+  rxdart: ^0.21.0
 
   cupertino_icons: ^0.1.2
   cached_network_image: ^0.5.1
@@ -29,6 +29,8 @@ dev_dependencies:
   mockito: ^3.0.0
   build_runner:
   built_value_generator:
+  
+  flutter_compass: ^0.3.2
 
 flutter:
   uses-material-design: true

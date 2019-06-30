@@ -3,7 +3,10 @@
 import 'dart:async';
 import 'dart:ui';
 
+import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_compass/flutter_compass.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:mqtt_client/mqtt_client.dart';
@@ -20,11 +23,21 @@ class MapPage extends StatefulWidget {
 }
 
 class MapPageState extends State<MapPage> {
-  final double _defaultZoom = 24;
-  final double _defaultBearing = 50;
-  final double _defaultTilt = 90;
+  final double _defaultZoom = 22;
+  final double _defaultBearing = 0;
+  final double _defaultTilt = 45;
 
   GoogleMapController _mapController;
+  double _direction;
+  bool _isSticky;
+
+  Timer _stickToMapTimer;
+
+  @override void initState() {
+    super.initState();
+    _direction = _defaultBearing;
+    _isSticky = true;
+  }
 
   @override
   Widget build(BuildContext context) => StoreConnector<AppState, MapViewModel>(
@@ -34,16 +47,22 @@ class MapPageState extends State<MapPage> {
     );
   
   Widget _buildPage(BuildContext context, Store<AppState> store, MapViewModel viewModel) {
-    final actionButtons = _buildActionButtons(store, viewModel);
+    final map = GestureDetector(
+      behavior: HitTestBehavior.translucent,
+      onPanDown: (_) => setState(() => _isSticky = false),
+      child: _buildMap(store, viewModel),
+    );
+
+    final actionButtons = Padding(
+      padding: AppEdges.mediumAll,
+      child: _buildActionButtons(store, viewModel)
+    );
     
     final stack = Stack(
       alignment: Alignment.bottomCenter,
       children: <Widget>[
-        _buildMap(store, viewModel),
-        Padding(
-          padding: AppEdges.mediumAll,
-          child: actionButtons,
-        ),
+        map,
+        actionButtons,
       ],
     );
 
@@ -188,12 +207,16 @@ class MapPageState extends State<MapPage> {
 
     final securityIndicator = Tooltip(
       message: viewModel.securityLevel.toString(),
-      child: securityIndicatorIcon,
+      child: Padding(
+        padding: AppEdges.tinyHorizontal,
+        child: securityIndicatorIcon,
+      ),
     );
 
     final myLocation = FloatingActionButton(
       backgroundColor: AppColors.white,
-      onPressed: () => _moveMapCamera(viewModel.userPoint),
+      onPressed: () => _animateMapCamera(viewModel.userPoint)
+          .then((_) => setState(() => _isSticky = true)),
       child: Icon(Icons.my_location, color: AppColors.black),
     );
 
@@ -203,7 +226,11 @@ class MapPageState extends State<MapPage> {
       children: <Widget>[
         securityIndicator,
         playButton,
-        myLocation,
+        Visibility(
+          visible: !_isSticky,
+          replacement: const SizedBox(width: 56.0),
+          child: myLocation,
+        ),
       ],
     );
   }
@@ -218,38 +245,49 @@ class MapPageState extends State<MapPage> {
       ).then((Marker userMarker) => setState(() => markers.add(userMarker)));
     }
     
-    return Container(
-      child: GoogleMap(
-        initialCameraPosition: CameraPosition(
-          target: viewModel.userPoint,
-          zoom: _defaultZoom,
-          bearing: _defaultBearing,
-          tilt: _defaultTilt,
-        ),
-        onMapCreated: (GoogleMapController controller) => _mapController = controller,
-        mapType: MapType.normal,
-        markers: markers,
-        compassEnabled: false,
-        myLocationEnabled: false,
-        myLocationButtonEnabled: false,
-        tiltGesturesEnabled: false,
+    return GoogleMap(
+      initialCameraPosition: CameraPosition(
+        target: viewModel.userPoint,
+        zoom: _defaultZoom,
+        bearing: _defaultBearing,
+        tilt: _defaultTilt,
       ),
+      onMapCreated: (GoogleMapController controller) {
+        _mapController = controller;
+        FlutterCompass.events.listen((double direction) => setState(() => _direction = direction));
+
+        _stickToMapTimer = Timer.periodic(const Duration(milliseconds: 100), (_) {
+          if (!_isSticky) {
+            return;
+          }
+
+          final userPoint = store.state.map.userVehicle.point;
+          _moveMapCamera(userPoint?.toLatLng() ?? MapViewModel.BRISBANE_LATLNG);
+        });
+      },
+      gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>[
+          Factory<OneSequenceGestureRecognizer>(() => EagerGestureRecognizer()),
+        ].toSet(),
+      mapType: MapType.normal,
+      markers: markers,
+      compassEnabled: false,
+      myLocationEnabled: false,
+      myLocationButtonEnabled: false,
+      tiltGesturesEnabled: false,
     );
   }
 
   Future<Marker> _buildVehicleMarker(VehicleDto vehicle, bool isUser) async {
-    final rotation = vehicle.point?.heading ?? 90;
-
     final iconPath = "assets/images/vehicles/";
     final icon = BitmapDescriptor.fromAssetImage(
-      const ImageConfiguration(size: const Size(25.0, 25.0)),
+      const ImageConfiguration(),
       isUser ? "${iconPath}car_blue.png" : "${iconPath}car_red.png",
     );
 
     final marker = Marker(
       markerId: MarkerId(vehicle.id),
       flat: true,
-      rotation: rotation,
+      rotation: _direction,
       position: vehicle.point.toLatLng(),
       icon: await icon,
     );
@@ -257,21 +295,44 @@ class MapPageState extends State<MapPage> {
     return marker;
   }
 
+  Future<void> _animateMapCamera(LatLng point) async {
+    if (_mapController == null || point == null) {
+      return;
+    }
+
+    await _mapController.animateCamera(
+      CameraUpdate.newCameraPosition(
+        CameraPosition(
+          target: point,
+          zoom: _defaultZoom,
+          bearing: _direction,
+          tilt: _defaultTilt,
+        ),
+      ),
+    );
+  }
+
   void _moveMapCamera(LatLng point) {
     if (_mapController == null || point == null) {
       return;
     }
 
-    _mapController.animateCamera(
+    _mapController.moveCamera(
       CameraUpdate.newCameraPosition(
         CameraPosition(
           target: point,
           zoom: _defaultZoom,
-          bearing: _defaultBearing,
+          bearing: _direction,
           tilt: _defaultTilt,
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _stickToMapTimer?.cancel();
+    super.dispose();
   }
 }
 

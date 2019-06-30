@@ -10,7 +10,7 @@ class Geolocator {
 
   Stream<GpsPointDto> getPositionStream() {
     const int interval = 1000;
-    const double distanceFilter = 0;
+    const double distanceFilter = 1;
 
     _controller?.close();
     _controller = StreamController<GpsPointDto>();
