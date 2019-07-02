@@ -30,6 +30,12 @@ class MapViewModel {
   bool get hasUserPoint => _mapState.userVehicle.point != null;
 
   BrokerDto get broker => _settingsState.broker;
+
+  String get address => broker.address;
+  String get port => broker.port;
+  String get username => broker.username;
+  String get password => broker.password;
+  String get clientId => broker.clientId;
 }
 
 class DetailsViewModel {

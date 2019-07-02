@@ -66,5 +66,5 @@ class AppEdges {
 
 class AppBorders {
   static get bezel => RoundedRectangleBorder(borderRadius: bezelGeom);
-  static get bezelGeom => BorderRadius.circular(5.0);
+  static get bezelGeom => BorderRadius.circular(15.0);
 }

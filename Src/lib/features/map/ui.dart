@@ -107,10 +107,10 @@ class MapPageState extends State<MapPage> {
 
     final VoidCallback connectCallback =
       () => store.dispatch(ConnectToMqttBroker(
-          viewModel.broker.address,
-          viewModel.broker.clientId,
-          username: viewModel.broker.username,
-          password: viewModel.broker.password,
+          viewModel.address,
+          viewModel.clientId,
+          username: viewModel.username,
+          password: viewModel.password,
         ));
     final VoidCallback disconnectCallback =
       () => store.dispatch(DisconnectFromMqttBroker());
