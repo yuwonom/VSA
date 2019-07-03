@@ -17,12 +17,29 @@ abstract class SettingsState implements Built<SettingsState, SettingsStateBuilde
         ..username = "qut"
         ..password = "qut")
       .build(),
+    propertiesPublishTopic: "VSA/vehSim",
+    statusPublishTopic: "VSA/vehProp",
+    propertiesRequestPublishTopic: "VSA/request/vehProp/reqs",
+    propertiesRequestSubscribeTopic: "VSA/request/vehProp/return",
+    statusRequestPublishTopic: "VSA/request/nearbyVeh/reqs",
+    statusRequestSubscribeTopic: "VSA/request/nearbyVeh/return",
+    trafficRequestPublishTopic: "VSA/traffic/nearby/reqs",
+    trafficRequestSubscribeTopic: "VSA/traffic/nearby/return",
     isBusy: false,
   );
 
   SettingsState._();
 
   BrokerDto get broker;
+
+  String get propertiesPublishTopic;
+  String get statusPublishTopic;
+  String get propertiesRequestPublishTopic;
+  String get propertiesRequestSubscribeTopic;
+  String get statusRequestPublishTopic;
+  String get statusRequestSubscribeTopic;
+  String get trafficRequestPublishTopic;
+  String get trafficRequestSubscribeTopic;
 
   bool get isBusy;
   @nullable

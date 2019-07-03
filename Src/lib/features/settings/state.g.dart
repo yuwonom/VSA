@@ -10,6 +10,22 @@ class _$SettingsState extends SettingsState {
   @override
   final BrokerDto broker;
   @override
+  final String propertiesPublishTopic;
+  @override
+  final String statusPublishTopic;
+  @override
+  final String propertiesRequestPublishTopic;
+  @override
+  final String propertiesRequestSubscribeTopic;
+  @override
+  final String statusRequestPublishTopic;
+  @override
+  final String statusRequestSubscribeTopic;
+  @override
+  final String trafficRequestPublishTopic;
+  @override
+  final String trafficRequestSubscribeTopic;
+  @override
   final bool isBusy;
   @override
   final ActionException exception;
@@ -17,9 +33,52 @@ class _$SettingsState extends SettingsState {
   factory _$SettingsState([void updates(SettingsStateBuilder b)]) =>
       (new SettingsStateBuilder()..update(updates)).build();
 
-  _$SettingsState._({this.broker, this.isBusy, this.exception}) : super._() {
+  _$SettingsState._(
+      {this.broker,
+      this.propertiesPublishTopic,
+      this.statusPublishTopic,
+      this.propertiesRequestPublishTopic,
+      this.propertiesRequestSubscribeTopic,
+      this.statusRequestPublishTopic,
+      this.statusRequestSubscribeTopic,
+      this.trafficRequestPublishTopic,
+      this.trafficRequestSubscribeTopic,
+      this.isBusy,
+      this.exception})
+      : super._() {
     if (broker == null) {
       throw new BuiltValueNullFieldError('SettingsState', 'broker');
+    }
+    if (propertiesPublishTopic == null) {
+      throw new BuiltValueNullFieldError(
+          'SettingsState', 'propertiesPublishTopic');
+    }
+    if (statusPublishTopic == null) {
+      throw new BuiltValueNullFieldError('SettingsState', 'statusPublishTopic');
+    }
+    if (propertiesRequestPublishTopic == null) {
+      throw new BuiltValueNullFieldError(
+          'SettingsState', 'propertiesRequestPublishTopic');
+    }
+    if (propertiesRequestSubscribeTopic == null) {
+      throw new BuiltValueNullFieldError(
+          'SettingsState', 'propertiesRequestSubscribeTopic');
+    }
+    if (statusRequestPublishTopic == null) {
+      throw new BuiltValueNullFieldError(
+          'SettingsState', 'statusRequestPublishTopic');
+    }
+    if (statusRequestSubscribeTopic == null) {
+      throw new BuiltValueNullFieldError(
+          'SettingsState', 'statusRequestSubscribeTopic');
+    }
+    if (trafficRequestPublishTopic == null) {
+      throw new BuiltValueNullFieldError(
+          'SettingsState', 'trafficRequestPublishTopic');
+    }
+    if (trafficRequestSubscribeTopic == null) {
+      throw new BuiltValueNullFieldError(
+          'SettingsState', 'trafficRequestSubscribeTopic');
     }
     if (isBusy == null) {
       throw new BuiltValueNullFieldError('SettingsState', 'isBusy');
@@ -38,20 +97,56 @@ class _$SettingsState extends SettingsState {
     if (identical(other, this)) return true;
     return other is SettingsState &&
         broker == other.broker &&
+        propertiesPublishTopic == other.propertiesPublishTopic &&
+        statusPublishTopic == other.statusPublishTopic &&
+        propertiesRequestPublishTopic == other.propertiesRequestPublishTopic &&
+        propertiesRequestSubscribeTopic ==
+            other.propertiesRequestSubscribeTopic &&
+        statusRequestPublishTopic == other.statusRequestPublishTopic &&
+        statusRequestSubscribeTopic == other.statusRequestSubscribeTopic &&
+        trafficRequestPublishTopic == other.trafficRequestPublishTopic &&
+        trafficRequestSubscribeTopic == other.trafficRequestSubscribeTopic &&
         isBusy == other.isBusy &&
         exception == other.exception;
   }
 
   @override
   int get hashCode {
-    return $jf(
-        $jc($jc($jc(0, broker.hashCode), isBusy.hashCode), exception.hashCode));
+    return $jf($jc(
+        $jc(
+            $jc(
+                $jc(
+                    $jc(
+                        $jc(
+                            $jc(
+                                $jc(
+                                    $jc(
+                                        $jc($jc(0, broker.hashCode),
+                                            propertiesPublishTopic.hashCode),
+                                        statusPublishTopic.hashCode),
+                                    propertiesRequestPublishTopic.hashCode),
+                                propertiesRequestSubscribeTopic.hashCode),
+                            statusRequestPublishTopic.hashCode),
+                        statusRequestSubscribeTopic.hashCode),
+                    trafficRequestPublishTopic.hashCode),
+                trafficRequestSubscribeTopic.hashCode),
+            isBusy.hashCode),
+        exception.hashCode));
   }
 
   @override
   String toString() {
     return (newBuiltValueToStringHelper('SettingsState')
           ..add('broker', broker)
+          ..add('propertiesPublishTopic', propertiesPublishTopic)
+          ..add('statusPublishTopic', statusPublishTopic)
+          ..add('propertiesRequestPublishTopic', propertiesRequestPublishTopic)
+          ..add('propertiesRequestSubscribeTopic',
+              propertiesRequestSubscribeTopic)
+          ..add('statusRequestPublishTopic', statusRequestPublishTopic)
+          ..add('statusRequestSubscribeTopic', statusRequestSubscribeTopic)
+          ..add('trafficRequestPublishTopic', trafficRequestPublishTopic)
+          ..add('trafficRequestSubscribeTopic', trafficRequestSubscribeTopic)
           ..add('isBusy', isBusy)
           ..add('exception', exception))
         .toString();
@@ -66,6 +161,49 @@ class SettingsStateBuilder
   BrokerDtoBuilder get broker => _$this._broker ??= new BrokerDtoBuilder();
   set broker(BrokerDtoBuilder broker) => _$this._broker = broker;
 
+  String _propertiesPublishTopic;
+  String get propertiesPublishTopic => _$this._propertiesPublishTopic;
+  set propertiesPublishTopic(String propertiesPublishTopic) =>
+      _$this._propertiesPublishTopic = propertiesPublishTopic;
+
+  String _statusPublishTopic;
+  String get statusPublishTopic => _$this._statusPublishTopic;
+  set statusPublishTopic(String statusPublishTopic) =>
+      _$this._statusPublishTopic = statusPublishTopic;
+
+  String _propertiesRequestPublishTopic;
+  String get propertiesRequestPublishTopic =>
+      _$this._propertiesRequestPublishTopic;
+  set propertiesRequestPublishTopic(String propertiesRequestPublishTopic) =>
+      _$this._propertiesRequestPublishTopic = propertiesRequestPublishTopic;
+
+  String _propertiesRequestSubscribeTopic;
+  String get propertiesRequestSubscribeTopic =>
+      _$this._propertiesRequestSubscribeTopic;
+  set propertiesRequestSubscribeTopic(String propertiesRequestSubscribeTopic) =>
+      _$this._propertiesRequestSubscribeTopic = propertiesRequestSubscribeTopic;
+
+  String _statusRequestPublishTopic;
+  String get statusRequestPublishTopic => _$this._statusRequestPublishTopic;
+  set statusRequestPublishTopic(String statusRequestPublishTopic) =>
+      _$this._statusRequestPublishTopic = statusRequestPublishTopic;
+
+  String _statusRequestSubscribeTopic;
+  String get statusRequestSubscribeTopic => _$this._statusRequestSubscribeTopic;
+  set statusRequestSubscribeTopic(String statusRequestSubscribeTopic) =>
+      _$this._statusRequestSubscribeTopic = statusRequestSubscribeTopic;
+
+  String _trafficRequestPublishTopic;
+  String get trafficRequestPublishTopic => _$this._trafficRequestPublishTopic;
+  set trafficRequestPublishTopic(String trafficRequestPublishTopic) =>
+      _$this._trafficRequestPublishTopic = trafficRequestPublishTopic;
+
+  String _trafficRequestSubscribeTopic;
+  String get trafficRequestSubscribeTopic =>
+      _$this._trafficRequestSubscribeTopic;
+  set trafficRequestSubscribeTopic(String trafficRequestSubscribeTopic) =>
+      _$this._trafficRequestSubscribeTopic = trafficRequestSubscribeTopic;
+
   bool _isBusy;
   bool get isBusy => _$this._isBusy;
   set isBusy(bool isBusy) => _$this._isBusy = isBusy;
@@ -79,6 +217,14 @@ class SettingsStateBuilder
   SettingsStateBuilder get _$this {
     if (_$v != null) {
       _broker = _$v.broker?.toBuilder();
+      _propertiesPublishTopic = _$v.propertiesPublishTopic;
+      _statusPublishTopic = _$v.statusPublishTopic;
+      _propertiesRequestPublishTopic = _$v.propertiesRequestPublishTopic;
+      _propertiesRequestSubscribeTopic = _$v.propertiesRequestSubscribeTopic;
+      _statusRequestPublishTopic = _$v.statusRequestPublishTopic;
+      _statusRequestSubscribeTopic = _$v.statusRequestSubscribeTopic;
+      _trafficRequestPublishTopic = _$v.trafficRequestPublishTopic;
+      _trafficRequestSubscribeTopic = _$v.trafficRequestSubscribeTopic;
       _isBusy = _$v.isBusy;
       _exception = _$v.exception;
       _$v = null;
@@ -105,7 +251,17 @@ class SettingsStateBuilder
     try {
       _$result = _$v ??
           new _$SettingsState._(
-              broker: broker.build(), isBusy: isBusy, exception: exception);
+              broker: broker.build(),
+              propertiesPublishTopic: propertiesPublishTopic,
+              statusPublishTopic: statusPublishTopic,
+              propertiesRequestPublishTopic: propertiesRequestPublishTopic,
+              propertiesRequestSubscribeTopic: propertiesRequestSubscribeTopic,
+              statusRequestPublishTopic: statusRequestPublishTopic,
+              statusRequestSubscribeTopic: statusRequestSubscribeTopic,
+              trafficRequestPublishTopic: trafficRequestPublishTopic,
+              trafficRequestSubscribeTopic: trafficRequestSubscribeTopic,
+              isBusy: isBusy,
+              exception: exception);
     } catch (_) {
       String _$failedField;
       try {

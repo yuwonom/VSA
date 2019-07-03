@@ -10,6 +10,14 @@ final Reducer<SettingsState> settingsStateReducer = combineReducers([
     TypedReducer<SettingsState, UpdateBrokerUsername>(_updateBrokerUsernameReducer),
     TypedReducer<SettingsState, UpdateBrokerPassword>(_updateBrokerPasswordReducer),
     TypedReducer<SettingsState, UpdateBrokerClientId>(_updateBrokerClientIdReducer),
+    TypedReducer<SettingsState, UpdatePropertiesPublishTopic>(_updatePropertiesPublishTopicReducer),
+    TypedReducer<SettingsState, UpdateStatusPublishTopic>(_updateStatusPublishTopicReducer),
+    TypedReducer<SettingsState, UpdatePropertiesRequestPublishTopic>(_updatePropertiesRequestPublishTopicReducer),
+    TypedReducer<SettingsState, UpdatePropertiesRequestSubscribeTopic>(_updatePropertiesRequestSubscribeTopicReducer),
+    TypedReducer<SettingsState, UpdateStatusRequestPublishTopic>(_updateStatusRequestPublishTopicReducer),
+    TypedReducer<SettingsState, UpdateStatusRequestSubscribeTopic>(_updateStatusRequestSubscribeTopicReducer),
+    TypedReducer<SettingsState, UpdateTrafficRequestPublishTopic>(_updateTrafficRequestPublishTopicReducer),
+    TypedReducer<SettingsState, UpdateTrafficRequestSubscribeTopic>(_updateTrafficRequestSubscribeTopicReducer),
   ]);
 
 SettingsState _updateBrokerAddressReducer(SettingsState state, UpdateBrokerAddress action) => state.rebuild((b) => b
@@ -26,3 +34,27 @@ SettingsState _updateBrokerPasswordReducer(SettingsState state, UpdateBrokerPass
   
 SettingsState _updateBrokerClientIdReducer(SettingsState state, UpdateBrokerClientId action) => state.rebuild((b) => b
   ..broker.clientId = action.value);
+
+SettingsState _updatePropertiesPublishTopicReducer(SettingsState state, UpdatePropertiesPublishTopic action) => state.rebuild((b) => b
+  ..propertiesPublishTopic = action.value);
+
+SettingsState _updateStatusPublishTopicReducer(SettingsState state, UpdateStatusPublishTopic action) => state.rebuild((b) => b
+  ..statusPublishTopic = action.value);
+
+SettingsState _updatePropertiesRequestPublishTopicReducer(SettingsState state, UpdatePropertiesRequestPublishTopic action) => state.rebuild((b) => b
+  ..propertiesRequestPublishTopic = action.value);
+
+SettingsState _updatePropertiesRequestSubscribeTopicReducer(SettingsState state, UpdatePropertiesRequestSubscribeTopic action) => state.rebuild((b) => b
+  ..propertiesRequestSubscribeTopic = action.value);
+
+SettingsState _updateStatusRequestPublishTopicReducer(SettingsState state, UpdateStatusRequestPublishTopic action) => state.rebuild((b) => b
+  ..statusRequestPublishTopic = action.value);
+
+SettingsState _updateStatusRequestSubscribeTopicReducer(SettingsState state, UpdateStatusRequestSubscribeTopic action) => state.rebuild((b) => b
+  ..statusRequestSubscribeTopic = action.value);
+
+SettingsState _updateTrafficRequestPublishTopicReducer(SettingsState state, UpdateTrafficRequestPublishTopic action) => state.rebuild((b) => b
+  ..trafficRequestPublishTopic = action.value);
+
+SettingsState _updateTrafficRequestSubscribeTopicReducer(SettingsState state, UpdateTrafficRequestSubscribeTopic action) => state.rebuild((b) => b
+  ..trafficRequestSubscribeTopic = action.value);

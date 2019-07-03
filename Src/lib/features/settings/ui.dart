@@ -1,6 +1,7 @@
 /// Authored by `@yuwonom (Michael Yuwono)`
 
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
 import 'package:vsa/features/settings/actions.dart';
@@ -25,11 +26,27 @@ class SettingsPage extends StatelessWidget {
       _buildTile(context, "Identifier", viewModel.clientId, UpdateBrokerClientId),
     ]);
 
+    final vehicleTopicsTileGroup = _buildTileGroup("Vehicle Topics", <Widget>[
+      _buildTile(context, "Publish current properties", viewModel.propertiesPublishTopic, UpdatePropertiesPublishTopic),
+      _buildTile(context, "Publish current status", viewModel.statusPublishTopic, UpdateStatusPublishTopic),
+      _buildTile(context, "Request vehicle properties", viewModel.propertiesRequestPublishTopic, UpdatePropertiesRequestPublishTopic),
+      _buildTile(context, "Get vehicle properties", viewModel.propertiesRequestSubscribeTopic, UpdatePropertiesRequestSubscribeTopic),
+      _buildTile(context, "Request nearby vehicles", viewModel.statusRequestPublishTopic, UpdateStatusRequestPublishTopic),
+      _buildTile(context, "Get nearby vehicles", viewModel.statusRequestSubscribeTopic, UpdateStatusRequestSubscribeTopic),
+    ]);
+
+    final trafficTopicsTileGroup = _buildTileGroup("Traffic Topics", <Widget>[
+      _buildTile(context, "Request traffic", viewModel.trafficRequestPublishTopic, UpdateTrafficRequestPublishTopic),
+      _buildTile(context, "Get traffic", viewModel.trafficRequestSubscribeTopic, UpdateTrafficRequestSubscribeTopic),
+    ]);
+
     final body = SingleChildScrollView(
       padding: AppEdges.mediumAll,
       child: Column(
         children: <Widget>[
           brokerTileGroup,
+          vehicleTopicsTileGroup,
+          trafficTopicsTileGroup,
         ],
       ),
     );
@@ -49,8 +66,19 @@ class SettingsPage extends StatelessWidget {
   }
 
   Widget _buildTile(BuildContext context, String title, String value, Type actionType, {bool obscureText = false}) => ListTile(
-      title: Text(title, style: AppTextStyles.body1.copyWith(color: AppColors.black)),
-      trailing: Text(obscureText ? "•" * value.length : value, style: AppTextStyles.body1.copyWith(color: AppColors.darkGray)),
+      title: Text(
+        title,
+        style: AppTextStyles.body1.copyWith(color: AppColors.black),
+        overflow: TextOverflow.ellipsis,
+        softWrap: true,
+      ),
+      subtitle: Text(
+        obscureText ? "•" * value.length : value,
+        style: AppTextStyles.body1.copyWith(color: AppColors.darkGray),
+        overflow: TextOverflow.ellipsis,
+        softWrap: true,
+        maxLines: 2,
+      ),
       onTap: () => showDialog(context: context, builder: (_) => SettingsDialog(title, value, actionType, obscureText: obscureText)),
     );
 
@@ -82,13 +110,16 @@ class SettingsPage extends StatelessWidget {
       ),
     );
 
-    final tileGroup = Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: <Widget>[
-        title,
-        group,
-      ],
+    final tileGroup = Padding(
+      padding: const EdgeInsets.only(bottom: AppLengths.small),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          title,
+          group,
+        ],
+      ),
     );
 
     return tileGroup;
@@ -208,9 +239,25 @@ class SettingsDialogState extends State<SettingsDialog> {
         return UpdateBrokerPassword(value);
       case UpdateBrokerClientId:
         return UpdateBrokerClientId(value);
-      default:
-        return null;
+      case UpdatePropertiesPublishTopic:
+        return UpdatePropertiesPublishTopic(value);
+      case UpdateStatusPublishTopic:
+        return UpdateStatusPublishTopic(value);
+      case UpdatePropertiesRequestPublishTopic:
+        return UpdatePropertiesRequestPublishTopic(value);
+      case UpdatePropertiesRequestSubscribeTopic:
+        return UpdatePropertiesRequestSubscribeTopic(value);
+      case UpdateStatusRequestPublishTopic:
+        return UpdateStatusRequestPublishTopic(value);
+      case UpdateStatusRequestSubscribeTopic:
+        return UpdateStatusRequestSubscribeTopic(value);
+      case UpdateTrafficRequestPublishTopic:
+        return UpdateTrafficRequestPublishTopic(value);
+      case UpdateTrafficRequestSubscribeTopic:
+        return UpdateTrafficRequestSubscribeTopic(value);
     }
+
+    assert(false);
   }
 
   @override

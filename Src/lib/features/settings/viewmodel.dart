@@ -13,4 +13,13 @@ class SettingsViewModel {
   String get username => broker.username;
   String get password => broker.password;
   String get clientId => broker.clientId;
+
+  String get propertiesPublishTopic => _state.propertiesPublishTopic;
+  String get statusPublishTopic => _state.statusPublishTopic;
+  String get propertiesRequestPublishTopic => _state.propertiesRequestPublishTopic;
+  String get propertiesRequestSubscribeTopic => _state.propertiesRequestSubscribeTopic;
+  String get statusRequestPublishTopic => _state.statusRequestPublishTopic;
+  String get statusRequestSubscribeTopic => _state.statusRequestSubscribeTopic;
+  String get trafficRequestPublishTopic => _state.trafficRequestPublishTopic;
+  String get trafficRequestSubscribeTopic => _state.trafficRequestSubscribeTopic;
 }
