@@ -11,6 +11,12 @@ import 'package:vsa/utility/gps_helper.dart';
 class MapViewModel {
   static const LatLng BRISBANE_LATLNG = const LatLng(-27.4698, 153.0251);
   
+  static const int USER_VEHICLE_ZINDEX = 5;
+  static const int OTHER_VEHICLE_ZINDEX = 4;
+  static const int USER_ACCURACY_ZINDEX = 3;
+  static const int OTHER_ACCURACY_ZINDEX = 2;
+  static const int TRAFFIC_ZINDEX = 1;
+
   final MapState _mapState;
   final SettingsState _settingsState;
 

@@ -24,7 +24,7 @@ class MapPage extends StatefulWidget {
 }
 
 class MapPageState extends State<MapPage> {
-  final double _defaultZoom = 22;
+  final double _defaultZoom = 18;
   final double _defaultBearing = 0;
   final double _defaultTilt = 45;
 
@@ -222,6 +222,7 @@ class MapPageState extends State<MapPage> {
       heroTag: "myLocationButton",
       backgroundColor: AppColors.white,
       onPressed: () => _animateMapCamera(viewModel.userPoint)
+          .then((_) => Future.delayed(const Duration(seconds: 1)))
           .then((_) => setState(() => _isSticky = true)),
       child: Icon(Icons.my_location, color: AppColors.black),
     );
@@ -243,12 +244,16 @@ class MapPageState extends State<MapPage> {
 
   Widget _buildMap(Store<AppState> store, MapViewModel viewModel) {
     final markers = Set<Marker>();
+    final circles = Set<Circle>();
 
     if (viewModel.hasUserPoint) {
       _buildVehicleMarker(
         viewModel.userVehicle,
         true,
       ).then((Marker userMarker) => setState(() => markers.add(userMarker)));
+      
+      final userAccuracyCircle = _buildAccuracyCircle(viewModel.userVehicle, true);
+      circles.add(userAccuracyCircle);
     }
     
     return GoogleMap(
@@ -263,12 +268,13 @@ class MapPageState extends State<MapPage> {
         FlutterCompass.events.listen((double direction) => setState(() => _direction = direction));
 
         _stickToMapTimer = Timer.periodic(const Duration(milliseconds: 100), (_) {
-          if (!_isSticky || !viewModel.hasUserPoint) {
+          final userPoint = store.state.map.userVehicle.point;
+
+          if (!_isSticky || userPoint == null) {
             return;
           }
 
-          final userPoint = store.state.map.userVehicle.point;
-          _moveMapCamera(userPoint?.toLatLng() ?? MapViewModel.BRISBANE_LATLNG);
+          _moveMapCamera(userPoint.toLatLng());
         });
       },
       gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>[
@@ -276,6 +282,7 @@ class MapPageState extends State<MapPage> {
         ].toSet(),
       mapType: MapType.normal,
       markers: markers,
+      circles: circles,
       compassEnabled: false,
       myLocationEnabled: false,
       myLocationButtonEnabled: false,
@@ -296,10 +303,26 @@ class MapPageState extends State<MapPage> {
       rotation: _direction,
       position: vehicle.point.toLatLng(),
       icon: await icon,
+      anchor: const Offset(0.5, 0.5),
+      zIndex: isUser
+        ? MapViewModel.USER_ACCURACY_ZINDEX.toDouble()
+        : MapViewModel.OTHER_ACCURACY_ZINDEX.toDouble(),
     );
 
     return marker;
   }
+
+  Circle _buildAccuracyCircle(VehicleDto vehicle, bool isUser) => Circle(
+      circleId: CircleId("Accuracy_${vehicle.id}"),
+      center: vehicle.point.toLatLng(),
+      radius: vehicle.point.accuracy,
+      fillColor: isUser ? AppColors.blue.withAlpha(100) : AppColors.red.withAlpha(100),
+      strokeWidth: 1,
+      strokeColor: AppColors.white,
+      zIndex: isUser
+        ? MapViewModel.USER_ACCURACY_ZINDEX
+        : MapViewModel.OTHER_ACCURACY_ZINDEX,
+    );
 
   Future<void> _animateMapCamera(LatLng point) async {
     if (_mapController == null || point == null) {
