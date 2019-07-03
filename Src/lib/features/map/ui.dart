@@ -82,7 +82,9 @@ class MapPageState extends State<MapPage> {
       color: AppColors.black,
       iconSize: 20.0,
       tooltip: "Settings",
-      onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => SettingsPage())),
+      onPressed: viewModel.connectionState == MqttConnectionState.disconnected
+        ? () => Navigator.push(context, MaterialPageRoute(builder: (_) => SettingsPage()))
+        : null,
     );
 
     final appBar = AppBar(
