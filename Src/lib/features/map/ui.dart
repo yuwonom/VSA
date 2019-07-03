@@ -263,7 +263,7 @@ class MapPageState extends State<MapPage> {
         FlutterCompass.events.listen((double direction) => setState(() => _direction = direction));
 
         _stickToMapTimer = Timer.periodic(const Duration(milliseconds: 100), (_) {
-          if (!_isSticky) {
+          if (!_isSticky || !viewModel.hasUserPoint) {
             return;
           }
 
@@ -455,7 +455,7 @@ class DetailsBarState extends State<DetailsBar> with TickerProviderStateMixin {
         Column(
           children: <Widget>[
             _createItem(widget.viewModel.distanceText, "Distance (km)"),
-            _createItem("${widget.viewModel.accuracyText}%", "Accuracy"),
+            _createItem("${widget.viewModel.accuracyText} m", "Accuracy"),
           ],
         ),
       ],
