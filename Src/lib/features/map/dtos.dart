@@ -29,13 +29,15 @@ abstract class VehicleDto implements Built<VehicleDto, VehicleDtoBuilder> {
   factory VehicleDto([void updates(VehicleDtoBuilder b)]) = _$VehicleDto;
 
   factory VehicleDto.initial() => _$VehicleDto._(
-    id: "",
+    id: "VSA1",
+    name: "VSA Autocar",
     dimension: VehicleDimensionDto.none(),
   );
 
   VehicleDto._();
 
   String get id;
+  String get name;
   VehicleDimensionDto get dimension;
   @nullable
   GpsPointDto get point;
@@ -63,6 +65,9 @@ abstract class VehicleDimensionDto implements Built<VehicleDimensionDto, Vehicle
   double get bottom;
 
   static Serializer<VehicleDimensionDto> get serializer => _$vehicleDimensionDtoSerializer;
+
+  @override
+  String toString() => "$left, $top, $right, $bottom";
 }
 
 class SecurityLevelDto extends EnumClass {

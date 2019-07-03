@@ -143,6 +143,8 @@ class _$VehicleDtoSerializer implements StructuredSerializer<VehicleDto> {
     final result = <Object>[
       'id',
       serializers.serialize(object.id, specifiedType: const FullType(String)),
+      'name',
+      serializers.serialize(object.name, specifiedType: const FullType(String)),
       'dimension',
       serializers.serialize(object.dimension,
           specifiedType: const FullType(VehicleDimensionDto)),
@@ -170,6 +172,10 @@ class _$VehicleDtoSerializer implements StructuredSerializer<VehicleDto> {
       switch (key) {
         case 'id':
           result.id = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String;
+          break;
+        case 'name':
+          result.name = serializers.deserialize(value,
               specifiedType: const FullType(String)) as String;
           break;
         case 'dimension':
@@ -448,6 +454,8 @@ class _$VehicleDto extends VehicleDto {
   @override
   final String id;
   @override
+  final String name;
+  @override
   final VehicleDimensionDto dimension;
   @override
   final GpsPointDto point;
@@ -455,9 +463,12 @@ class _$VehicleDto extends VehicleDto {
   factory _$VehicleDto([void updates(VehicleDtoBuilder b)]) =>
       (new VehicleDtoBuilder()..update(updates)).build();
 
-  _$VehicleDto._({this.id, this.dimension, this.point}) : super._() {
+  _$VehicleDto._({this.id, this.name, this.dimension, this.point}) : super._() {
     if (id == null) {
       throw new BuiltValueNullFieldError('VehicleDto', 'id');
+    }
+    if (name == null) {
+      throw new BuiltValueNullFieldError('VehicleDto', 'name');
     }
     if (dimension == null) {
       throw new BuiltValueNullFieldError('VehicleDto', 'dimension');
@@ -476,20 +487,23 @@ class _$VehicleDto extends VehicleDto {
     if (identical(other, this)) return true;
     return other is VehicleDto &&
         id == other.id &&
+        name == other.name &&
         dimension == other.dimension &&
         point == other.point;
   }
 
   @override
   int get hashCode {
-    return $jf(
-        $jc($jc($jc(0, id.hashCode), dimension.hashCode), point.hashCode));
+    return $jf($jc(
+        $jc($jc($jc(0, id.hashCode), name.hashCode), dimension.hashCode),
+        point.hashCode));
   }
 
   @override
   String toString() {
     return (newBuiltValueToStringHelper('VehicleDto')
           ..add('id', id)
+          ..add('name', name)
           ..add('dimension', dimension)
           ..add('point', point))
         .toString();
@@ -502,6 +516,10 @@ class VehicleDtoBuilder implements Builder<VehicleDto, VehicleDtoBuilder> {
   String _id;
   String get id => _$this._id;
   set id(String id) => _$this._id = id;
+
+  String _name;
+  String get name => _$this._name;
+  set name(String name) => _$this._name = name;
 
   VehicleDimensionDtoBuilder _dimension;
   VehicleDimensionDtoBuilder get dimension =>
@@ -518,6 +536,7 @@ class VehicleDtoBuilder implements Builder<VehicleDto, VehicleDtoBuilder> {
   VehicleDtoBuilder get _$this {
     if (_$v != null) {
       _id = _$v.id;
+      _name = _$v.name;
       _dimension = _$v.dimension?.toBuilder();
       _point = _$v.point?.toBuilder();
       _$v = null;
@@ -544,7 +563,10 @@ class VehicleDtoBuilder implements Builder<VehicleDto, VehicleDtoBuilder> {
     try {
       _$result = _$v ??
           new _$VehicleDto._(
-              id: id, dimension: dimension.build(), point: _point?.build());
+              id: id,
+              name: name,
+              dimension: dimension.build(),
+              point: _point?.build());
     } catch (_) {
       String _$failedField;
       try {
@@ -615,16 +637,6 @@ class _$VehicleDimensionDto extends VehicleDimensionDto {
     return $jf($jc(
         $jc($jc($jc(0, left.hashCode), top.hashCode), right.hashCode),
         bottom.hashCode));
-  }
-
-  @override
-  String toString() {
-    return (newBuiltValueToStringHelper('VehicleDimensionDto')
-          ..add('left', left)
-          ..add('top', top)
-          ..add('right', right)
-          ..add('bottom', bottom))
-        .toString();
   }
 }
 

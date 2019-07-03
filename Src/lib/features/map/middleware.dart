@@ -1,5 +1,7 @@
 /// Authored by `@yuwonom (Michael Yuwono)`
 
+import 'dart:async';
+
 import 'package:flutter/widgets.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:redux/redux.dart';
@@ -50,6 +52,7 @@ class MqttIntegration {
         TypedMiddleware<AppState, DisconnectFromMqttBroker>(_handleDisconnectFromMqttBroker),
         TypedMiddleware<AppState, PublishMessageToMqttBroker>(_handlePublishMessageToMqttBroker),
         TypedMiddleware<AppState, ListenToMqttBroker>(_listenToMqttBroker),
+        TypedMiddleware<AppState, RecordUserGpsPoint>(_handleRecordUserGpsPoint),
       ];
 
   void _handleConnectToMqttBroker(Store<AppState> store, ConnectToMqttBroker action, NextDispatcher next) {
@@ -72,11 +75,17 @@ class MqttIntegration {
   }
 
   void _handleConnectToMqttBrokerSuccessful(Store<AppState> store, ConnectToMqttBrokerSuccessful action, NextDispatcher next) {
+    final clientId = store.state.settings.broker.clientId;
     api.subscribe([
-      "VSA/request/nearbyVeh/return/autocar1",
-      "VSA/request/vehProp/return/autocar1",
-      "VSA/traffic/nearby/return/autocar1",
+      "${store.state.settings.propertiesRequestSubscribeTopic}/$clientId",
+      "${store.state.settings.statusRequestSubscribeTopic}/$clientId",
+      "${store.state.settings.trafficRequestSubscribeTopic}/$clientId",
     ]);
+    
+    final vehicle = store.state.map.userVehicle;
+    final topic = "${store.state.settings.propertiesPublishTopic}/$clientId";
+    final message = "${vehicle.id}, ${vehicle.name}, ${vehicle.dimension.toString()}";
+    store.dispatch(PublishMessageToMqttBroker(topic, message));
     
     store.dispatch(ListenToMqttBroker());
     next(action);
@@ -116,6 +125,20 @@ class MqttIntegration {
     }
 
     api.getDataStream().listen(_handlePublishMessage);
+    next(action);
+  }
+
+  void _handleRecordUserGpsPoint(Store<AppState> store, RecordUserGpsPoint action, NextDispatcher next) {
+    final clientId = store.state.settings.broker.clientId;
+    final topic = "${store.state.settings.statusPublishTopic}/$clientId";
+    final message = "${store.state.map.userVehicle.id}, " + 
+      "${action.point.longitude}, " +
+      "${action.point.latitude}, " +
+      "${action.point.speed}, " +
+      "${action.point.accuracy}, " +
+      "${action.point.heading}";
+
+    store.dispatch(PublishMessageToMqttBroker(topic, message));
     next(action);
   }
 }

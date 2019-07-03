@@ -80,7 +80,7 @@ class ListenToMqttBroker {
 class PublishMessageToMqttBroker {
   PublishMessageToMqttBroker(
     this.topic,
-    this.message
+    this.message,
   ) : assert (topic != null && message != null);
 
   final String topic;
