@@ -1,3 +1,5 @@
+/// Authored by `@yuwonom (Michael Yuwono)`
+
 import 'package:vsa/features/settings/dtos.dart';
 import 'package:vsa/features/settings/state.dart';
 
