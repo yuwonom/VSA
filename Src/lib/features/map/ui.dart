@@ -248,13 +248,21 @@ class MapPageState extends State<MapPage> {
     final circles = Set<Circle>();
 
     if (viewModel.hasUserPoint) {
-      _buildVehicleMarker(
-        viewModel.userVehicle,
-        true,
-      ).then((Marker userMarker) => setState(() => markers.add(userMarker)));
+      _buildVehicleMarker(viewModel.userVehicle, true)
+        ..then((Marker marker) => setState(() => markers.add(marker)));
       
       final userAccuracyCircle = _buildAccuracyCircle(viewModel.userVehicle, true);
       circles.add(userAccuracyCircle);
+    }
+
+    if (viewModel.hasOtherVehicles) {
+      viewModel.otherVehicles.values.forEach((VehicleDto other) {
+        _buildVehicleMarker(other, false)
+          ..then((Marker marker) => setState(() => markers.add(marker)));
+
+        final otherAccuracyCircle = _buildAccuracyCircle(other, false);
+        circles.add(otherAccuracyCircle);
+      });
     }
     
     return GoogleMap(

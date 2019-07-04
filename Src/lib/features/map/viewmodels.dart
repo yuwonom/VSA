@@ -1,5 +1,6 @@
 /// Authored by `@yuwonom (Michael Yuwono)`
 
+import 'package:built_collection/built_collection.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:vsa/features/map/dtos.dart';
@@ -35,6 +36,10 @@ class MapViewModel {
 
   bool get hasUserPoint => _mapState.userVehicle.point != null;
 
+  BuiltMap<String, VehicleDto> get otherVehicles => _mapState.otherVehicles;
+  
+  bool get hasOtherVehicles => otherVehicles.isNotEmpty;
+
   BrokerDto get broker => _settingsState.broker;
 
   String get address => broker.address;
@@ -63,7 +68,7 @@ class DetailsViewModel {
     }
 
     return _state.recordedPoints.isNotEmpty
-      ? GpsHelper.averageSpeed(_state.recordedPoints).toStringAsFixed(2)
+      ? GpsHelper.averageSpeed(_state.recordedPoints.asList()).toStringAsFixed(2)
       : "0.0";
   }
 
@@ -73,7 +78,7 @@ class DetailsViewModel {
     }
 
     return _state.recordedPoints.isNotEmpty
-      ? GpsHelper.totalDistance(_state.recordedPoints).toStringAsFixed(2)
+      ? GpsHelper.totalDistance(_state.recordedPoints.asList()).toStringAsFixed(2)
       : "0.0";
   }
 

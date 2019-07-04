@@ -38,4 +38,5 @@ MapState _connectToMqttBrokerFailedReducer(MapState state, ConnectToMqttBrokerFa
 MapState _disconnectFromMqttBrokerReducer(MapState state, DisconnectFromMqttBroker action) => state.rebuild((b) => b
   ..connectionState = MqttConnectionState.disconnected
   ..startTime = null
-  ..recordedPoints.clear());
+  ..recordedPoints.clear()
+  ..otherVehicles.clear());
