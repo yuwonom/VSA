@@ -86,6 +86,7 @@ class MqttIntegration {
     final topic = "${store.state.settings.propertiesPublishTopic}/$clientId";
     final message = "${vehicle.id}, ${vehicle.name}, ${vehicle.dimension.toString()}";
     store.dispatch(PublishMessageToMqttBroker(topic, message));
+    store.dispatch(RecordUserGpsPoint(vehicle.point));
     
     store.dispatch(ListenToMqttBroker());
     next(action);
