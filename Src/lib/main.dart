@@ -13,8 +13,8 @@ void main() {
     DeviceOrientation.portraitDown,
   ]);
   
-  final geolocator = Geolocator();
-  final mqttApi = MqttApi();
+  final geolocator = Geolocator.instance;
+  final mqttApi = MqttApi.instance;
 
   final applicationInformation = createApplicationInformation(geolocator, mqttApi);
 

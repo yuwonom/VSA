@@ -5,8 +5,18 @@ import 'dart:async';
 import 'package:mqtt_client/mqtt_client.dart';
 
 class MqttApi {
+  static MqttApi _instance;
+  static MqttApi get instance {
+    if (_instance == null) {
+      _instance = MqttApi._();
+    }
+    return _instance;
+  }
+
   static MqttClient _client;
   static StreamController<MqttMessage> _controller;
+
+  const MqttApi._();
 
   Future<bool> connect(String server, String clientId, String username, String password) async {
     // Disconnect any ongoing connection

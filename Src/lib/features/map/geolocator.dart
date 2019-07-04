@@ -5,8 +5,18 @@ import 'dart:async';
 import 'package:location/location.dart';
 import 'package:vsa/features/map/dtos.dart';
 
-class Geolocator {
+class Geolocator {  
+  static Geolocator _instance;
+  static Geolocator get instance {
+    if (_instance == null) {
+      _instance = Geolocator._();
+    }
+    return _instance;
+  }
+
   static StreamController<GpsPointDto> _controller;
+
+  const Geolocator._();
 
   Stream<GpsPointDto> getPositionStream() {
     const int interval = 1000;
