@@ -23,14 +23,8 @@ class LocalGpsIntegration {
   final Geolocator geolocator;
   
   List<Middleware<AppState>> getMiddlewareBindings() => [
-        TypedMiddleware<AppState, ListenToGeolocator>(_listenToGeolocator),
         TypedMiddleware<AppState, UpdateUserGpsPoint>(_handleUpdateUserGpsPoint),
       ];
-
-  void _listenToGeolocator(Store<AppState> store, ListenToGeolocator action, NextDispatcher next) {
-    geolocator.getPositionStream().listen((point) => store.dispatch(UpdateUserGpsPoint(point)));
-    next(action);
-  }
 
   void _handleUpdateUserGpsPoint(Store<AppState> store, UpdateUserGpsPoint action, NextDispatcher next) {
     if (store.state.map.connectionState == MqttConnectionState.connected) {

@@ -18,7 +18,7 @@ class Geolocator {
 
   const Geolocator._();
 
-  Stream<GpsPointDto> getPositionStream() {
+  Stream<GpsPointDto> get events {
     const int interval = 1000;
     const double distanceFilter = 1;
 

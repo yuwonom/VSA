@@ -13,6 +13,7 @@ import 'package:mqtt_client/mqtt_client.dart';
 import 'package:redux/redux.dart';
 import 'package:vsa/features/map/actions.dart';
 import 'package:vsa/features/map/dtos.dart';
+import 'package:vsa/features/map/geolocator.dart';
 import 'package:vsa/features/map/viewmodels.dart';
 import 'package:vsa/features/settings/ui.dart';
 import 'package:vsa/state.dart';
@@ -31,8 +32,6 @@ class MapPageState extends State<MapPage> {
   GoogleMapController _mapController;
   double _direction;
   bool _isSticky;
-
-  Timer _stickToMapTimer;
 
   @override void initState() {
     super.initState();
@@ -134,7 +133,7 @@ class MapPageState extends State<MapPage> {
         playButton = FloatingActionButton(
           heroTag: "playButton",
           backgroundColor: AppColors.blue,
-          onPressed: connectCallback,
+          onPressed: viewModel.hasUserPoint ? connectCallback : null,
           child: Icon(Icons.play_arrow, color: AppColors.white),
         );
       break;
@@ -236,7 +235,7 @@ class MapPageState extends State<MapPage> {
         securityIndicator,
         playButton,
         Visibility(
-          visible: !_isSticky,
+          visible: !_isSticky && viewModel.hasUserPoint,
           replacement: const SizedBox(width: 56.0),
           child: myLocation,
         ),
@@ -267,16 +266,13 @@ class MapPageState extends State<MapPage> {
       ),
       onMapCreated: (GoogleMapController controller) {
         _mapController = controller;
-        FlutterCompass.events.listen((double direction) => setState(() => _direction = direction));
-
-        _stickToMapTimer = Timer.periodic(const Duration(milliseconds: 100), (_) {
-          final userPoint = store.state.map.userVehicle.point;
-
-          if (!_isSticky || userPoint == null) {
-            return;
-          }
-
-          _moveMapCamera(userPoint.toLatLng());
+        FlutterCompass.events.listen((double direction) {
+          setState(() => _direction = direction);
+          _stickMap(store);
+        });
+        Geolocator.instance.events.listen((GpsPointDto point) {
+          store.dispatch(UpdateUserGpsPoint(point));
+          _stickMap(store);
         });
       },
       gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>[
@@ -343,27 +339,23 @@ class MapPageState extends State<MapPage> {
     );
   }
 
-  void _moveMapCamera(LatLng point) {
-    if (_mapController == null || point == null) {
+  void _stickMap(Store<AppState> store) {
+    final point = store.state.map.userVehicle.point;
+
+    if (!_isSticky || point == null || _mapController == null) {
       return;
     }
 
     _mapController.moveCamera(
       CameraUpdate.newCameraPosition(
         CameraPosition(
-          target: point,
+          target: point.toLatLng(),
           zoom: _defaultZoom,
           bearing: _direction,
           tilt: _defaultTilt,
         ),
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    _stickToMapTimer?.cancel();
-    super.dispose();
   }
 }
 
