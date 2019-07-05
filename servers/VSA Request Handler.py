@@ -77,24 +77,75 @@ def topic_traffic_nearby_req_callback(mqttc, obj, msg):
 	
 def topic_vehsim_callback(mqttc, obj, msg):
 	payload = str(msg.payload.decode("utf-8"));
-	pass
+	items = payload.split(',');
+	uid = items[0];
+	latitude = float(items[1]);
+	longitude = float(items[2]);
+	velocity = float(items[3]);
+	accuracy = float(items[4]);
+	direction = float(items[5]);
+
+	global vehicles;
+
+	if uid not in vehicles:
+		pass;
+
+	vehicles[uid].UpdateStatus(latitude, longitude, velocity, accuracy, direction);
 	
 def topic_vehprop_callback(mqttc, obj, msg):
 	payload = str(msg.payload.decode("utf-8"));
-	pass
+	items = payload.split(',');
+	uid = items[0];
+	name = items[1];
+	description = items[2];
+	left = float(items[3]);
+	top = float(items[4]);
+	right = float(items[5]);
+	bottom = float(items[6]);
+	dimensions = (left, top, right, bottom);
+
+	global vehicles;
+
+	if uid in vehicles:
+		del vehicles[uid];
+
+	vehicle = VSA.Vehicle(uid, name, description, dimensions);
+	vehicles[uid] = vehicle;
 
 def topic_vehsim_req_callback(mqttc, obj, msg):
-	pass
+	payload = str(msg.payload.decode("utf-8"));
+	items = payload.split(',');
+	vehID = items[0];
+	radius = float(items[1]);
+
+	global vehicles;
+
+	data = vehicles.copy();
+	del data[vehID];
+
+	client.publish(VSA.TOPIC_VEHSIM_RETURN + "/" + vehID, json.dumps(data, default = VSA.serialize));
 	
 def topic_vehprop_req_callback(mqttc, obj, msg):
-	pass
+	payload = str(msg.payload.decode("utf-8"));
+	items = payload.split(',');
+	vehID = msg.topic.split('/')[-1];
+
+	global vehicles;
+
+	data = [];
+	for nearbyID in items:
+		if (nearbyID not in vehicles):
+			continue;
+		data.append(vehicles[nearbyID]);
+
+	client.publish(VSA.TOPIC_VEHPROP_RETURN + "/" + vehID, json.dumps(data, default = VSA.serialize));
 
 # ------------------------------------------------------------------------ #	
 	
 print("===== " + NAME + " v" + VERSION + " =====");
 
 #global variables
-vehicles = [];
+vehicles = {};
 features = [];
 
 #new client
