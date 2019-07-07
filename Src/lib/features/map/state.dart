@@ -1,5 +1,6 @@
 /// Authored by `@yuwonom (Michael Yuwono)`
 
+import 'package:built_collection/built_collection.dart';
 import 'package:built_value/built_value.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:vsa/features/map/dtos.dart';
@@ -14,7 +15,8 @@ abstract class MapState implements Built<MapState, MapStateBuilder> {
     userVehicle: VehicleDto.initial(),
     connectionState: MqttConnectionState.disconnected,
     securityLevel: SecurityLevelDto.unknown,
-    recordedPoints: List<GpsPointDto>(),
+    recordedPoints: BuiltList<GpsPointDto>(),
+    otherVehicles: BuiltMap<String, VehicleDto>(),
     isBusy: false,
   );
 
@@ -26,7 +28,8 @@ abstract class MapState implements Built<MapState, MapStateBuilder> {
 
   @nullable
   DateTime get startTime;
-  List<GpsPointDto> get recordedPoints;
+  BuiltList<GpsPointDto> get recordedPoints;
+  BuiltMap<String, VehicleDto> get otherVehicles;
 
   bool get isBusy;
   @nullable

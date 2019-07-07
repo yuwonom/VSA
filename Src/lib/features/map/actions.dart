@@ -1,5 +1,6 @@
 /// Authored by `@yuwonom (Michael Yuwono)`
 
+import 'package:built_collection/built_collection.dart';
 import 'package:meta/meta.dart';
 import 'package:vsa/features/map/dtos.dart';
 import 'package:vsa/utility/action_exception.dart';
@@ -104,4 +105,24 @@ class PublishMessageToMqttBrokerFailed {
 
   @override
   String toString() => "PublishMessageToMqttBrokerFailed $exception";
+}
+
+@immutable
+class UpdateOtherVehiclesStatus {
+  UpdateOtherVehiclesStatus(this.map) : assert (map != null);
+
+  final BuiltMap<String, VehicleDto> map;
+  
+  @override
+  String toString() => "UpdateOtherVehiclesStatus $map";
+}
+
+@immutable
+class UpdateOtherVehiclesProperties {
+  UpdateOtherVehiclesProperties(this.map) : assert (map != null);
+
+  final BuiltMap<String, VehicleDto> map;
+  
+  @override
+  String toString() => "UpdateOtherVehiclesProperties $map";
 }

@@ -28,6 +28,23 @@ abstract class GpsPointDto implements Built<GpsPointDto, GpsPointDtoBuilder> {
 abstract class VehicleDto implements Built<VehicleDto, VehicleDtoBuilder> {
   factory VehicleDto([void updates(VehicleDtoBuilder b)]) = _$VehicleDto;
 
+  factory VehicleDto.fromJson(Map<String, Object> data) => _$VehicleDto._(
+    id: data["id"] ?? "",
+    name: data["name"] ?? "",
+    dimension: data.containsKey("dimensions")
+      ? VehicleDimensionDto.fromString(data["dimensions"])
+      : VehicleDimensionDto.none(),
+    point: (GpsPointDtoBuilder()
+        ..latitude = double.parse(data["lat"] ?? 0.toString())
+        ..longitude = double.parse(data["lng"] ?? 0.toString())
+        ..altitude = double.parse(data["alt"] ?? 0.toString())
+        ..accuracy = double.parse(data["acc"] ?? 0.toString())
+        ..speed = double.parse(data["vel"] ?? 0.toString())
+        ..heading = double.parse(data["ang"] ?? 0.toString())
+        ..dateTime = DateTime.now())
+      .build(),
+  );
+
   factory VehicleDto.initial() => _$VehicleDto._(
     id: "VSA1",
     name: "VSA Autocar",
@@ -54,6 +71,17 @@ abstract class VehicleDimensionDto implements Built<VehicleDimensionDto, Vehicle
       right: right,
       bottom: bottom,
     );
+
+  factory VehicleDimensionDto.fromString(String value) {
+    double parseSide(int index) => double.parse(value.split(",")[index].trim());
+
+    return _$VehicleDimensionDto._(
+      left: parseSide(0),
+      top: parseSide(1),
+      right: parseSide(2),
+      bottom: parseSide(3),
+    );
+  }
 
   factory VehicleDimensionDto.none() => _$VehicleDimensionDto._(left: 0.0, top: 0.0, right: 0.0, bottom: 0.0);
 

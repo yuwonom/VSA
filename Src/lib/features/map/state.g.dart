@@ -16,7 +16,9 @@ class _$MapState extends MapState {
   @override
   final DateTime startTime;
   @override
-  final List<GpsPointDto> recordedPoints;
+  final BuiltList<GpsPointDto> recordedPoints;
+  @override
+  final BuiltMap<String, VehicleDto> otherVehicles;
   @override
   final bool isBusy;
   @override
@@ -31,6 +33,7 @@ class _$MapState extends MapState {
       this.securityLevel,
       this.startTime,
       this.recordedPoints,
+      this.otherVehicles,
       this.isBusy,
       this.exception})
       : super._() {
@@ -45,6 +48,9 @@ class _$MapState extends MapState {
     }
     if (recordedPoints == null) {
       throw new BuiltValueNullFieldError('MapState', 'recordedPoints');
+    }
+    if (otherVehicles == null) {
+      throw new BuiltValueNullFieldError('MapState', 'otherVehicles');
     }
     if (isBusy == null) {
       throw new BuiltValueNullFieldError('MapState', 'isBusy');
@@ -67,6 +73,7 @@ class _$MapState extends MapState {
         securityLevel == other.securityLevel &&
         startTime == other.startTime &&
         recordedPoints == other.recordedPoints &&
+        otherVehicles == other.otherVehicles &&
         isBusy == other.isBusy &&
         exception == other.exception;
   }
@@ -78,11 +85,13 @@ class _$MapState extends MapState {
             $jc(
                 $jc(
                     $jc(
-                        $jc($jc(0, userVehicle.hashCode),
-                            connectionState.hashCode),
-                        securityLevel.hashCode),
-                    startTime.hashCode),
-                recordedPoints.hashCode),
+                        $jc(
+                            $jc($jc(0, userVehicle.hashCode),
+                                connectionState.hashCode),
+                            securityLevel.hashCode),
+                        startTime.hashCode),
+                    recordedPoints.hashCode),
+                otherVehicles.hashCode),
             isBusy.hashCode),
         exception.hashCode));
   }
@@ -95,6 +104,7 @@ class _$MapState extends MapState {
           ..add('securityLevel', securityLevel)
           ..add('startTime', startTime)
           ..add('recordedPoints', recordedPoints)
+          ..add('otherVehicles', otherVehicles)
           ..add('isBusy', isBusy)
           ..add('exception', exception))
         .toString();
@@ -124,10 +134,17 @@ class MapStateBuilder implements Builder<MapState, MapStateBuilder> {
   DateTime get startTime => _$this._startTime;
   set startTime(DateTime startTime) => _$this._startTime = startTime;
 
-  List<GpsPointDto> _recordedPoints;
-  List<GpsPointDto> get recordedPoints => _$this._recordedPoints;
-  set recordedPoints(List<GpsPointDto> recordedPoints) =>
+  ListBuilder<GpsPointDto> _recordedPoints;
+  ListBuilder<GpsPointDto> get recordedPoints =>
+      _$this._recordedPoints ??= new ListBuilder<GpsPointDto>();
+  set recordedPoints(ListBuilder<GpsPointDto> recordedPoints) =>
       _$this._recordedPoints = recordedPoints;
+
+  MapBuilder<String, VehicleDto> _otherVehicles;
+  MapBuilder<String, VehicleDto> get otherVehicles =>
+      _$this._otherVehicles ??= new MapBuilder<String, VehicleDto>();
+  set otherVehicles(MapBuilder<String, VehicleDto> otherVehicles) =>
+      _$this._otherVehicles = otherVehicles;
 
   bool _isBusy;
   bool get isBusy => _$this._isBusy;
@@ -145,7 +162,8 @@ class MapStateBuilder implements Builder<MapState, MapStateBuilder> {
       _connectionState = _$v.connectionState;
       _securityLevel = _$v.securityLevel;
       _startTime = _$v.startTime;
-      _recordedPoints = _$v.recordedPoints;
+      _recordedPoints = _$v.recordedPoints?.toBuilder();
+      _otherVehicles = _$v.otherVehicles?.toBuilder();
       _isBusy = _$v.isBusy;
       _exception = _$v.exception;
       _$v = null;
@@ -176,7 +194,8 @@ class MapStateBuilder implements Builder<MapState, MapStateBuilder> {
               connectionState: connectionState,
               securityLevel: securityLevel,
               startTime: startTime,
-              recordedPoints: recordedPoints,
+              recordedPoints: recordedPoints.build(),
+              otherVehicles: otherVehicles.build(),
               isBusy: isBusy,
               exception: exception);
     } catch (_) {
@@ -184,6 +203,11 @@ class MapStateBuilder implements Builder<MapState, MapStateBuilder> {
       try {
         _$failedField = 'userVehicle';
         userVehicle.build();
+
+        _$failedField = 'recordedPoints';
+        recordedPoints.build();
+        _$failedField = 'otherVehicles';
+        otherVehicles.build();
       } catch (e) {
         throw new BuiltValueNestedFieldError(
             'MapState', _$failedField, e.toString());
