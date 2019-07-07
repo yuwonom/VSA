@@ -13,7 +13,7 @@ abstract class SettingsState implements Built<SettingsState, SettingsStateBuilde
     broker: (BrokerDtoBuilder()
         ..address = "203.101.227.137"
         ..port = "3306"
-        ..clientId = "autocar1"
+        ..clientId = "VSA1"
         ..username = "qut"
         ..password = "qut")
       .build(),
@@ -21,8 +21,8 @@ abstract class SettingsState implements Built<SettingsState, SettingsStateBuilde
     statusPublishTopic: "VSA/vehProp",
     propertiesRequestPublishTopic: "VSA/request/vehProp/reqs",
     propertiesRequestSubscribeTopic: "VSA/request/vehProp/return",
-    statusRequestPublishTopic: "VSA/request/nearbyVeh/reqs",
-    statusRequestSubscribeTopic: "VSA/request/nearbyVeh/return",
+    statusRequestPublishTopic: "VSA/request/vehSim/reqs",
+    statusRequestSubscribeTopic: "VSA/request/vehSim/return",
     trafficRequestPublishTopic: "VSA/traffic/nearby/reqs",
     trafficRequestSubscribeTopic: "VSA/traffic/nearby/return",
     isBusy: false,

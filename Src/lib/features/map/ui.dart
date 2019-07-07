@@ -306,7 +306,7 @@ class MapPageState extends State<MapPage> {
     final marker = Marker(
       markerId: MarkerId(vehicle.id),
       flat: true,
-      rotation: _direction,
+      rotation: isUser ? _direction : vehicle.point.heading,
       position: vehicle.point.toLatLng(),
       icon: await icon,
       anchor: const Offset(0.5, 0.5),
