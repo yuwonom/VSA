@@ -131,9 +131,6 @@ class MqttIntegration {
 
       final topic = publishMessage.variableHeader.topicName;
       final data = MqttPublishPayload.bytesToStringAsString(publishMessage.payload.message);
-      
-      // TODO: Hook to appropriate event
-      print(topic + ": " + data);
 
       final settingsState = store.state.settings;
       if (topic.startsWith(settingsState.propertiesRequestSubscribeTopic)) {
