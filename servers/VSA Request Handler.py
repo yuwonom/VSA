@@ -97,11 +97,10 @@ def topic_vehprop_callback(mqttc, obj, msg):
 	items = payload.split(',');
 	uid = items[0];
 	name = items[1];
-	description = items[2];
-	left = float(items[3]);
-	top = float(items[4]);
-	right = float(items[5]);
-	bottom = float(items[6]);
+	left = float(items[2]);
+	top = float(items[3]);
+	right = float(items[4]);
+	bottom = float(items[5]);
 	dimensions = (left, top, right, bottom);
 
 	global vehicles;
@@ -109,7 +108,7 @@ def topic_vehprop_callback(mqttc, obj, msg):
 	if uid in vehicles:
 		del vehicles[uid];
 
-	vehicle = VSA.Vehicle(uid, name, description, dimensions);
+	vehicle = VSA.Vehicle(uid, name, dimensions);
 	vehicles[uid] = vehicle;
 
 def topic_vehsim_req_callback(mqttc, obj, msg):
@@ -124,12 +123,13 @@ def topic_vehsim_req_callback(mqttc, obj, msg):
 	global vehicles;
 
 	data = vehicles.copy();
-	del data[veh_id];
+	if veh_id in data:
+		del data[veh_id];
 
 	vehsim_list = [];
 	for id in data:
 		data_id = mapToString("id", id);
-		data_lng = mapToString("lng", data[id].Coordinate.longitude);
+		data_lng = mapToString("lng", data[id].Coordinate.Longitude);
 		data_lat = mapToString("lat", data[id].Coordinate.Latitude);
 		data_vel = mapToString("vel", data[id].Velocity);
 		data_ang = mapToString("ang", data[id].RotationAngle);
