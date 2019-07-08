@@ -46,7 +46,7 @@ def topic_traffic_callback(mqttc, obj, msg):
 def topic_traffic_nearby_req_callback(mqttc, obj, msg):
 	payload = str(msg.payload.decode("utf-8"));
 	items = payload.split(',');
-	vehID = items[0];
+	veh_id = items[0];
 	latitude = float(items[1]);
 	longitude = float(items[2]);
 	radius = float(items[3]);
@@ -73,7 +73,7 @@ def topic_traffic_nearby_req_callback(mqttc, obj, msg):
 			features_res.append(feature);
 	
 	print(str(len(features_res)) + " events found.");
-	client.publish(VSA.TOPIC_TRAFFIC_NEARBY_RETURN + "/" + vehID, json.dumps(features_res, default = VSA.serialize));
+	client.publish(VSA.TOPIC_TRAFFIC_NEARBY_RETURN + "/" + veh_id, json.dumps(features_res, default = VSA.serialize));
 	
 def topic_vehsim_callback(mqttc, obj, msg):
 	payload = str(msg.payload.decode("utf-8"));
@@ -113,32 +113,60 @@ def topic_vehprop_callback(mqttc, obj, msg):
 	vehicles[uid] = vehicle;
 
 def topic_vehsim_req_callback(mqttc, obj, msg):
+	def mapToString(key, value):
+		return "\"" + key + "\":\"" + str(value) + "\"";
+
 	payload = str(msg.payload.decode("utf-8"));
 	items = payload.split(',');
-	vehID = items[0];
+	veh_id = items[0];
 	radius = float(items[1]);
 
 	global vehicles;
 
 	data = vehicles.copy();
-	del data[vehID];
+	del data[veh_id];
 
-	client.publish(VSA.TOPIC_VEHSIM_RETURN + "/" + vehID, json.dumps(data, default = VSA.serialize));
+	vehsim_list = [];
+	for id in data:
+		data_id = mapToString("id", id);
+		data_lng = mapToString("lng", data[id].Coordinate.longitude);
+		data_lat = mapToString("lat", data[id].Coordinate.Latitude);
+		data_vel = mapToString("vel", data[id].Velocity);
+		data_ang = mapToString("ang", data[id].RotationAngle);
+		data_acc = mapToString("acc", data[id].PositionError);
+		combined = ",".join([data_id, data_lng, data_lat, data_vel, data_ang, data_acc]);
+		vehsim_list.append("{" + combined + "}");
+
+	vehsim_json = "[" + ",".join(vehsim_list) + "]";
+	print(vehsim_json);
+	client.publish(VSA.TOPIC_VEHSIM_RETURN + "/" + veh_id, vehsim_json);
 	
 def topic_vehprop_req_callback(mqttc, obj, msg):
+	def mapToString(key, value):
+		return "\"" + key + "\":\"" + str(value) + "\"";
+
 	payload = str(msg.payload.decode("utf-8"));
 	items = payload.split(',');
-	vehID = msg.topic.split('/')[-1];
+	veh_id = msg.topic.split('/')[-1];
 
 	global vehicles;
 
 	data = [];
-	for nearbyID in items:
-		if (nearbyID not in vehicles):
-			continue;
-		data.append(vehicles[nearbyID]);
+	for nearby_id in items:
+		if (nearby_id in vehicles):
+			data.append(vehicles[nearby_id]);
 
-	client.publish(VSA.TOPIC_VEHPROP_RETURN + "/" + vehID, json.dumps(data, default = VSA.serialize));
+	vehprop_list = [];
+	for id in data:
+		dims = data[id].Dimensions;
+		data_id = mapToString("id", id);
+		data_name = mapToString("name", data[id].Name);
+		data_dim = mapToString("dimensions", ",".join([str(dims[0]), str(dims[1]), str(dims[2]), str(dims[3])]));
+		combined = ",".join([data_id, data_name, data_dim]);
+		vehprop_list.append("{" + combined + "}");
+
+	vehprop_json = "[" + ",".join(vehprop_list) + "]";
+	client.publish(VSA.TOPIC_VEHPROP_RETURN + "/" + veh_id, vehprop_json);
 
 # ------------------------------------------------------------------------ #	
 	
