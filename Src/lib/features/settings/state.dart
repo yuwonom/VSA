@@ -17,8 +17,8 @@ abstract class SettingsState implements Built<SettingsState, SettingsStateBuilde
         ..username = "qut"
         ..password = "qut")
       .build(),
-    propertiesPublishTopic: "VSA/vehSim",
-    statusPublishTopic: "VSA/vehProp",
+    propertiesPublishTopic: "VSA/vehProp",
+    statusPublishTopic: "VSA/vehSim",
     propertiesRequestPublishTopic: "VSA/request/vehProp/reqs",
     propertiesRequestSubscribeTopic: "VSA/request/vehProp/return",
     statusRequestPublishTopic: "VSA/request/vehSim/reqs",
