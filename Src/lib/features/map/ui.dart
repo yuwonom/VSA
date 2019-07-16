@@ -15,6 +15,7 @@ import 'package:vsa/features/map/actions.dart';
 import 'package:vsa/features/map/dtos.dart';
 import 'package:vsa/features/map/geolocator.dart';
 import 'package:vsa/features/map/viewmodels.dart';
+import 'package:vsa/features/settings/actions.dart';
 import 'package:vsa/features/settings/ui.dart';
 import 'package:vsa/state.dart';
 import 'package:vsa/themes/theme.dart';
@@ -41,7 +42,7 @@ class MapPageState extends State<MapPage> {
 
   @override
   Widget build(BuildContext context) => StoreConnector<AppState, MapViewModel>(
-      onInit: (Store<AppState> store) => store.dispatch(ListenToGeolocator()),
+      onInit: (Store<AppState> store) => store..dispatch(ListenToGeolocator())..dispatch(LoadSettings()),
       converter: (Store<AppState> store) => MapViewModel(store.state.map, store.state.settings),
       builder: (BuildContext context, MapViewModel viewModel) => _buildPage(context, StoreProvider.of(context), viewModel),
     );

@@ -166,8 +166,7 @@ class SettingsDialogState extends State<SettingsDialog> {
       text: "Save",
       type: VSAButtonType.secondary,
       onPressed: () {
-        final action = _getAction(widget.actionType);
-        store.dispatch(action);
+        store.dispatch(UpdateSettings(widget.actionType, _controller.text));
         Navigator.pop(context);
       },
     );
@@ -224,40 +223,6 @@ class SettingsDialogState extends State<SettingsDialog> {
         ],
       ),
     );
-  }
-
-  dynamic _getAction(Type type) {
-    final value = _controller.text;
-    switch (type) {
-      case UpdateBrokerAddress:
-        return UpdateBrokerAddress(value);
-      case UpdateBrokerPort:
-        return UpdateBrokerPort(value);
-      case UpdateBrokerUsername:
-        return UpdateBrokerUsername(value);
-      case UpdateBrokerPassword:
-        return UpdateBrokerPassword(value);
-      case UpdateBrokerClientId:
-        return UpdateBrokerClientId(value);
-      case UpdatePropertiesPublishTopic:
-        return UpdatePropertiesPublishTopic(value);
-      case UpdateStatusPublishTopic:
-        return UpdateStatusPublishTopic(value);
-      case UpdatePropertiesRequestPublishTopic:
-        return UpdatePropertiesRequestPublishTopic(value);
-      case UpdatePropertiesRequestSubscribeTopic:
-        return UpdatePropertiesRequestSubscribeTopic(value);
-      case UpdateStatusRequestPublishTopic:
-        return UpdateStatusRequestPublishTopic(value);
-      case UpdateStatusRequestSubscribeTopic:
-        return UpdateStatusRequestSubscribeTopic(value);
-      case UpdateTrafficRequestPublishTopic:
-        return UpdateTrafficRequestPublishTopic(value);
-      case UpdateTrafficRequestSubscribeTopic:
-        return UpdateTrafficRequestSubscribeTopic(value);
-    }
-
-    assert(false);
   }
 
   @override

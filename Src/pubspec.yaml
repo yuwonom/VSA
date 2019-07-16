@@ -16,8 +16,9 @@ dependencies:
   rxdart: ^0.21.0
 
   cupertino_icons: ^0.1.2
-  cached_network_image: ^0.5.1
+  cached_network_image: ^1.1.0
 
+  shared_preferences: ^0.5.3+3
   mqtt_client: ^5.5.3
   google_maps_flutter: ^0.5.19
   location: ^2.3.5

@@ -3,6 +3,26 @@
 import 'package:flutter/material.dart';
 
 @immutable
+class LoadSettings {
+  @override
+  String toString() => "LoadSettings";
+}
+
+@immutable
+class UpdateSettings {
+  UpdateSettings(
+    this.actionType,
+    this.value,
+  ) : assert (actionType != null && value != null);
+
+  final Type actionType;
+  final String value;
+
+  @override
+  String toString() => "UpdateSettings $actionType, $value";
+}
+
+@immutable
 class UpdateBrokerAddress {
   UpdateBrokerAddress(this.value) : assert (value != null);
 
