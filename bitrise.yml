@@ -1,0 +1,257 @@
+---
+format_version: '8'
+default_step_lib_source: https://github.com/bitrise-io/bitrise-steplib.git
+
+app:
+  envs:
+  - PROJECT_NAME: VSA
+  - APP_BUNDLE_IDENTIFIER: au.com.vsa.app
+  # Flutter Version
+  - FLUTTER_SHA: "362b999b90d53859aa7b926a59c970f3ea31abf4"
+  
+workflows:
+  _build:
+    steps:
+    - script:
+        title: Build - Info
+        inputs:
+        - content: |-
+            #!/bin/bash
+            set -e # fail build if any commands fails
+            #set -x # debug logging
+            
+            GIT_BRANCH=`git branch | grep \* | cut -d ' ' -f2`
+            echo "Starting build #${BITRISE_BUILD_NUMBER} against git branch ${GIT_BRANCH}"
+    - script:
+        title: Build - Install Dependancies
+        inputs:
+        - content: |-
+            #!/bin/bash
+            #set -e # fail build if any commands fails
+            #set -x # debug logging
+            
+            ENVMAN=`which envman`
+            if [ -z "$ENVMAN" ]; then
+                echo "Envman not installed. Installing..."
+                curl -fL https://github.com/bitrise-io/envman/releases/download/2.1.3/envman-$(uname -s)-$(uname -m) > /usr/local/bin/envman
+                chmod +x /usr/local/bin/envman
+            fi
+            
+            yes | sdkmanager --licenses # accept all Android licenses
+            
+            SIX=`pip show six`
+            if [ -z "$SIX" ]; then
+                pip install six
+            fi
+            
+            if [ ! -d flutter ]; then
+                git clone https://github.com/flutter/flutter.git
+            else
+                cd flutter
+                git fetch
+                git reset --hard $FLUTTER_SHA
+                cd ..
+            fi
+            
+            if [ ! `which flutter` ]; then
+                FLUTTER_PATH=$PWD/flutter
+                export PATH=$FLUTTER_PATH/bin:$PATH
+                envman add --key PATH --value $PATH
+            fi
+            echo "Flutter path is '${FLUTTER_PATH}'."
+            
+            flutter doctor -v
+    - script:
+        title: Build - Get Git Tags
+        inputs:
+        - content: |-
+            #!/bin/bash
+            #set -e # fail build if any commands fails
+            #set -x # debug logging
+            
+            echo "Building:"
+            BUILD_IOS=`git tag | grep -ic 'ios'`
+            BUILD_ANDROID=`git tag | grep -ic 'android'`
+            
+            if [ "$BUILD_IOS" == "0" -a "$BUILD_ANDROID" == "0" ]; then
+                BUILD_IOS=1
+                BUILD_ANDROID=1
+            fi
+            
+            IS_MAC=$([ "$OSTYPE" == "darwin"* ] && echo false || echo true)
+            if [ "$BUILD_IOS" == "1" -a $IS_MAC == "false" ]; then
+                BUILD_IOS=0 #if not running on Mac then don't build iOS
+            fi
+            
+            if [ "$BUILD_IOS" == "1" ]; then
+                echo "- iOS"
+            fi
+            
+            if [ "$BUILD_ANDROID" == "1" ]; then
+                echo "- Android"
+            fi
+            
+            envman add --key BUILD_ANDROID --value ${BUILD_ANDROID}
+            envman add --key BUILD_IOS --value ${BUILD_IOS}
+    - script:
+        title: Flutter - Get Packages
+        inputs:
+        - content: |-
+            #!/bin/bash
+            set -e # fail build if any commands fails
+            #set -x # debug logging
+            
+            cd ${BITRISE_SOURCE_DIR}/Src
+            flutter packages get
+    - script:
+        title: Flutter - Analyze
+        run_if: false
+        inputs:
+        - content: |-
+            #!/bin/bash
+            set -e # fail build if any commands fails
+            set -x # debug logging
+            
+            cd ${BITRISE_SOURCE_DIR}/Src
+            flutter analyze
+    - script:
+        title: Flutter - Format
+        run_if: false
+        inputs:
+        - content: |-
+            #!/bin/bash
+            set -e # fail build if any commands fails
+            set -x # debug logging
+            
+            cd ${BITRISE_SOURCE_DIR}/Src
+            flutter format . -l 160 --set-exit-if-changed
+    - script:
+        title: Android - Substituting Production Bundle ID
+        run_if: |-
+                {{enveq "BUILD_ANDROID" "1"}}
+        inputs:
+        - content: |-
+            #!/bin/bash
+            set -e # fail build if any commands fails
+            set -x # debug logging
+            
+            FILE=${BITRISE_SOURCE_DIR}/Src/android/app/build.gradle
+            sed -i "" -e "s|applicationId.*$|applicationId \"${APP_BUNDLE_IDENTIFIER}\"|g" ${FILE}
+            cat ${FILE}
+    - file-downloader:
+        run_if: |-
+                {{.IsCI | and (getenv "BUILD_ANDROID" | eq "1") | and (getenv "PRODUCTION" | eq "true")}}
+        inputs:
+        - source: "$BITRISEIO_ANDROID_KEYSTORE_URL"
+        - destination: "$BITRISE_SOURCE_DIR/vsa.keystore"
+    - script:
+        title: Android - Substituting Keystore
+        run_if: |-
+                {{.IsCI | and (getenv "BUILD_ANDROID" | eq "1") | and (getenv "PRODUCTION" | eq "true")}}
+        inputs:
+        - content: |-
+            #!/bin/bash
+            set -e # fail build if any commands fails
+            set -x # debug logging
+            
+            FILE=${BITRISE_SOURCE_DIR}/Src/android/key.properties
+            sed -i "" -e "s|storePassword.*$|storePassword=${BITRISEIO_ANDROID_KEYSTORE_PASSWORD}|g" ${FILE}
+            sed -i "" -e "s|keyPassword.*$|keyPassword=${BITRISEIO_ANDROID_KEYSTORE_PRIVATE_KEY_PASSWORD}|g" ${FILE}
+            sed -i "" -e "s|keyAlias.*$|keyAlias=${BITRISEIO_ANDROID_KEYSTORE_ALIAS}|g" ${FILE}
+            sed -i "" -e "s|storeFile.*$|storeFile=${BITRISE_SOURCE_DIR}/vsa.keystore|g" ${FILE}
+            cat ${FILE}
+    - script:
+        title: Android - Flutter Build
+        run_if: |-
+                {{enveq "BUILD_ANDROID" "1"}}
+        inputs:
+        - content: |-
+            #!/bin/bash
+            set -e # fail build if any commands fails
+            set -x # debug logging
+            
+            cd ${BITRISE_SOURCE_DIR}/Src
+            flutter build apk --build-name ${SEMANTIC_VERSION} --build-number ${BITRISE_BUILD_NUMBER}
+            cp ${BITRISE_SOURCE_DIR}/Src/build/app/outputs/apk/release/app-release.apk ${BITRISE_DEPLOY_DIR}/${PROJECT_NAME}-${SEMANTIC_VERSION}-${BITRISE_BUILD_NUMBER}.apk
+    - deploy-to-bitrise-io:
+        run_if: |-
+                {{.IsCI | and (getenv "BUILD_ANDROID" | eq "1")}}
+        inputs:
+        - deploy_path: "$BITRISE_DEPLOY_DIR/${PROJECT_NAME}-${SEMANTIC_VERSION}-${BITRISE_BUILD_NUMBER}.apk"
+        - notify_user_groups: none
+        outputs:
+        - BITRISE_PUBLIC_INSTALL_PAGE_URL: ANDROID_INSTALL_PAGE
+        
+  _deploy_slack:
+    steps:
+    - create-install-page-qr-code:
+        run_if: |-
+                {{.IsCI | and (getenv "BUILD_ANDROID" | eq "1")}}
+        inputs:
+        - public_install_page_url: "$ANDROID_INSTALL_PAGE"
+    - slack:
+        title: Notify (apk)
+        is_always_run: false
+        run_if: |-
+                {{.IsCI | and (getenv "BUILD_ANDROID" | eq "1")}}
+        inputs:
+        - webhook_url: $SLACK_WEBHOOK
+        - channel: $SLACK_CHANNEL
+        - title: ''
+        - author_name: ''
+        - buttons: 'Install Page|${ANDROID_INSTALL_PAGE}'
+        - from_username: APK
+        - from_username_on_error: APK
+        - emoji: ":android:"
+        - emoji_on_error: ":negative_squared_cross_mark:"
+        - image_url: "$BITRISE_PUBLIC_INSTALL_PAGE_QR_CODE_IMAGE_URL"
+        - message: |-
+            $GIT_CLONE_COMMIT_MESSAGE_SUBJECT
+            *Commit*
+            ${GIT_CLONE_COMMIT_HASH}
+        - fields: |
+            Branch|${BITRISE_GIT_BRANCH}
+            Workflow|${BITRISE_TRIGGERED_WORKFLOW_ID}
+            Version|${SEMANTIC_VERSION}
+            Build|${BITRISE_BUILD_NUMBER}
+  
+  _deploy_app_store:
+    steps:
+    - google-play-deploy:
+        inputs:
+        - service_account_json_key_path: "$BITRISEIO_SERVICE_ACCOUNT_JSON_KEY_URL"
+        - package_name: $APP_BUNDLE_IDENTIFIER
+        - apk_path: "$BITRISE_DEPLOY_DIR/${PROJECT_NAME}-${SEMANTIC_VERSION}-${BITRISE_BUILD_NUMBER}.apk"
+        - whatsnews_dir: ''
+        - service_account_email: ''
+        - key_file_path: ''
+    - slack:
+        title: Notify (Google Play)
+        inputs:
+        - webhook_url: $SLACK_WEBHOOK
+        - channel: $SLACK_CHANNEL
+        - from_username: APK
+        - from_username_on_error: APK
+        - message: "$ANDROID_INSTALL_PAGE"
+        - emoji: ":android:"
+        - emoji_on_error: ":negative_squared_cross_mark:"
+
+  develop:
+    envs:
+    - PRODUCTION: 'false'
+    - SLACK_WEBHOOK: $SLACK_WEBHOOK_DEVELOP
+    - SLACK_CHANNEL: "#builds-dev"
+    before_run:
+    - _build
+    after_run:
+    - _deploy_slack
+
+  release:
+    envs:
+    - PRODUCTION: 'true'
+    - SLACK_WEBHOOK: $SLACK_WEBHOOK_RELEASE
+    - SLACK_CHANNEL: "#builds-release"
+    before_run:
+    - _build
+    after_run:
+    - _deploy_app_store
