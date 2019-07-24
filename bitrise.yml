@@ -256,7 +256,7 @@ workflows:
 
   develop:
     envs:
-    - PRODUCTION: 'false'
+    - PRODUCTION: 'true'
     - SLACK_WEBHOOK: $SLACK_WEBHOOK_DEVELOP
     - SLACK_CHANNEL: "#builds-dev"
     before_run:
