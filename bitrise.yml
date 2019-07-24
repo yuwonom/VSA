@@ -174,7 +174,7 @@ workflows:
             
             FILE=${BITRISE_SOURCE_DIR}/Src/android/key.properties
             sed -i "" -e "s|storePassword.*$|storePassword=${BITRISEIO_ANDROID_KEYSTORE_PASSWORD}|g" ${FILE}
-            sed -i "" -e "s|keyPassword.*$|keyPassword=${BITRISEIO_ANDROID_KEYSTORE_PRIVATE_KEY_PASSWORD}|g" ${FILE}
+            sed -i "" -e "s|keyPassword.*$|keyPassword=${BITRISEIO_ANDROID_KEYSTORE_PASSWORD}|g" ${FILE}
             sed -i "" -e "s|keyAlias.*$|keyAlias=${BITRISEIO_ANDROID_KEYSTORE_ALIAS}|g" ${FILE}
             sed -i "" -e "s|storeFile.*$|storeFile=${BITRISE_SOURCE_DIR}/vsa.keystore|g" ${FILE}
             cat ${FILE}
