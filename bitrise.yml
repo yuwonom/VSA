@@ -124,28 +124,6 @@ workflows:
             cd ${BITRISE_SOURCE_DIR}/Src
             flutter packages get
     - script:
-        title: Flutter - Analyze
-        run_if: false
-        inputs:
-        - content: |-
-            #!/bin/bash
-            set -e # fail build if any commands fails
-            set -x # debug logging
-            
-            cd ${BITRISE_SOURCE_DIR}/Src
-            flutter analyze
-    - script:
-        title: Flutter - Format
-        run_if: false
-        inputs:
-        - content: |-
-            #!/bin/bash
-            set -e # fail build if any commands fails
-            set -x # debug logging
-            
-            cd ${BITRISE_SOURCE_DIR}/Src
-            flutter format . -l 160 --set-exit-if-changed
-    - script:
         title: Android - Substituting Production Bundle ID
         run_if: |-
                 {{enveq "BUILD_ANDROID" "1"}}
@@ -160,7 +138,7 @@ workflows:
             cat ${FILE}
     - file-downloader:
         run_if: |-
-                {{.IsCI | and (getenv "BUILD_ANDROID" | eq "1") | and (getenv "PRODUCTION" | eq "true")}}
+                {{.IsCI | and (getenv "BUILD_ANDROID" | eq "1")}}
         inputs:
         - source: "$BITRISEIO_ANDROID_KEYSTORE_URL"
         - destination: "$BITRISE_SOURCE_DIR/vsa.keystore"
@@ -256,7 +234,6 @@ workflows:
 
   develop:
     envs:
-    - PRODUCTION: 'true'
     - SLACK_WEBHOOK: $SLACK_WEBHOOK_DEVELOP
     - SLACK_CHANNEL: "#builds-dev"
     before_run:
@@ -266,7 +243,6 @@ workflows:
 
   release:
     envs:
-    - PRODUCTION: 'true'
     - SLACK_WEBHOOK: $SLACK_WEBHOOK_RELEASE
     - SLACK_CHANNEL: "#builds-release"
     before_run:
