@@ -152,7 +152,7 @@ workflows:
             
             FILE=${BITRISE_SOURCE_DIR}/Src/android/key.properties
             sed -i "" -e "s|storePassword.*$|storePassword=${BITRISEIO_ANDROID_KEYSTORE_PASSWORD}|g" ${FILE}
-            sed -i "" -e "s|keyPassword.*$|keyPassword=${BITRISEIO_ANDROID_KEYSTORE_PASSWORD}|g" ${FILE}
+            sed -i "" -e "s|keyPassword.*$|keyPassword=${BITRISEIO_ANDROID_KEYSTORE_PRIVATE_KEY_PASSWORD}|g" ${FILE}
             sed -i "" -e "s|keyAlias.*$|keyAlias=${BITRISEIO_ANDROID_KEYSTORE_ALIAS}|g" ${FILE}
             sed -i "" -e "s|storeFile.*$|storeFile=${BITRISE_SOURCE_DIR}/vsa.keystore|g" ${FILE}
             cat ${FILE}
@@ -210,27 +210,6 @@ workflows:
             Workflow|${BITRISE_TRIGGERED_WORKFLOW_ID}
             Version|${SEMANTIC_VERSION}
             Build|${BITRISE_BUILD_NUMBER}
-  
-  _deploy_app_store:
-    steps:
-    - google-play-deploy:
-        inputs:
-        - service_account_json_key_path: "$BITRISEIO_SERVICE_ACCOUNT_JSON_KEY_URL"
-        - package_name: $APP_BUNDLE_IDENTIFIER
-        - apk_path: "$BITRISE_DEPLOY_DIR/${PROJECT_NAME}-${SEMANTIC_VERSION}-${BITRISE_BUILD_NUMBER}.apk"
-        - whatsnews_dir: ''
-        - service_account_email: ''
-        - key_file_path: ''
-    - slack:
-        title: Notify (Google Play)
-        inputs:
-        - webhook_url: $SLACK_WEBHOOK
-        - channel: $SLACK_CHANNEL
-        - from_username: APK
-        - from_username_on_error: APK
-        - message: "$ANDROID_INSTALL_PAGE"
-        - emoji: ":android:"
-        - emoji_on_error: ":negative_squared_cross_mark:"
 
   develop:
     envs:
@@ -248,4 +227,4 @@ workflows:
     before_run:
     - _build
     after_run:
-    - _deploy_app_store
+    - _deploy_slack
