@@ -41,7 +41,6 @@ class Vehicle(object):
 	PositionError = 0
 	RotationAngle = 0
 	Name = ""
-	Description = ""
 	Dimensions = (0,0,0,0)
 	
 	def UpdateStatus(self, latitude, longitude, velocity, positionError, rotationAngle):
@@ -51,10 +50,9 @@ class Vehicle(object):
 		self.PositionError = positionError
 		self.RotationAngle = rotationAngle
 		
-	def __init__(self, uid, name, description, dimensions):
+	def __init__(self, uid, name, dimensions):
 		self.UID = uid
 		self.Name = name
-		self.Description = description
 		self.Dimensions = dimensions
 
 		
