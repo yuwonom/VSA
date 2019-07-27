@@ -226,6 +226,8 @@ workflows:
         - channel: $SLACK_CHANNEL
         - title: "$GIT_CLONE_COMMIT_MESSAGE_SUBJECT"
         - author_name: ''
+        - message: ''
+        - fields: ''
         - buttons: 'Install Page|${ANDROID_INSTALL_PAGE}'
         - emoji: ":android:"
         - emoji_on_error: ":negative_squared_cross_mark:"
