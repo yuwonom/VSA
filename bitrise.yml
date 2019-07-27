@@ -196,8 +196,6 @@ workflows:
         - title: ''
         - author_name: ''
         - buttons: 'Install Page|${ANDROID_INSTALL_PAGE}'
-        - from_username: APK
-        - from_username_on_error: APK
         - emoji: ":android:"
         - emoji_on_error: ":negative_squared_cross_mark:"
         - image_url: "$BITRISE_PUBLIC_INSTALL_PAGE_QR_CODE_IMAGE_URL"
@@ -210,6 +208,30 @@ workflows:
             Workflow|${BITRISE_TRIGGERED_WORKFLOW_ID}
             Version|${SEMANTIC_VERSION}
             Build|${BITRISE_BUILD_NUMBER}
+  
+  _deploy_slack_release:
+    steps:
+    - create-install-page-qr-code:
+        run_if: |-
+                {{.IsCI | and (getenv "BUILD_ANDROID" | eq "1")}}
+        inputs:
+        - public_install_page_url: "$ANDROID_INSTALL_PAGE"
+    - slack:
+        title: Notify (apk)
+        is_always_run: false
+        run_if: |-
+                {{.IsCI | and (getenv "BUILD_ANDROID" | eq "1")}}
+        inputs:
+        - webhook_url: $SLACK_WEBHOOK
+        - channel: $SLACK_CHANNEL
+        - title: "$GIT_CLONE_COMMIT_MESSAGE_SUBJECT"
+        - author_name: ''
+        - message: ''
+        - fields: ''
+        - buttons: 'Install Page|${ANDROID_INSTALL_PAGE}'
+        - emoji: ":android:"
+        - emoji_on_error: ":negative_squared_cross_mark:"
+        - image_url: "$BITRISE_PUBLIC_INSTALL_PAGE_QR_CODE_IMAGE_URL"
 
   develop:
     envs:
@@ -227,4 +249,4 @@ workflows:
     before_run:
     - _build
     after_run:
-    - _deploy_slack
+    - _deploy_slack_release
