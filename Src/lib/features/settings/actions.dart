@@ -23,6 +23,16 @@ class UpdateSettings {
 }
 
 @immutable
+class UpdateVehicleType {
+  UpdateVehicleType(this.value) : assert (value != null);
+
+  final String value;
+  
+  @override
+  String toString() => "UpdateVehicleType $value";
+}
+
+@immutable
 class UpdateBrokerAddress {
   UpdateBrokerAddress(this.value) : assert (value != null);
 

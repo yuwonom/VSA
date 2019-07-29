@@ -1,12 +1,17 @@
 /// Authored by `@yuwonom (Michael Yuwono)`
 
+import 'package:vsa/features/map/dtos.dart';
 import 'package:vsa/features/settings/dtos.dart';
 import 'package:vsa/features/settings/state.dart';
 
 class SettingsViewModel {
   final SettingsState _state;
+  final VehicleDto _userVehicle;
 
-  const SettingsViewModel(this._state) : assert(_state != null);
+  const SettingsViewModel(this._state, this._userVehicle)
+    : assert(_state != null && _userVehicle != null);
+
+  VehicleTypeDto get vehicleType => _userVehicle.type;
 
   BrokerDto get broker => _state.broker;
 

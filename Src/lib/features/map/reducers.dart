@@ -17,6 +17,7 @@ final Reducer<MapState> mapStateReducer = combineReducers([
     TypedReducer<MapState, DisconnectFromMqttBroker>(_disconnectFromMqttBrokerReducer),
     TypedReducer<MapState, UpdateOtherVehiclesStatus>(_updateOtherVehiclesStatusReducer),
     TypedReducer<MapState, UpdateOtherVehiclesProperties>(_updateOtherVehiclesPropertiesReducer),
+    TypedReducer<MapState, UpdateVehicleType>(_updateVehicleTypeReducer),
   ]);
 
 MapState _updateUserGpsPointReducer(MapState state, UpdateUserGpsPoint action) => state.rebuild((b) => b
@@ -80,3 +81,6 @@ MapState _updateOtherVehiclesPropertiesReducer(MapState state, UpdateOtherVehicl
   
   return state.rebuild((b) => b..otherVehicles.replace(newOtherVehicles));
 }
+
+MapState _updateVehicleTypeReducer(MapState state, UpdateVehicleType action) => state.rebuild((b) => b
+  ..userVehicle.type = VehicleTypeDto.valueOf(action.value));

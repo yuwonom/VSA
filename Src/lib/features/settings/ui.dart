@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
+import 'package:vsa/features/map/dtos.dart';
 import 'package:vsa/features/settings/actions.dart';
 import 'package:vsa/features/settings/viewmodel.dart';
 import 'package:vsa/state.dart';
@@ -13,11 +14,15 @@ import 'package:vsa/themes/vsa_button.dart';
 class SettingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) => StoreConnector<AppState, SettingsViewModel>(
-      converter: (Store<AppState> store) => SettingsViewModel(store.state.settings),
+      converter: (Store<AppState> store) => SettingsViewModel(store.state.settings, store.state.map.userVehicle),
       builder: (BuildContext context, SettingsViewModel viewModel) => _buildPage(context, StoreProvider.of(context), viewModel),
     );
 
   Widget _buildPage(BuildContext context, Store<AppState> store, SettingsViewModel viewModel) {
+    final profileTileGroup = _buildTileGroup("Profile", <Widget>[
+      _buildTileDropdown("Vehicle Type", viewModel.vehicleType.name, (String value) => store.dispatch(UpdateSettings(UpdateVehicleType, value))),
+    ]);
+
     final brokerTileGroup = _buildTileGroup("Broker", <Widget>[
       _buildTile(context, "Address", viewModel.address, UpdateBrokerAddress),
       _buildTile(context, "Port", viewModel.port, UpdateBrokerPort),
@@ -44,6 +49,7 @@ class SettingsPage extends StatelessWidget {
       padding: AppEdges.mediumAll,
       child: Column(
         children: <Widget>[
+          profileTileGroup,
           brokerTileGroup,
           vehicleTopicsTileGroup,
           trafficTopicsTileGroup,
@@ -80,6 +86,26 @@ class SettingsPage extends StatelessWidget {
         maxLines: 2,
       ),
       onTap: () => showDialog(context: context, builder: (_) => SettingsDialog(title, value, actionType, obscureText: obscureText)),
+    );
+  
+  Widget _buildTileDropdown(String title, String value, Function onChanged) => ListTile(
+      title: Text(
+        title,
+        style: AppTextStyles.body1.copyWith(color: AppColors.black),
+        overflow: TextOverflow.ellipsis,
+        softWrap: true,
+      ),
+      trailing: DropdownButton<String>(
+        elevation: 2,
+        style: AppTextStyles.body1.copyWith(color: AppColors.darkGray),
+        value: value,
+        items: VehicleTypeDto.values
+          .map((VehicleTypeDto type) => DropdownMenuItem<String>(
+            value: type.name,
+            child: Text(type.name, style: AppTextStyles.body1.copyWith(color: AppColors.darkGray)),
+          )).toList(),
+        onChanged: onChanged,
+      ),
     );
 
   Widget _buildTileGroup(String headerText, List<Widget> tiles) {

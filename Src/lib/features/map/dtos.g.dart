@@ -6,6 +6,38 @@ part of 'dtos.dart';
 // BuiltValueGenerator
 // **************************************************************************
 
+const VehicleTypeDto _$car = const VehicleTypeDto._('car');
+const VehicleTypeDto _$cycle = const VehicleTypeDto._('cycle');
+const VehicleTypeDto _$motorbike = const VehicleTypeDto._('motorbike');
+const VehicleTypeDto _$scooter = const VehicleTypeDto._('scooter');
+const VehicleTypeDto _$pedestrian = const VehicleTypeDto._('pedestrian');
+
+VehicleTypeDto _$vehicleTypeDtoValueOf(String name) {
+  switch (name) {
+    case 'car':
+      return _$car;
+    case 'cycle':
+      return _$cycle;
+    case 'motorbike':
+      return _$motorbike;
+    case 'scooter':
+      return _$scooter;
+    case 'pedestrian':
+      return _$pedestrian;
+    default:
+      throw new ArgumentError(name);
+  }
+}
+
+final BuiltSet<VehicleTypeDto> _$vehicleTypeDtoValues =
+    new BuiltSet<VehicleTypeDto>(const <VehicleTypeDto>[
+  _$car,
+  _$cycle,
+  _$motorbike,
+  _$scooter,
+  _$pedestrian,
+]);
+
 const SecurityLevelDto _$unknown = const SecurityLevelDto._('unknown');
 const SecurityLevelDto _$secured = const SecurityLevelDto._('secured');
 const SecurityLevelDto _$controlled = const SecurityLevelDto._('controlled');
@@ -46,6 +78,8 @@ Serializer<GpsPointDto> _$gpsPointDtoSerializer = new _$GpsPointDtoSerializer();
 Serializer<VehicleDto> _$vehicleDtoSerializer = new _$VehicleDtoSerializer();
 Serializer<VehicleDimensionDto> _$vehicleDimensionDtoSerializer =
     new _$VehicleDimensionDtoSerializer();
+Serializer<VehicleTypeDto> _$vehicleTypeDtoSerializer =
+    new _$VehicleTypeDtoSerializer();
 Serializer<SecurityLevelDto> _$securityLevelDtoSerializer =
     new _$SecurityLevelDtoSerializer();
 
@@ -148,6 +182,9 @@ class _$VehicleDtoSerializer implements StructuredSerializer<VehicleDto> {
       'dimension',
       serializers.serialize(object.dimension,
           specifiedType: const FullType(VehicleDimensionDto)),
+      'type',
+      serializers.serialize(object.type,
+          specifiedType: const FullType(VehicleTypeDto)),
     ];
     if (object.point != null) {
       result
@@ -182,6 +219,10 @@ class _$VehicleDtoSerializer implements StructuredSerializer<VehicleDto> {
           result.dimension.replace(serializers.deserialize(value,
                   specifiedType: const FullType(VehicleDimensionDto))
               as VehicleDimensionDto);
+          break;
+        case 'type':
+          result.type = serializers.deserialize(value,
+              specifiedType: const FullType(VehicleTypeDto)) as VehicleTypeDto;
           break;
         case 'point':
           result.point.replace(serializers.deserialize(value,
@@ -255,6 +296,24 @@ class _$VehicleDimensionDtoSerializer
 
     return result.build();
   }
+}
+
+class _$VehicleTypeDtoSerializer
+    implements PrimitiveSerializer<VehicleTypeDto> {
+  @override
+  final Iterable<Type> types = const <Type>[VehicleTypeDto];
+  @override
+  final String wireName = 'VehicleTypeDto';
+
+  @override
+  Object serialize(Serializers serializers, VehicleTypeDto object,
+          {FullType specifiedType = FullType.unspecified}) =>
+      object.name;
+
+  @override
+  VehicleTypeDto deserialize(Serializers serializers, Object serialized,
+          {FullType specifiedType = FullType.unspecified}) =>
+      VehicleTypeDto.valueOf(serialized as String);
 }
 
 class _$SecurityLevelDtoSerializer
@@ -458,12 +517,15 @@ class _$VehicleDto extends VehicleDto {
   @override
   final VehicleDimensionDto dimension;
   @override
+  final VehicleTypeDto type;
+  @override
   final GpsPointDto point;
 
   factory _$VehicleDto([void updates(VehicleDtoBuilder b)]) =>
       (new VehicleDtoBuilder()..update(updates)).build();
 
-  _$VehicleDto._({this.id, this.name, this.dimension, this.point}) : super._() {
+  _$VehicleDto._({this.id, this.name, this.dimension, this.type, this.point})
+      : super._() {
     if (id == null) {
       throw new BuiltValueNullFieldError('VehicleDto', 'id');
     }
@@ -472,6 +534,9 @@ class _$VehicleDto extends VehicleDto {
     }
     if (dimension == null) {
       throw new BuiltValueNullFieldError('VehicleDto', 'dimension');
+    }
+    if (type == null) {
+      throw new BuiltValueNullFieldError('VehicleDto', 'type');
     }
   }
 
@@ -489,13 +554,15 @@ class _$VehicleDto extends VehicleDto {
         id == other.id &&
         name == other.name &&
         dimension == other.dimension &&
+        type == other.type &&
         point == other.point;
   }
 
   @override
   int get hashCode {
     return $jf($jc(
-        $jc($jc($jc(0, id.hashCode), name.hashCode), dimension.hashCode),
+        $jc($jc($jc($jc(0, id.hashCode), name.hashCode), dimension.hashCode),
+            type.hashCode),
         point.hashCode));
   }
 
@@ -505,6 +572,7 @@ class _$VehicleDto extends VehicleDto {
           ..add('id', id)
           ..add('name', name)
           ..add('dimension', dimension)
+          ..add('type', type)
           ..add('point', point))
         .toString();
   }
@@ -527,6 +595,10 @@ class VehicleDtoBuilder implements Builder<VehicleDto, VehicleDtoBuilder> {
   set dimension(VehicleDimensionDtoBuilder dimension) =>
       _$this._dimension = dimension;
 
+  VehicleTypeDto _type;
+  VehicleTypeDto get type => _$this._type;
+  set type(VehicleTypeDto type) => _$this._type = type;
+
   GpsPointDtoBuilder _point;
   GpsPointDtoBuilder get point => _$this._point ??= new GpsPointDtoBuilder();
   set point(GpsPointDtoBuilder point) => _$this._point = point;
@@ -538,6 +610,7 @@ class VehicleDtoBuilder implements Builder<VehicleDto, VehicleDtoBuilder> {
       _id = _$v.id;
       _name = _$v.name;
       _dimension = _$v.dimension?.toBuilder();
+      _type = _$v.type;
       _point = _$v.point?.toBuilder();
       _$v = null;
     }
@@ -566,12 +639,14 @@ class VehicleDtoBuilder implements Builder<VehicleDto, VehicleDtoBuilder> {
               id: id,
               name: name,
               dimension: dimension.build(),
+              type: type,
               point: _point?.build());
     } catch (_) {
       String _$failedField;
       try {
         _$failedField = 'dimension';
         dimension.build();
+
         _$failedField = 'point';
         _point?.build();
       } catch (e) {

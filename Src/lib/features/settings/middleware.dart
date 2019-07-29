@@ -22,6 +22,7 @@ class LocalSettings {
       final sharedPreferences = await SharedPreferences.getInstance();
 
       final listToLoad = [
+        UpdateVehicleType,
         UpdateBrokerAddress,
         UpdateBrokerPort,
         UpdateBrokerUsername,
@@ -75,6 +76,8 @@ class LocalSettings {
 
   String _getKeyFromActionType(Type actionType) {
     switch (actionType) {
+      case UpdateVehicleType:
+        return "vehicleType";
       case UpdateBrokerAddress:
         return "brokerAddress";
       case UpdateBrokerPort:
@@ -108,6 +111,8 @@ class LocalSettings {
 
   dynamic _getActionFromActionType(Type actionType, String value) {
     switch (actionType) {
+      case UpdateVehicleType:
+        return UpdateVehicleType(value);
       case UpdateBrokerAddress:
         return UpdateBrokerAddress(value);
       case UpdateBrokerPort:
