@@ -18,6 +18,7 @@ final Reducer<MapState> mapStateReducer = combineReducers([
     TypedReducer<MapState, UpdateOtherVehiclesStatus>(_updateOtherVehiclesStatusReducer),
     TypedReducer<MapState, UpdateOtherVehiclesProperties>(_updateOtherVehiclesPropertiesReducer),
     TypedReducer<MapState, UpdateVehicleType>(_updateVehicleTypeReducer),
+    TypedReducer<MapState, UpdateDimension>(_updateDimensionReducer),
   ]);
 
 MapState _updateUserGpsPointReducer(MapState state, UpdateUserGpsPoint action) => state.rebuild((b) => b
@@ -84,3 +85,6 @@ MapState _updateOtherVehiclesPropertiesReducer(MapState state, UpdateOtherVehicl
 
 MapState _updateVehicleTypeReducer(MapState state, UpdateVehicleType action) => state.rebuild((b) => b
   ..userVehicle.type = VehicleTypeDto.valueOf(action.value));
+
+MapState _updateDimensionReducer(MapState state, UpdateDimension action) => state.rebuild((b) => b
+  ..userVehicle.dimension.replace(VehicleDimensionDto.fromString(action.value)));

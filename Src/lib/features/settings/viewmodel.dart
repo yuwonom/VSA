@@ -12,6 +12,7 @@ class SettingsViewModel {
     : assert(_state != null && _userVehicle != null);
 
   VehicleTypeDto get vehicleType => _userVehicle.type;
+  String get dimensionString => _userVehicle.dimension.toString();
 
   BrokerDto get broker => _state.broker;
 
