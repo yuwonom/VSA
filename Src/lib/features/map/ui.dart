@@ -82,7 +82,7 @@ class MapPageState extends State<MapPage> {
       color: AppColors.black,
       iconSize: 20.0,
       tooltip: "Settings",
-      onPressed: viewModel.connectionState == MqttConnectionState.disconnected
+      onPressed: viewModel.connectionState == MqttConnectionState.disconnected || viewModel.connectionState == MqttConnectionState.faulted
         ? () => Navigator.push(context, MaterialPageRoute(builder: (_) => SettingsPage()))
         : null,
     );
