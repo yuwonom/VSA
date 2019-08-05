@@ -186,6 +186,14 @@ class CollisionCheck {
       ];
   
   void _handleCheckCollision(Store<AppState> store, dynamic action, NextDispatcher next) {
+    next(action);
+
+    if (store.state.map.otherVehicles.length == 0) {
+      final safeLevel = SecurityLevelDto.withLevel(1);
+      store.dispatch(UpdateSecurityLevel(safeLevel));
+      return;
+    }
+    
     final userVehicle = store.state.map.userVehicle;
     final userPoint = userVehicle.point;
     
@@ -209,6 +217,5 @@ class CollisionCheck {
     }
 
     store.dispatch(UpdateSecurityLevel(securityLevel));
-    next(action);
   }
 }
