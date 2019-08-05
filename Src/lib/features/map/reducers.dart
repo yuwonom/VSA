@@ -15,6 +15,7 @@ final Reducer<MapState> mapStateReducer = combineReducers([
     TypedReducer<MapState, ConnectToMqttBrokerSuccessful>(_connectToMqttBrokerSuccessfulReducer),
     TypedReducer<MapState, ConnectToMqttBrokerFailed>(_connectToMqttBrokerFailedReducer),
     TypedReducer<MapState, DisconnectFromMqttBroker>(_disconnectFromMqttBrokerReducer),
+    TypedReducer<MapState, UpdateSecurityLevel>(_updateSecurityLevelReducer),
     TypedReducer<MapState, UpdateOtherVehiclesStatus>(_updateOtherVehiclesStatusReducer),
     TypedReducer<MapState, UpdateOtherVehiclesProperties>(_updateOtherVehiclesPropertiesReducer),
     TypedReducer<MapState, UpdateVehicleType>(_updateVehicleTypeReducer),
@@ -50,6 +51,9 @@ MapState _disconnectFromMqttBrokerReducer(MapState state, DisconnectFromMqttBrok
   ..startTime = null
   ..recordedPoints.clear()
   ..otherVehicles.clear());
+
+MapState _updateSecurityLevelReducer(MapState state, UpdateSecurityLevel action) => state.rebuild((b) => b
+  ..securityLevel = action.level);
 
 MapState _updateOtherVehiclesStatusReducer(MapState state, UpdateOtherVehiclesStatus action) {
   final newOtherVehicles = action.map

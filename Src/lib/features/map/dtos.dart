@@ -93,6 +93,7 @@ abstract class VehicleDimensionDto implements Built<VehicleDimensionDto, Vehicle
   double get top;
   double get right;
   double get bottom;
+  double get average => (left + top + right + bottom) / 4;
 
   static Serializer<VehicleDimensionDto> get serializer => _$vehicleDimensionDtoSerializer;
 
