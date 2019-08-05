@@ -107,6 +107,15 @@ class PublishMessageToMqttBrokerFailed {
   String toString() => "PublishMessageToMqttBrokerFailed $exception";
 }
 
+class UpdateSecurityLevel {
+  UpdateSecurityLevel(this.level) : assert (level != null);
+
+  final SecurityLevelDto level;
+  
+  @override
+  String toString() => "UpdateSecurityLevel $level";
+}
+
 @immutable
 class UpdateOtherVehiclesStatus {
   UpdateOtherVehiclesStatus(this.map) : assert (map != null);

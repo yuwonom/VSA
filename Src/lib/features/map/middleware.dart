@@ -13,10 +13,12 @@ import 'package:vsa/features/map/geolocator.dart';
 import 'package:vsa/features/map/mqtt_api.dart';
 import 'package:vsa/state.dart';
 import 'package:vsa/utility/action_exception.dart';
+import 'package:vsa/utility/gps_helper.dart';
 
 List<Middleware<AppState>> getMiddleware(Geolocator geolocator, MqttApi mqttApi) => [
       LocalGpsIntegration(geolocator).getMiddlewareBindings(),
       MqttIntegration(mqttApi).getMiddlewareBindings(),
+      CollisionCheck().getMiddlewareBindings(),
     ].expand((x) => x).toList();
 
 @immutable
@@ -170,5 +172,50 @@ class MqttIntegration {
 
     store.dispatch(PublishMessageToMqttBroker(topic, message));
     next(action);
+  }
+}
+
+@immutable
+class CollisionCheck {
+  const CollisionCheck();
+
+  List<Middleware<AppState>> getMiddlewareBindings() => [
+        TypedMiddleware<AppState, UpdateUserGpsPoint>(_handleCheckCollision),
+        TypedMiddleware<AppState, UpdateOtherVehiclesProperties>(_handleCheckCollision),
+        TypedMiddleware<AppState, UpdateOtherVehiclesStatus>(_handleCheckCollision),
+      ];
+  
+  void _handleCheckCollision(Store<AppState> store, dynamic action, NextDispatcher next) {
+    next(action);
+
+    if (store.state.map.otherVehicles.length == 0) {
+      final safeLevel = SecurityLevelDto.withLevel(1);
+      store.dispatch(UpdateSecurityLevel(safeLevel));
+      return;
+    }
+    
+    final userVehicle = store.state.map.userVehicle;
+    final userPoint = userVehicle.point;
+    
+    final closestNode = store.state.map.otherVehicles.values
+      .reduce((VehicleDto node, VehicleDto next) => 
+        GpsHelper.distance(node.point, userPoint) <= GpsHelper.distance(next.point, userPoint) ? node : next);
+    final distance = GpsHelper.distance(closestNode.point, userPoint);
+
+    const SAFE_DISTANCE = 10.0;
+    var securityLevel = SecurityLevelDto.unknown;
+    if (distance <= userVehicle.dimension.average + closestNode.dimension.average) {
+      securityLevel = SecurityLevelDto.withLevel(5);
+    } else if (distance <= userVehicle.dimension.average + closestNode.point.accuracy) {
+      securityLevel = SecurityLevelDto.withLevel(4);
+    } else if (distance <= userPoint.accuracy + closestNode.point.accuracy) {
+      securityLevel = SecurityLevelDto.withLevel(3);
+    } else if (distance <= userPoint.accuracy + closestNode.point.accuracy + SAFE_DISTANCE) {
+      securityLevel = SecurityLevelDto.withLevel(2);
+    } else {
+      securityLevel = SecurityLevelDto.withLevel(1);
+    }
+
+    store.dispatch(UpdateSecurityLevel(securityLevel));
   }
 }
