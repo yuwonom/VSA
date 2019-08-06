@@ -34,6 +34,9 @@ abstract class VehicleDto implements Built<VehicleDto, VehicleDtoBuilder> {
     dimension: data.containsKey("dimensions")
       ? VehicleDimensionDto.fromString(data["dimensions"])
       : VehicleDimensionDto.none(),
+    type: data.containsKey("type")
+      ? VehicleTypeDto.valueOf(data["type"])
+      : VehicleTypeDto.car,
     point: (GpsPointDtoBuilder()
         ..latitude = double.parse(data["lat"] ?? 0.toString())
         ..longitude = double.parse(data["lng"] ?? 0.toString())

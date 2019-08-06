@@ -44,8 +44,7 @@ class Vehicle(object):
 	Dimensions = (0,0,0,0)
 	
 	def UpdateStatus(self, latitude, longitude, velocity, positionError, rotationAngle):
-		self.Coordinate.Latitude = latitude
-		self.Coordinate.Longitude = longitude
+		self.Coordinate = Geolocation(latitude, longitude)
 		self.Velocity = velocity
 		self.PositionError = positionError
 		self.RotationAngle = rotationAngle

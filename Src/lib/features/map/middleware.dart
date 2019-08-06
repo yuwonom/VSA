@@ -83,8 +83,6 @@ class MqttIntegration {
       "${settingsState.statusRequestSubscribeTopic}/$clientId",
       "${settingsState.trafficRequestSubscribeTopic}/$clientId",
     ]);
-
-    print("${settingsState.statusRequestSubscribeTopic}/$clientId");
     
     final vehicle = store.state.map.userVehicle;
     final topic = "${settingsState.propertiesPublishTopic}/$clientId";
@@ -164,8 +162,8 @@ class MqttIntegration {
     final clientId = store.state.settings.broker.clientId;
     final topic = "${store.state.settings.statusPublishTopic}/$clientId";
     final message = "${store.state.map.userVehicle.id}, " + 
-      "${action.point.longitude}, " +
       "${action.point.latitude}, " +
+      "${action.point.longitude}, " +
       "${action.point.speed}, " +
       "${action.point.accuracy}, " +
       "${action.point.heading}";
