@@ -3,6 +3,7 @@
 import 'dart:async';
 
 import 'package:mqtt_client/mqtt_client.dart';
+import 'package:vsa/features/map/dtos.dart';
 
 class MqttApi {
   static MqttApi _instance;
@@ -53,4 +54,12 @@ class MqttApi {
   void subscribe(List<String> topics) => topics.forEach((topic) => _client.subscribe(topic, MqttQos.exactlyOnce));
 
   void unsubscribe(List<String> topics) => topics.forEach((topic) => _client.unsubscribe(topic));
+
+  static String propertiesMessage(String id, String name, VehicleDimensionDto dimension) => "$id, $name, ${dimension.toString()}";
+
+  static String statusMessage(String id, GpsPointDto point) => "$id, ${point.latitude}, ${point.longitude}, ${point.speed}, ${point.accuracy}, ${point.heading}";
+  
+  static String propertiesRequestMessage(List<String> ids) => ids.join(", ");
+
+  static String statusRequestMessage(String id, int radius) => "$id, $radius";
 }

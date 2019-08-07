@@ -86,13 +86,14 @@ class MqttIntegration {
     
     final vehicle = store.state.map.userVehicle;
     final topic = "${settingsState.propertiesPublishTopic}/$clientId";
-    final message = "${vehicle.id}, ${vehicle.name}, ${vehicle.dimension.toString()}";
+    final message = MqttApi.propertiesMessage(vehicle.id, vehicle.name, vehicle.dimension);
     store.dispatch(PublishMessageToMqttBroker(topic, message));
     store.dispatch(RecordUserGpsPoint(vehicle.point));
 
-    _nearbyRequestTimer = Timer.periodic(Duration(milliseconds: 100), (_) {
+    const requestInterval = const Duration(milliseconds: 100);
+    _nearbyRequestTimer = Timer.periodic(requestInterval, (_) {
       final topic = "${settingsState.statusRequestPublishTopic}/$clientId";
-      final message = "${vehicle.id}, 500";
+      final message = MqttApi.statusRequestMessage(vehicle.id, 500);
       store.dispatch(PublishMessageToMqttBroker(topic, message));
     });
     
@@ -161,13 +162,7 @@ class MqttIntegration {
   void _handleRecordUserGpsPoint(Store<AppState> store, RecordUserGpsPoint action, NextDispatcher next) {
     final clientId = store.state.settings.broker.clientId;
     final topic = "${store.state.settings.statusPublishTopic}/$clientId";
-    final message = "${store.state.map.userVehicle.id}, " + 
-      "${action.point.latitude}, " +
-      "${action.point.longitude}, " +
-      "${action.point.speed}, " +
-      "${action.point.accuracy}, " +
-      "${action.point.heading}";
-
+    final message = MqttApi.statusMessage(store.state.map.userVehicle.id, action.point);
     store.dispatch(PublishMessageToMqttBroker(topic, message));
     next(action);
   }
