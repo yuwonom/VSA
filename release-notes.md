@@ -1,3 +1,12 @@
+## New in 1.1.0 (Released August 10th, 2019)
+* feature: Collision check
+* feature: Publish point on rotation
+* feature: Support various user types
+* feature: Update vehicle dimension
+* fix: Correctly handle status request
+* fix: Reenable settings on connection error
+* fix: Update default broker address
+
 ## New in 1.0.0 (Released July 27th, 2019)
 * feature: Broker settings
 * feature: Custom vehicle markers

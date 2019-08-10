@@ -13,10 +13,12 @@ import 'package:vsa/features/map/geolocator.dart';
 import 'package:vsa/features/map/mqtt_api.dart';
 import 'package:vsa/state.dart';
 import 'package:vsa/utility/action_exception.dart';
+import 'package:vsa/utility/gps_helper.dart';
 
 List<Middleware<AppState>> getMiddleware(Geolocator geolocator, MqttApi mqttApi) => [
       LocalGpsIntegration(geolocator).getMiddlewareBindings(),
       MqttIntegration(mqttApi).getMiddlewareBindings(),
+      CollisionCheck().getMiddlewareBindings(),
     ].expand((x) => x).toList();
 
 @immutable
@@ -81,18 +83,17 @@ class MqttIntegration {
       "${settingsState.statusRequestSubscribeTopic}/$clientId",
       "${settingsState.trafficRequestSubscribeTopic}/$clientId",
     ]);
-
-    print("${settingsState.statusRequestSubscribeTopic}/$clientId");
     
     final vehicle = store.state.map.userVehicle;
     final topic = "${settingsState.propertiesPublishTopic}/$clientId";
-    final message = "${vehicle.id}, ${vehicle.name}, ${vehicle.dimension.toString()}";
+    final message = MqttApi.propertiesMessage(vehicle.id, vehicle.name, vehicle.dimension);
     store.dispatch(PublishMessageToMqttBroker(topic, message));
     store.dispatch(RecordUserGpsPoint(vehicle.point));
 
-    _nearbyRequestTimer = Timer.periodic(Duration(milliseconds: 100), (_) {
+    const requestInterval = const Duration(milliseconds: 100);
+    _nearbyRequestTimer = Timer.periodic(requestInterval, (_) {
       final topic = "${settingsState.statusRequestPublishTopic}/$clientId";
-      final message = "${vehicle.id}, 500";
+      final message = MqttApi.statusRequestMessage(vehicle.id, 500);
       store.dispatch(PublishMessageToMqttBroker(topic, message));
     });
     
@@ -161,14 +162,53 @@ class MqttIntegration {
   void _handleRecordUserGpsPoint(Store<AppState> store, RecordUserGpsPoint action, NextDispatcher next) {
     final clientId = store.state.settings.broker.clientId;
     final topic = "${store.state.settings.statusPublishTopic}/$clientId";
-    final message = "${store.state.map.userVehicle.id}, " + 
-      "${action.point.longitude}, " +
-      "${action.point.latitude}, " +
-      "${action.point.speed}, " +
-      "${action.point.accuracy}, " +
-      "${action.point.heading}";
-
+    final message = MqttApi.statusMessage(store.state.map.userVehicle.id, action.point);
     store.dispatch(PublishMessageToMqttBroker(topic, message));
     next(action);
+  }
+}
+
+@immutable
+class CollisionCheck {
+  const CollisionCheck();
+
+  List<Middleware<AppState>> getMiddlewareBindings() => [
+        TypedMiddleware<AppState, UpdateUserGpsPoint>(_handleCheckCollision),
+        TypedMiddleware<AppState, UpdateOtherVehiclesProperties>(_handleCheckCollision),
+        TypedMiddleware<AppState, UpdateOtherVehiclesStatus>(_handleCheckCollision),
+      ];
+  
+  void _handleCheckCollision(Store<AppState> store, dynamic action, NextDispatcher next) {
+    next(action);
+
+    if (store.state.map.otherVehicles.length == 0) {
+      final safeLevel = SecurityLevelDto.withLevel(1);
+      store.dispatch(UpdateSecurityLevel(safeLevel));
+      return;
+    }
+    
+    final userVehicle = store.state.map.userVehicle;
+    final userPoint = userVehicle.point;
+    
+    final closestNode = store.state.map.otherVehicles.values
+      .reduce((VehicleDto node, VehicleDto next) => 
+        GpsHelper.distance(node.point, userPoint) <= GpsHelper.distance(next.point, userPoint) ? node : next);
+    final distance = GpsHelper.distance(closestNode.point, userPoint);
+
+    const SAFE_DISTANCE = 10.0;
+    var securityLevel = SecurityLevelDto.unknown;
+    if (distance <= userVehicle.dimension.average + closestNode.dimension.average) {
+      securityLevel = SecurityLevelDto.withLevel(5);
+    } else if (distance <= userVehicle.dimension.average + closestNode.point.accuracy) {
+      securityLevel = SecurityLevelDto.withLevel(4);
+    } else if (distance <= userPoint.accuracy + closestNode.point.accuracy) {
+      securityLevel = SecurityLevelDto.withLevel(3);
+    } else if (distance <= userPoint.accuracy + closestNode.point.accuracy + SAFE_DISTANCE) {
+      securityLevel = SecurityLevelDto.withLevel(2);
+    } else {
+      securityLevel = SecurityLevelDto.withLevel(1);
+    }
+
+    store.dispatch(UpdateSecurityLevel(securityLevel));
   }
 }

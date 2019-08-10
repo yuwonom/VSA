@@ -138,7 +138,6 @@ def topic_vehsim_req_callback(mqttc, obj, msg):
 		vehsim_list.append("{" + combined + "}");
 
 	vehsim_json = "[" + ",".join(vehsim_list) + "]";
-	print(vehsim_json);
 	client.publish(VSA.TOPIC_VEHSIM_RETURN + "/" + veh_id, vehsim_json);
 	
 def topic_vehprop_req_callback(mqttc, obj, msg):

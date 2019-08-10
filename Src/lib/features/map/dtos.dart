@@ -34,6 +34,9 @@ abstract class VehicleDto implements Built<VehicleDto, VehicleDtoBuilder> {
     dimension: data.containsKey("dimensions")
       ? VehicleDimensionDto.fromString(data["dimensions"])
       : VehicleDimensionDto.none(),
+    type: data.containsKey("type")
+      ? VehicleTypeDto.valueOf(data["type"])
+      : VehicleTypeDto.car,
     point: (GpsPointDtoBuilder()
         ..latitude = double.parse(data["lat"] ?? 0.toString())
         ..longitude = double.parse(data["lng"] ?? 0.toString())
@@ -49,6 +52,7 @@ abstract class VehicleDto implements Built<VehicleDto, VehicleDtoBuilder> {
     id: "VSA1",
     name: "VSA Autocar",
     dimension: VehicleDimensionDto.none(),
+    type: VehicleTypeDto.car,
   );
 
   VehicleDto._();
@@ -56,6 +60,7 @@ abstract class VehicleDto implements Built<VehicleDto, VehicleDtoBuilder> {
   String get id;
   String get name;
   VehicleDimensionDto get dimension;
+  VehicleTypeDto get type;
   @nullable
   GpsPointDto get point;
 
@@ -91,11 +96,27 @@ abstract class VehicleDimensionDto implements Built<VehicleDimensionDto, Vehicle
   double get top;
   double get right;
   double get bottom;
+  double get average => (left + top + right + bottom) / 4;
 
   static Serializer<VehicleDimensionDto> get serializer => _$vehicleDimensionDtoSerializer;
 
   @override
   String toString() => "$left, $top, $right, $bottom";
+}
+
+class VehicleTypeDto extends EnumClass {
+  static const VehicleTypeDto car = _$car;
+  static const VehicleTypeDto cycle = _$cycle;
+  static const VehicleTypeDto motorbike = _$motorbike;
+  static const VehicleTypeDto scooter = _$scooter;
+  static const VehicleTypeDto pedestrian = _$pedestrian;
+
+  const VehicleTypeDto._(String name) : super(name);
+
+  static Serializer<VehicleTypeDto> get serializer => _$vehicleTypeDtoSerializer;
+
+  static BuiltSet<VehicleTypeDto> get values => _$vehicleTypeDtoValues;
+  static VehicleTypeDto valueOf(String name) => _$vehicleTypeDtoValueOf(name);
 }
 
 class SecurityLevelDto extends EnumClass {

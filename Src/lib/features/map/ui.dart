@@ -14,6 +14,7 @@ import 'package:redux/redux.dart';
 import 'package:vsa/features/map/actions.dart';
 import 'package:vsa/features/map/dtos.dart';
 import 'package:vsa/features/map/geolocator.dart';
+import 'package:vsa/features/map/mqtt_api.dart';
 import 'package:vsa/features/map/viewmodels.dart';
 import 'package:vsa/features/settings/actions.dart';
 import 'package:vsa/features/settings/ui.dart';
@@ -82,7 +83,7 @@ class MapPageState extends State<MapPage> {
       color: AppColors.black,
       iconSize: 20.0,
       tooltip: "Settings",
-      onPressed: viewModel.connectionState == MqttConnectionState.disconnected
+      onPressed: viewModel.connectionState == MqttConnectionState.disconnected || viewModel.connectionState == MqttConnectionState.faulted
         ? () => Navigator.push(context, MaterialPageRoute(builder: (_) => SettingsPage()))
         : null,
     );
@@ -275,10 +276,24 @@ class MapPageState extends State<MapPage> {
       ),
       onMapCreated: (GoogleMapController controller) {
         _mapController = controller;
+
         FlutterCompass.events.listen((double direction) {
           setState(() => _direction = direction);
           _stickMap(store);
+
+          final mapState = store.state.map;
+          final settingsState = store.state.settings;
+          
+          if (mapState.connectionState == MqttConnectionState.connected) {
+            final topic = "${settingsState.statusPublishTopic}/${settingsState.broker.clientId}";
+            final message = MqttApi.statusMessage(
+              mapState.userVehicle.id,
+              mapState.userVehicle.point.rebuild((b) => b.heading = _direction),
+            );
+            store.dispatch(PublishMessageToMqttBroker(topic, message));
+          }
         });
+
         Geolocator.instance.events.listen((GpsPointDto point) {
           store.dispatch(UpdateUserGpsPoint(point));
           _stickMap(store);

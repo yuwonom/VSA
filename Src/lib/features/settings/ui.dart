@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
+import 'package:vsa/features/map/dtos.dart';
 import 'package:vsa/features/settings/actions.dart';
 import 'package:vsa/features/settings/viewmodel.dart';
 import 'package:vsa/state.dart';
@@ -13,11 +14,25 @@ import 'package:vsa/themes/vsa_button.dart';
 class SettingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) => StoreConnector<AppState, SettingsViewModel>(
-      converter: (Store<AppState> store) => SettingsViewModel(store.state.settings),
+      converter: (Store<AppState> store) => SettingsViewModel(store.state.settings, store.state.map.userVehicle),
       builder: (BuildContext context, SettingsViewModel viewModel) => _buildPage(context, StoreProvider.of(context), viewModel),
     );
 
   Widget _buildPage(BuildContext context, Store<AppState> store, SettingsViewModel viewModel) {
+    final profileTileGroup = _buildTileGroup("Profile", <Widget>[
+      _buildTileDropdown("Vehicle Type", viewModel.vehicleType.name, (String value) => store.dispatch(UpdateSettings(UpdateVehicleType, value))),
+      _buildTile(context, "Dimension", viewModel.dimensionString, UpdateDimension, validity: (String value) {
+        final values = value.split(',');
+        if (values.length != 4) {
+          return false;
+        }
+
+        return !values
+          .map<bool>((String val) => double.tryParse(val.trim()) == null)
+          .contains(true);
+      }),
+    ]);
+
     final brokerTileGroup = _buildTileGroup("Broker", <Widget>[
       _buildTile(context, "Address", viewModel.address, UpdateBrokerAddress),
       _buildTile(context, "Port", viewModel.port, UpdateBrokerPort),
@@ -44,6 +59,7 @@ class SettingsPage extends StatelessWidget {
       padding: AppEdges.mediumAll,
       child: Column(
         children: <Widget>[
+          profileTileGroup,
           brokerTileGroup,
           vehicleTopicsTileGroup,
           trafficTopicsTileGroup,
@@ -65,7 +81,7 @@ class SettingsPage extends StatelessWidget {
     return scaffold;
   }
 
-  Widget _buildTile(BuildContext context, String title, String value, Type actionType, {bool obscureText = false}) => ListTile(
+  Widget _buildTile(BuildContext context, String title, String value, Type actionType, {Function validity, bool obscureText = false}) => ListTile(
       title: Text(
         title,
         style: AppTextStyles.body1.copyWith(color: AppColors.black),
@@ -79,7 +95,27 @@ class SettingsPage extends StatelessWidget {
         softWrap: true,
         maxLines: 2,
       ),
-      onTap: () => showDialog(context: context, builder: (_) => SettingsDialog(title, value, actionType, obscureText: obscureText)),
+      onTap: () => showDialog(context: context, builder: (_) => SettingsDialog(title, value, actionType, validity, obscureText)),
+    );
+  
+  Widget _buildTileDropdown(String title, String value, Function onChanged) => ListTile(
+      title: Text(
+        title,
+        style: AppTextStyles.body1.copyWith(color: AppColors.black),
+        overflow: TextOverflow.ellipsis,
+        softWrap: true,
+      ),
+      trailing: DropdownButton<String>(
+        elevation: 2,
+        style: AppTextStyles.body1.copyWith(color: AppColors.darkGray),
+        value: value,
+        items: VehicleTypeDto.values
+          .map((VehicleTypeDto type) => DropdownMenuItem<String>(
+            value: type.name,
+            child: Text(type.name, style: AppTextStyles.body1.copyWith(color: AppColors.darkGray)),
+          )).toList(),
+        onChanged: onChanged,
+      ),
     );
 
   Widget _buildTileGroup(String headerText, List<Widget> tiles) {
@@ -127,12 +163,13 @@ class SettingsPage extends StatelessWidget {
 }
 
 class SettingsDialog extends StatefulWidget {
-  const SettingsDialog(this.title, this.value, this.actionType, {this.obscureText = false})
+  const SettingsDialog(this.title, this.value, this.actionType, this.validity, this.obscureText)
     : assert(title != null && value != null && actionType != null);
 
   final String title;
   final String value;
   final Type actionType;
+  final Function validity;
   final bool obscureText;
 
   @override
@@ -153,6 +190,10 @@ class SettingsDialogState extends State<SettingsDialog> {
   Widget build(BuildContext context) => StoreBuilder(builder: _buildPage);
 
   Widget _buildPage(BuildContext context, Store<AppState> store) {
+    final isValid = widget.validity == null 
+        ? true
+        : widget.validity(_controller.text);
+
     final title = Text(widget.title, style: AppTextStyles.subtitle1.copyWith(color: AppColors.black));
     
     final textField = TextField(
@@ -160,11 +201,21 @@ class SettingsDialogState extends State<SettingsDialog> {
       autocorrect: false,
       controller: _controller,
       obscureText: widget.obscureText,
+      onChanged: (String _) => setState((){}),
+    );
+
+    final errorText = Text(
+      "Please enter value with the correct format.",
+      style: AppTextStyles.body1.copyWith(color: AppColors.red),
+      textAlign: TextAlign.left,
+      maxLines: 2,
+      softWrap: true,
     );
 
     final saveButton = VSAButton(
       text: "Save",
       type: VSAButtonType.secondary,
+      enabled: isValid,
       onPressed: () {
         store.dispatch(UpdateSettings(widget.actionType, _controller.text));
         Navigator.pop(context);
@@ -195,6 +246,10 @@ class SettingsDialogState extends State<SettingsDialog> {
         Padding(
           padding: AppEdges.smallVertical,
           child: textField,
+        ),
+        Opacity(
+          opacity: isValid ? 0 : 1,
+          child: errorText,
         ),
         buttons,
       ],

@@ -15,8 +15,11 @@ final Reducer<MapState> mapStateReducer = combineReducers([
     TypedReducer<MapState, ConnectToMqttBrokerSuccessful>(_connectToMqttBrokerSuccessfulReducer),
     TypedReducer<MapState, ConnectToMqttBrokerFailed>(_connectToMqttBrokerFailedReducer),
     TypedReducer<MapState, DisconnectFromMqttBroker>(_disconnectFromMqttBrokerReducer),
+    TypedReducer<MapState, UpdateSecurityLevel>(_updateSecurityLevelReducer),
     TypedReducer<MapState, UpdateOtherVehiclesStatus>(_updateOtherVehiclesStatusReducer),
     TypedReducer<MapState, UpdateOtherVehiclesProperties>(_updateOtherVehiclesPropertiesReducer),
+    TypedReducer<MapState, UpdateVehicleType>(_updateVehicleTypeReducer),
+    TypedReducer<MapState, UpdateDimension>(_updateDimensionReducer),
   ]);
 
 MapState _updateUserGpsPointReducer(MapState state, UpdateUserGpsPoint action) => state.rebuild((b) => b
@@ -49,6 +52,9 @@ MapState _disconnectFromMqttBrokerReducer(MapState state, DisconnectFromMqttBrok
   ..recordedPoints.clear()
   ..otherVehicles.clear());
 
+MapState _updateSecurityLevelReducer(MapState state, UpdateSecurityLevel action) => state.rebuild((b) => b
+  ..securityLevel = action.level);
+
 MapState _updateOtherVehiclesStatusReducer(MapState state, UpdateOtherVehiclesStatus action) {
   final newOtherVehicles = action.map
     ..toMap()
@@ -80,3 +86,9 @@ MapState _updateOtherVehiclesPropertiesReducer(MapState state, UpdateOtherVehicl
   
   return state.rebuild((b) => b..otherVehicles.replace(newOtherVehicles));
 }
+
+MapState _updateVehicleTypeReducer(MapState state, UpdateVehicleType action) => state.rebuild((b) => b
+  ..userVehicle.type = VehicleTypeDto.valueOf(action.value));
+
+MapState _updateDimensionReducer(MapState state, UpdateDimension action) => state.rebuild((b) => b
+  ..userVehicle.dimension.replace(VehicleDimensionDto.fromString(action.value)));
