@@ -314,9 +314,11 @@ class MapPageState extends State<MapPage> {
 
   Future<Marker> _buildVehicleMarker(VehicleDto vehicle, bool isUser) async {
     final iconPath = "assets/images/vehicles/";
+    final iconType = vehicle.type.toString();
+    final iconFor = isUser ? "self" : "other";
     final icon = BitmapDescriptor.fromAssetImage(
       const ImageConfiguration(),
-      isUser ? "${iconPath}car_blue.png" : "${iconPath}car_red.png",
+      "$iconPath${iconType}_$iconFor.png",
     );
 
     final marker = Marker(

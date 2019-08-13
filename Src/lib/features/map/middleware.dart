@@ -86,7 +86,7 @@ class MqttIntegration {
     
     final vehicle = store.state.map.userVehicle;
     final topic = "${settingsState.propertiesPublishTopic}/$clientId";
-    final message = MqttApi.propertiesMessage(vehicle.id, vehicle.name, vehicle.dimension);
+    final message = MqttApi.propertiesMessage(vehicle.id, vehicle.name, vehicle.type, vehicle.dimension);
     store.dispatch(PublishMessageToMqttBroker(topic, message));
     store.dispatch(RecordUserGpsPoint(vehicle.point));
 
@@ -146,6 +146,16 @@ class MqttIntegration {
         final vehicles = (jsonDecode(data) as List)
             .map((veh) => VehicleDto.fromJson(veh))
             .toList();
+
+        final newVehicleIds = vehicles
+          .where((VehicleDto veh) => !store.state.map.otherVehicles.containsKey(veh.id))
+          .map((VehicleDto veh) => veh.id)
+          .toList();
+
+        final topic = "${settingsState.propertiesRequestPublishTopic}/${settingsState.broker.clientId}";
+        final message = MqttApi.propertiesRequestMessage(newVehicleIds);
+        store.dispatch(PublishMessageToMqttBroker(topic, message));
+
         final map = BuiltMap<String, VehicleDto>(Map<String, VehicleDto>
             .fromIterable(vehicles, key: (vehicle) => vehicle.id, value: (vehicle) => vehicle));
 

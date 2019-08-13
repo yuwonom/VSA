@@ -65,6 +65,7 @@ MapState _updateOtherVehiclesStatusReducer(MapState state, UpdateOtherVehiclesSt
 
       value.rebuild((b) => b
         ..name = state.otherVehicles[key].name
+        ..type = state.otherVehicles[key].type
         ..dimension.replace(state.otherVehicles[key].dimension));
     });
   
@@ -81,6 +82,7 @@ MapState _updateOtherVehiclesPropertiesReducer(MapState state, UpdateOtherVehicl
 
       value.rebuild((b) => b
         ..name = action.map[key].name
+        ..type = action.map[key].type
         ..dimension.replace(action.map[key].dimension));
     });
   

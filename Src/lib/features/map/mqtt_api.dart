@@ -55,11 +55,11 @@ class MqttApi {
 
   void unsubscribe(List<String> topics) => topics.forEach((topic) => _client.unsubscribe(topic));
 
-  static String propertiesMessage(String id, String name, VehicleDimensionDto dimension) => "$id, $name, ${dimension.toString()}";
+  static String propertiesMessage(String id, String name, VehicleTypeDto type, VehicleDimensionDto dimension) => "$id,$name,${type.toString()},${dimension.toString()}";
 
-  static String statusMessage(String id, GpsPointDto point) => "$id, ${point.latitude}, ${point.longitude}, ${point.speed}, ${point.accuracy}, ${point.heading}";
+  static String statusMessage(String id, GpsPointDto point) => "$id,${point.latitude},${point.longitude},${point.speed},${point.accuracy},${point.heading}";
   
-  static String propertiesRequestMessage(List<String> ids) => ids.join(", ");
+  static String propertiesRequestMessage(List<String> ids) => ids.join(",");
 
-  static String statusRequestMessage(String id, int radius) => "$id, $radius";
+  static String statusRequestMessage(String id, int radius) => "$id,$radius";
 }
