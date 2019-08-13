@@ -151,10 +151,10 @@ def topic_vehprop_req_callback(mqttc, obj, msg):
 
 	global vehicles;
 
-	data = [];
+	data = {};
 	for nearby_id in items:
 		if (nearby_id in vehicles):
-			data.append(vehicles[nearby_id]);
+			data[nearby_id] = vehicles[nearby_id];
 
 	vehprop_list = [];
 	for id in data:

@@ -147,19 +147,22 @@ class MqttIntegration {
             .map((veh) => VehicleDto.fromJson(veh))
             .toList();
 
+        final map = BuiltMap<String, VehicleDto>(Map<String, VehicleDto>
+            .fromIterable(vehicles, key: (vehicle) => vehicle.id, value: (vehicle) => vehicle));
+
+        store.dispatch(UpdateOtherVehiclesStatus(BuiltMap<String, VehicleDto>(map)));
+
         final newVehicleIds = vehicles
           .where((VehicleDto veh) => !store.state.map.otherVehicles.containsKey(veh.id))
           .map((VehicleDto veh) => veh.id)
           .toList();
 
-        final topic = "${settingsState.propertiesRequestPublishTopic}/${settingsState.broker.clientId}";
-        final message = MqttApi.propertiesRequestMessage(newVehicleIds);
-        store.dispatch(PublishMessageToMqttBroker(topic, message));
-
-        final map = BuiltMap<String, VehicleDto>(Map<String, VehicleDto>
-            .fromIterable(vehicles, key: (vehicle) => vehicle.id, value: (vehicle) => vehicle));
-
-        store.dispatch(UpdateOtherVehiclesStatus(BuiltMap<String, VehicleDto>(map)));
+        // Get properties if there are new vehicles
+        if (newVehicleIds.isNotEmpty) {
+          final topic = "${settingsState.propertiesRequestPublishTopic}/${settingsState.broker.clientId}";
+          final message = MqttApi.propertiesRequestMessage(newVehicleIds);
+          store.dispatch(PublishMessageToMqttBroker(topic, message));
+        }
       } else if (topic.startsWith(settingsState.trafficRequestSubscribeTopic)) {
 
       }

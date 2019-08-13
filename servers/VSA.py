@@ -63,7 +63,7 @@ class Vehicle(object):
 	def __init__(self, uid, name, type, dimensions):
 		self.UID = uid
 		self.Name = name
-		self.TYPE = VehicleType(type)
+		self.Type = VehicleType(type)
 		self.Dimensions = dimensions
 
 
