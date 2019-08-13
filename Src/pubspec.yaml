@@ -36,5 +36,13 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-    - assets/images/vehicles/car_blue.png
-    - assets/images/vehicles/car_red.png
+    - assets/images/vehicles/car_other.png
+    - assets/images/vehicles/car_self.png
+    - assets/images/vehicles/cycle_other.png
+    - assets/images/vehicles/cycle_self.png
+    - assets/images/vehicles/motorbike_other.png
+    - assets/images/vehicles/motorbike_self.png
+    - assets/images/vehicles/pedestrian_other.png
+    - assets/images/vehicles/pedestrian_self.png
+    - assets/images/vehicles/scooter_other.png
+    - assets/images/vehicles/scooter_self.png
