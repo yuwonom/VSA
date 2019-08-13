@@ -150,12 +150,12 @@ class MqttIntegration {
         final map = BuiltMap<String, VehicleDto>(Map<String, VehicleDto>
             .fromIterable(vehicles, key: (vehicle) => vehicle.id, value: (vehicle) => vehicle));
 
-        store.dispatch(UpdateOtherVehiclesStatus(BuiltMap<String, VehicleDto>(map)));
-
         final newVehicleIds = vehicles
           .where((VehicleDto veh) => !store.state.map.otherVehicles.containsKey(veh.id))
           .map((VehicleDto veh) => veh.id)
           .toList();
+
+        store.dispatch(UpdateOtherVehiclesStatus(BuiltMap<String, VehicleDto>(map)));
 
         // Get properties if there are new vehicles
         if (newVehicleIds.isNotEmpty) {

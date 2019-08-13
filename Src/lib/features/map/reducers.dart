@@ -1,5 +1,6 @@
 /// Authored by `@yuwonom (Michael Yuwono)`
 
+import 'package:built_collection/built_collection.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:redux/redux.dart';
 import 'package:vsa/features/map/actions.dart';
@@ -56,37 +57,44 @@ MapState _updateSecurityLevelReducer(MapState state, UpdateSecurityLevel action)
   ..securityLevel = action.level);
 
 MapState _updateOtherVehiclesStatusReducer(MapState state, UpdateOtherVehiclesStatus action) {
-  final newOtherVehicles = action.map
-    ..toMap()
-    .forEach((String key, VehicleDto value) {
-      if (!state.otherVehicles.toMap().containsKey(key)) {
-        return;
+  final newOtherVehiclesEntries = action.map.entries
+    .map((MapEntry<String, VehicleDto> entry) {
+      if (!state.otherVehicles.containsKey(entry.key)) {
+        return entry;
       }
 
-      value.rebuild((b) => b
-        ..name = state.otherVehicles[key].name
-        ..type = state.otherVehicles[key].type
-        ..dimension.replace(state.otherVehicles[key].dimension));
+      final newValue = entry.value.rebuild((b) => b
+        ..name = state.otherVehicles[entry.key].name
+        ..type = state.otherVehicles[entry.key].type
+        ..dimension.replace(state.otherVehicles[entry.key].dimension));
+        
+      return MapEntry<String, VehicleDto>(entry.key, newValue);
     });
+
+  final newOtherVehiclesBuiltMap = BuiltMap<String, VehicleDto>(Map<String, VehicleDto>.fromEntries(newOtherVehiclesEntries));
   
-  return state.rebuild((b) => b..otherVehicles.replace(newOtherVehicles));
+  return state.rebuild((b) => b..otherVehicles.replace(newOtherVehiclesBuiltMap));
 }
 
 MapState _updateOtherVehiclesPropertiesReducer(MapState state, UpdateOtherVehiclesProperties action) {
-  final newOtherVehicles = state.otherVehicles
-    ..toMap()
-    .forEach((String key, VehicleDto value) {
-      if (!action.map.toMap().containsKey(key)) {
-        return;
+  final newOtherVehiclesEntries = state.otherVehicles.entries
+    .map((MapEntry<String, VehicleDto> entry) {
+      if (!action.map.containsKey(entry.key)) {
+        return null;
       }
 
-      value.rebuild((b) => b
-        ..name = action.map[key].name
-        ..type = action.map[key].type
-        ..dimension.replace(action.map[key].dimension));
-    });
+      final newValue = entry.value.rebuild((b) => b
+        ..name = action.map[entry.key].name
+        ..type = action.map[entry.key].type
+        ..dimension.replace(action.map[entry.key].dimension));
+
+      return MapEntry<String, VehicleDto>(entry.key, newValue);
+    })
+    .where((MapEntry<String, VehicleDto> entry) => entry != null);
+
+  final newOtherVehiclesBuiltMap = BuiltMap<String, VehicleDto>(Map<String, VehicleDto>.fromEntries(newOtherVehiclesEntries));
   
-  return state.rebuild((b) => b..otherVehicles.replace(newOtherVehicles));
+  return state.rebuild((b) => b..otherVehicles.replace(newOtherVehiclesBuiltMap));
 }
 
 MapState _updateVehicleTypeReducer(MapState state, UpdateVehicleType action) => state.rebuild((b) => b
