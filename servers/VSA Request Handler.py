@@ -97,10 +97,11 @@ def topic_vehprop_callback(mqttc, obj, msg):
 	items = payload.split(',');
 	uid = items[0];
 	name = items[1];
-	left = float(items[2]);
-	top = float(items[3]);
-	right = float(items[4]);
-	bottom = float(items[5]);
+	type = items[2];
+	left = float(items[3]);
+	top = float(items[4]);
+	right = float(items[5]);
+	bottom = float(items[6]);
 	dimensions = (left, top, right, bottom);
 
 	global vehicles;
@@ -108,7 +109,7 @@ def topic_vehprop_callback(mqttc, obj, msg):
 	if uid in vehicles:
 		del vehicles[uid];
 
-	vehicle = VSA.Vehicle(uid, name, dimensions);
+	vehicle = VSA.Vehicle(uid, name, type, dimensions);
 	vehicles[uid] = vehicle;
 
 def topic_vehsim_req_callback(mqttc, obj, msg):
@@ -160,8 +161,9 @@ def topic_vehprop_req_callback(mqttc, obj, msg):
 		dims = data[id].Dimensions;
 		data_id = mapToString("id", id);
 		data_name = mapToString("name", data[id].Name);
+		data_type = mapToString("type", data[id].Type.value);
 		data_dim = mapToString("dimensions", ",".join([str(dims[0]), str(dims[1]), str(dims[2]), str(dims[3])]));
-		combined = ",".join([data_id, data_name, data_dim]);
+		combined = ",".join([data_id, data_name, data_type, data_dim]);
 		vehprop_list.append("{" + combined + "}");
 
 	vehprop_json = "[" + ",".join(vehprop_list) + "]";
