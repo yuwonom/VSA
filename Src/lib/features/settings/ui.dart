@@ -19,6 +19,8 @@ class SettingsPage extends StatelessWidget {
     );
 
   Widget _buildPage(BuildContext context, Store<AppState> store, SettingsViewModel viewModel) {
+    final scaffoldKey = GlobalKey<ScaffoldState>();
+    
     final profileTileGroup = _buildTileGroup("Profile", <Widget>[
       _buildTileDropdown("Vehicle Type", viewModel.vehicleType.name, (String value) => store.dispatch(UpdateSettings(UpdateVehicleType, value))),
       _buildTile(context, "Dimension", viewModel.dimensionString, UpdateDimension, validity: (String value) {
@@ -39,6 +41,22 @@ class SettingsPage extends StatelessWidget {
       _buildTile(context, "Username", viewModel.username, UpdateBrokerUsername),
       _buildTile(context, "Password", viewModel.password, UpdateBrokerPassword, obscureText: true),
       _buildTile(context, "Identifier", viewModel.clientId, UpdateBrokerClientId),
+    ]);
+    
+    final notAvailableSnackBar = SnackBar(
+      duration: const Duration(seconds: 2),
+      content: Text("Level is not yet available"),
+      action: SnackBarAction(
+        label: "OKAY",
+        onPressed: () => scaffoldKey.currentState.hideCurrentSnackBar(),
+      ),
+    );
+
+    final topicStructureTileGroup = _buildTileGroup("Topic Structure", <Widget>[
+      _buildTileCheckbox("Level A", false, (bool checked) => scaffoldKey.currentState.showSnackBar(notAvailableSnackBar)),
+      _buildTileCheckbox("Level B", false, (bool checked) => scaffoldKey.currentState.showSnackBar(notAvailableSnackBar)),
+      _buildTileCheckbox("Level C", false, (bool checked) => scaffoldKey.currentState.showSnackBar(notAvailableSnackBar)),
+      _buildTileCheckbox("Level D", false, (bool checked) => scaffoldKey.currentState.showSnackBar(notAvailableSnackBar)),
     ]);
 
     final vehicleTopicsTileGroup = _buildTileGroup("Vehicle Topics", <Widget>[
@@ -61,6 +79,7 @@ class SettingsPage extends StatelessWidget {
         children: <Widget>[
           profileTileGroup,
           brokerTileGroup,
+          topicStructureTileGroup,
           vehicleTopicsTileGroup,
           trafficTopicsTileGroup,
         ],
@@ -74,6 +93,7 @@ class SettingsPage extends StatelessWidget {
     );
 
     final scaffold = Scaffold(
+      key: scaffoldKey,
       appBar: appBar,
       body: body,
     );
@@ -96,6 +116,20 @@ class SettingsPage extends StatelessWidget {
         maxLines: 2,
       ),
       onTap: () => showDialog(context: context, builder: (_) => SettingsDialog(title, value, actionType, validity, obscureText)),
+    );
+
+   Widget _buildTileCheckbox(String title, bool value, Function onChanged) => ListTile(
+      leading: Checkbox(
+        activeColor: AppColors.blue,
+        value: value,
+        onChanged: onChanged,
+      ),
+      title: Text(
+        title,
+        style: AppTextStyles.body1.copyWith(color: AppColors.black),
+        overflow: TextOverflow.ellipsis,
+        softWrap: true,
+      ),
     );
   
   Widget _buildTileDropdown(String title, String value, Function onChanged) => ListTile(
