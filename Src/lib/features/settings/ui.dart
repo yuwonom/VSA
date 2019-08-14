@@ -53,10 +53,10 @@ class SettingsPage extends StatelessWidget {
     );
 
     final topicStructureTileGroup = _buildTileGroup("Topic Structure", <Widget>[
-      _buildTileCheckbox("Level A", false, (bool checked) => scaffoldKey.currentState.showSnackBar(notAvailableSnackBar)),
-      _buildTileCheckbox("Level B", false, (bool checked) => scaffoldKey.currentState.showSnackBar(notAvailableSnackBar)),
-      _buildTileCheckbox("Level C", false, (bool checked) => scaffoldKey.currentState.showSnackBar(notAvailableSnackBar)),
-      _buildTileCheckbox("Level D", false, (bool checked) => scaffoldKey.currentState.showSnackBar(notAvailableSnackBar)),
+      _buildTileCheckbox("Level A", viewModel.isActiveLevelA, (bool checked) => store.dispatch(UpdateSettings(SwitchLevelA, checked))),
+      _buildTileCheckbox("Level B", viewModel.isActiveLevelB, (bool checked) => scaffoldKey.currentState.showSnackBar(notAvailableSnackBar)),
+      _buildTileCheckbox("Level C", viewModel.isActiveLevelC, (bool checked) => scaffoldKey.currentState.showSnackBar(notAvailableSnackBar)),
+      _buildTileCheckbox("Level D", viewModel.isActiveLevelD, (bool checked) => scaffoldKey.currentState.showSnackBar(notAvailableSnackBar)),
     ]);
 
     final vehicleTopicsTileGroup = _buildTileGroup("Vehicle Topics", <Widget>[

@@ -16,6 +16,11 @@ class SettingsViewModel {
 
   BrokerDto get broker => _state.broker;
 
+  bool get isActiveLevelA => _state.isActiveLevelA;
+  bool get isActiveLevelB => _state.isActiveLevelB;
+  bool get isActiveLevelC => _state.isActiveLevelC;
+  bool get isActiveLevelD => _state.isActiveLevelD;
+
   String get address => broker.address;
   String get port => broker.port;
   String get username => broker.username;

@@ -8,6 +8,14 @@ part of 'state.dart';
 
 class _$SettingsState extends SettingsState {
   @override
+  final bool isActiveLevelA;
+  @override
+  final bool isActiveLevelB;
+  @override
+  final bool isActiveLevelC;
+  @override
+  final bool isActiveLevelD;
+  @override
   final BrokerDto broker;
   @override
   final String propertiesPublishTopic;
@@ -34,7 +42,11 @@ class _$SettingsState extends SettingsState {
       (new SettingsStateBuilder()..update(updates)).build();
 
   _$SettingsState._(
-      {this.broker,
+      {this.isActiveLevelA,
+      this.isActiveLevelB,
+      this.isActiveLevelC,
+      this.isActiveLevelD,
+      this.broker,
       this.propertiesPublishTopic,
       this.statusPublishTopic,
       this.propertiesRequestPublishTopic,
@@ -46,6 +58,18 @@ class _$SettingsState extends SettingsState {
       this.isBusy,
       this.exception})
       : super._() {
+    if (isActiveLevelA == null) {
+      throw new BuiltValueNullFieldError('SettingsState', 'isActiveLevelA');
+    }
+    if (isActiveLevelB == null) {
+      throw new BuiltValueNullFieldError('SettingsState', 'isActiveLevelB');
+    }
+    if (isActiveLevelC == null) {
+      throw new BuiltValueNullFieldError('SettingsState', 'isActiveLevelC');
+    }
+    if (isActiveLevelD == null) {
+      throw new BuiltValueNullFieldError('SettingsState', 'isActiveLevelD');
+    }
     if (broker == null) {
       throw new BuiltValueNullFieldError('SettingsState', 'broker');
     }
@@ -96,6 +120,10 @@ class _$SettingsState extends SettingsState {
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
     return other is SettingsState &&
+        isActiveLevelA == other.isActiveLevelA &&
+        isActiveLevelB == other.isActiveLevelB &&
+        isActiveLevelC == other.isActiveLevelC &&
+        isActiveLevelD == other.isActiveLevelD &&
         broker == other.broker &&
         propertiesPublishTopic == other.propertiesPublishTopic &&
         statusPublishTopic == other.statusPublishTopic &&
@@ -121,7 +149,21 @@ class _$SettingsState extends SettingsState {
                             $jc(
                                 $jc(
                                     $jc(
-                                        $jc($jc(0, broker.hashCode),
+                                        $jc(
+                                            $jc(
+                                                $jc(
+                                                    $jc(
+                                                        $jc(
+                                                            $jc(
+                                                                0,
+                                                                isActiveLevelA
+                                                                    .hashCode),
+                                                            isActiveLevelB
+                                                                .hashCode),
+                                                        isActiveLevelC
+                                                            .hashCode),
+                                                    isActiveLevelD.hashCode),
+                                                broker.hashCode),
                                             propertiesPublishTopic.hashCode),
                                         statusPublishTopic.hashCode),
                                     propertiesRequestPublishTopic.hashCode),
@@ -137,6 +179,10 @@ class _$SettingsState extends SettingsState {
   @override
   String toString() {
     return (newBuiltValueToStringHelper('SettingsState')
+          ..add('isActiveLevelA', isActiveLevelA)
+          ..add('isActiveLevelB', isActiveLevelB)
+          ..add('isActiveLevelC', isActiveLevelC)
+          ..add('isActiveLevelD', isActiveLevelD)
           ..add('broker', broker)
           ..add('propertiesPublishTopic', propertiesPublishTopic)
           ..add('statusPublishTopic', statusPublishTopic)
@@ -156,6 +202,26 @@ class _$SettingsState extends SettingsState {
 class SettingsStateBuilder
     implements Builder<SettingsState, SettingsStateBuilder> {
   _$SettingsState _$v;
+
+  bool _isActiveLevelA;
+  bool get isActiveLevelA => _$this._isActiveLevelA;
+  set isActiveLevelA(bool isActiveLevelA) =>
+      _$this._isActiveLevelA = isActiveLevelA;
+
+  bool _isActiveLevelB;
+  bool get isActiveLevelB => _$this._isActiveLevelB;
+  set isActiveLevelB(bool isActiveLevelB) =>
+      _$this._isActiveLevelB = isActiveLevelB;
+
+  bool _isActiveLevelC;
+  bool get isActiveLevelC => _$this._isActiveLevelC;
+  set isActiveLevelC(bool isActiveLevelC) =>
+      _$this._isActiveLevelC = isActiveLevelC;
+
+  bool _isActiveLevelD;
+  bool get isActiveLevelD => _$this._isActiveLevelD;
+  set isActiveLevelD(bool isActiveLevelD) =>
+      _$this._isActiveLevelD = isActiveLevelD;
 
   BrokerDtoBuilder _broker;
   BrokerDtoBuilder get broker => _$this._broker ??= new BrokerDtoBuilder();
@@ -216,6 +282,10 @@ class SettingsStateBuilder
 
   SettingsStateBuilder get _$this {
     if (_$v != null) {
+      _isActiveLevelA = _$v.isActiveLevelA;
+      _isActiveLevelB = _$v.isActiveLevelB;
+      _isActiveLevelC = _$v.isActiveLevelC;
+      _isActiveLevelD = _$v.isActiveLevelD;
       _broker = _$v.broker?.toBuilder();
       _propertiesPublishTopic = _$v.propertiesPublishTopic;
       _statusPublishTopic = _$v.statusPublishTopic;
@@ -251,6 +321,10 @@ class SettingsStateBuilder
     try {
       _$result = _$v ??
           new _$SettingsState._(
+              isActiveLevelA: isActiveLevelA,
+              isActiveLevelB: isActiveLevelB,
+              isActiveLevelC: isActiveLevelC,
+              isActiveLevelD: isActiveLevelD,
               broker: broker.build(),
               propertiesPublishTopic: propertiesPublishTopic,
               statusPublishTopic: statusPublishTopic,

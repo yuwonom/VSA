@@ -16,7 +16,7 @@ class UpdateSettings {
   ) : assert (actionType != null && value != null);
 
   final Type actionType;
-  final String value;
+  final Object value;
 
   @override
   String toString() => "UpdateSettings $actionType, $value";
@@ -90,6 +90,46 @@ class UpdateBrokerClientId {
   
   @override
   String toString() => "UpdateBrokerClientId $value";
+}
+
+@immutable
+class SwitchLevelA {
+  SwitchLevelA(this.value) : assert (value != null);
+
+  final bool value;
+  
+  @override
+  String toString() => "SwitchLevelA $value";
+}
+
+@immutable
+class SwitchLevelB {
+  SwitchLevelB(this.value) : assert (value != null);
+
+  final bool value;
+  
+  @override
+  String toString() => "SwitchLevelB $value";
+}
+
+@immutable
+class SwitchLevelC {
+  SwitchLevelC(this.value) : assert (value != null);
+
+  final bool value;
+  
+  @override
+  String toString() => "SwitchLevelC $value";
+}
+
+@immutable
+class SwitchLevelD {
+  SwitchLevelD(this.value) : assert (value != null);
+
+  final bool value;
+  
+  @override
+  String toString() => "SwitchLevelD $value";
 }
 
 @immutable
