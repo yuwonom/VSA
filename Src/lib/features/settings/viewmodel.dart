@@ -6,13 +6,14 @@ import 'package:vsa/features/settings/state.dart';
 
 class SettingsViewModel {
   final SettingsState _state;
-  final VehicleDto _userVehicle;
+  final VehicleTypeDto _vehicleType;
+  final VehicleDimensionDto _vehicleDimension;
 
-  const SettingsViewModel(this._state, this._userVehicle)
-    : assert(_state != null && _userVehicle != null);
+  const SettingsViewModel(this._state, this._vehicleType, this._vehicleDimension)
+    : assert(_state != null && _vehicleType != null && _vehicleDimension != null);
 
-  VehicleTypeDto get vehicleType => _userVehicle.type;
-  String get dimensionString => _userVehicle.dimension.toString();
+  VehicleTypeDto get vehicleType => _vehicleType;
+  String get dimensionString => _vehicleDimension.toString();
 
   BrokerDto get broker => _state.broker;
 

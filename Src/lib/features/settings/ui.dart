@@ -14,7 +14,10 @@ import 'package:vsa/themes/vsa_button.dart';
 class SettingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) => StoreConnector<AppState, SettingsViewModel>(
-      converter: (Store<AppState> store) => SettingsViewModel(store.state.settings, store.state.map.userVehicle),
+      converter: (Store<AppState> store) => SettingsViewModel(
+          store.state.settings,
+          store.state.map.userVehicle.type,
+          store.state.map.userVehicle.dimension),
       builder: (BuildContext context, SettingsViewModel viewModel) => _buildPage(context, StoreProvider.of(context), viewModel),
     );
 
@@ -73,17 +76,15 @@ class SettingsPage extends StatelessWidget {
       _buildTile(context, "Get traffic", viewModel.trafficRequestSubscribeTopic, UpdateTrafficRequestSubscribeTopic),
     ]);
 
-    final body = SingleChildScrollView(
+    final body = ListView(
       padding: AppEdges.mediumAll,
-      child: Column(
-        children: <Widget>[
-          profileTileGroup,
-          brokerTileGroup,
-          topicStructureTileGroup,
-          vehicleTopicsTileGroup,
-          trafficTopicsTileGroup,
-        ],
-      ),
+      children: <Widget>[
+        profileTileGroup,
+        brokerTileGroup,
+        topicStructureTileGroup,
+        vehicleTopicsTileGroup,
+        trafficTopicsTileGroup,
+      ],
     );
 
     final appBar = AppBar(
