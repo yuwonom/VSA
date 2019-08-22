@@ -55,11 +55,13 @@ class SettingsPage extends StatelessWidget {
       ),
     );
 
-    final topicStructureTileGroup = _buildTileGroup("Topic Structure", <Widget>[
+    final topicStructureTileGroup = _buildTileGroup("Show Topics", <Widget>[
       _buildTileCheckbox("Level A", viewModel.isActiveLevelA, (bool checked) => store.dispatch(UpdateSettings(SwitchLevelA, checked))),
       _buildTileCheckbox("Level B", viewModel.isActiveLevelB, (bool checked) => scaffoldKey.currentState.showSnackBar(notAvailableSnackBar)),
       _buildTileCheckbox("Level C", viewModel.isActiveLevelC, (bool checked) => scaffoldKey.currentState.showSnackBar(notAvailableSnackBar)),
       _buildTileCheckbox("Level D", viewModel.isActiveLevelD, (bool checked) => scaffoldKey.currentState.showSnackBar(notAvailableSnackBar)),
+      _buildTileCheckbox("Basic Vehicle", viewModel.isActiveBasicVehicle, (bool checked) => store.dispatch(UpdateSettings(SwitchBasicVehicle, checked))),
+      _buildTileCheckbox("Basic Traffic", viewModel.isActiveBasicTraffic, (bool checked) => store.dispatch(UpdateSettings(SwitchBasicTraffic, checked))),
     ]);
 
     final vehicleTopicsTileGroup = _buildTileGroup("Vehicle Topics", <Widget>[
@@ -82,8 +84,8 @@ class SettingsPage extends StatelessWidget {
         profileTileGroup,
         brokerTileGroup,
         topicStructureTileGroup,
-        vehicleTopicsTileGroup,
-        trafficTopicsTileGroup,
+        viewModel.isActiveBasicVehicle ? vehicleTopicsTileGroup : Container(),
+        viewModel.isActiveBasicTraffic ? trafficTopicsTileGroup : Container(),
       ],
     );
 

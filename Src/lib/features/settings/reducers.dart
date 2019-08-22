@@ -14,6 +14,8 @@ final Reducer<SettingsState> settingsStateReducer = combineReducers([
     TypedReducer<SettingsState, SwitchLevelB>(_switchLevelBReducer),
     TypedReducer<SettingsState, SwitchLevelC>(_switchLevelCReducer),
     TypedReducer<SettingsState, SwitchLevelD>(_switchLevelDReducer),
+    TypedReducer<SettingsState, SwitchBasicVehicle>(_switchBasicVehicleReducer),
+    TypedReducer<SettingsState, SwitchBasicTraffic>(_switchBasicTrafficReducer),
     TypedReducer<SettingsState, UpdatePropertiesPublishTopic>(_updatePropertiesPublishTopicReducer),
     TypedReducer<SettingsState, UpdateStatusPublishTopic>(_updateStatusPublishTopicReducer),
     TypedReducer<SettingsState, UpdatePropertiesRequestPublishTopic>(_updatePropertiesRequestPublishTopicReducer),
@@ -50,6 +52,12 @@ SettingsState _switchLevelCReducer(SettingsState state, SwitchLevelC action) => 
 
 SettingsState _switchLevelDReducer(SettingsState state, SwitchLevelD action) => state.rebuild((b) => b
   ..isActiveLevelD = action.value);
+
+SettingsState _switchBasicVehicleReducer(SettingsState state, SwitchBasicVehicle action) => state.rebuild((b) => b
+  ..isActiveBasicVehicle = action.value);
+
+SettingsState _switchBasicTrafficReducer(SettingsState state, SwitchBasicTraffic action) => state.rebuild((b) => b
+  ..isActiveBasicTraffic = action.value);
 
 SettingsState _updatePropertiesPublishTopicReducer(SettingsState state, UpdatePropertiesPublishTopic action) => state.rebuild((b) => b
   ..propertiesPublishTopic = action.value);

@@ -21,6 +21,8 @@ class SettingsViewModel {
   bool get isActiveLevelB => _state.isActiveLevelB;
   bool get isActiveLevelC => _state.isActiveLevelC;
   bool get isActiveLevelD => _state.isActiveLevelD;
+  bool get isActiveBasicVehicle => _state.isActiveBasicVehicle;
+  bool get isActiveBasicTraffic => _state.isActiveBasicTraffic;
 
   String get address => broker.address;
   String get port => broker.port;

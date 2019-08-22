@@ -132,6 +132,25 @@ class SwitchLevelD {
   String toString() => "SwitchLevelD $value";
 }
 
+class SwitchBasicVehicle {
+  SwitchBasicVehicle(this.value) : assert (value != null);
+
+  final bool value;
+  
+  @override
+  String toString() => "SwitchBasicVehicle $value";
+}
+
+@immutable
+class SwitchBasicTraffic {
+  SwitchBasicTraffic(this.value) : assert (value != null);
+
+  final bool value;
+  
+  @override
+  String toString() => "SwitchBasicTraffic $value";
+}
+
 @immutable
 class UpdatePropertiesPublishTopic {
   UpdatePropertiesPublishTopic(this.value) : assert (value != null);

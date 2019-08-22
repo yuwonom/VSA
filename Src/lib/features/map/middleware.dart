@@ -11,6 +11,7 @@ import 'package:vsa/features/map/actions.dart';
 import 'package:vsa/features/map/dtos.dart';
 import 'package:vsa/features/map/geolocator.dart';
 import 'package:vsa/features/map/mqtt_api.dart';
+import 'package:vsa/features/settings/state.dart';
 import 'package:vsa/state.dart';
 import 'package:vsa/utility/action_exception.dart';
 import 'package:vsa/utility/gps_helper.dart';
@@ -76,26 +77,49 @@ class MqttIntegration {
   }
 
   void _handleConnectToMqttBrokerSuccessful(Store<AppState> store, ConnectToMqttBrokerSuccessful action, NextDispatcher next) {
-    final settingsState = store.state.settings;
-    final clientId = store.state.settings.broker.clientId;
-    api.subscribe([
-      "${settingsState.propertiesRequestSubscribeTopic}/$clientId",
-      "${settingsState.statusRequestSubscribeTopic}/$clientId",
-      "${settingsState.trafficRequestSubscribeTopic}/$clientId",
-    ]);
-    
-    final vehicle = store.state.map.userVehicle;
-    final topic = "${settingsState.propertiesPublishTopic}/$clientId";
-    final message = MqttApi.propertiesMessage(vehicle.id, vehicle.name, vehicle.type, vehicle.dimension);
-    store.dispatch(PublishMessageToMqttBroker(topic, message));
-    store.dispatch(RecordUserGpsPoint(vehicle.point));
-
-    const requestInterval = const Duration(milliseconds: 100);
-    _nearbyRequestTimer = Timer.periodic(requestInterval, (_) {
-      final topic = "${settingsState.statusRequestPublishTopic}/$clientId";
-      final message = MqttApi.statusRequestMessage(vehicle.id, 500);
+    void _publishUserInformation(VehicleDto user, SettingsState settings, String clientId) {
+      final topic = "${settings.propertiesPublishTopic}/$clientId";
+      final message = MqttApi.propertiesMessage(user.id, user.name, user.type, user.dimension);
       store.dispatch(PublishMessageToMqttBroker(topic, message));
-    });
+      store.dispatch(RecordUserGpsPoint(user.point));
+    }
+    
+    void _subscribeTopics(SettingsState settings, String clientId) {
+      final topics = <String>[];
+      
+      if (settings.isActiveBasicVehicle) {
+        topics
+          ..add("${settings.propertiesRequestSubscribeTopic}/$clientId")
+          ..add("${settings.statusRequestSubscribeTopic}/$clientId");
+      }
+      if (settings.isActiveBasicTraffic) {
+        topics.add("${settings.trafficRequestSubscribeTopic}/$clientId");
+      }
+
+      api.subscribe(topics);
+    }
+
+    void _startPeriodicRequests(Timer timer, Duration interval, VehicleDto user, SettingsState settings, String clientId) {
+      _nearbyRequestTimer = Timer.periodic(interval, (_) {
+        String topic;
+        String message;
+
+        if (settings.isActiveBasicVehicle) {
+          topic = "${settings.statusRequestPublishTopic}/$clientId";
+          message = MqttApi.statusRequestMessage(user.id, 500);
+          store.dispatch(PublishMessageToMqttBroker(topic, message));
+        }
+      });
+    }
+    
+    final user = store.state.map.userVehicle;
+    final settingsState = store.state.settings;
+    final clientId = settingsState.broker.clientId;
+    const requestInterval = const Duration(milliseconds: 100);
+
+    _publishUserInformation(user, settingsState, clientId);
+    _subscribeTopics(settingsState, clientId);
+    _startPeriodicRequests(_nearbyRequestTimer, requestInterval, user, settingsState, clientId);
     
     store.dispatch(ListenToMqttBroker());
     next(action);

@@ -8,6 +8,8 @@ part of 'state.dart';
 
 class _$SettingsState extends SettingsState {
   @override
+  final BrokerDto broker;
+  @override
   final bool isActiveLevelA;
   @override
   final bool isActiveLevelB;
@@ -16,7 +18,9 @@ class _$SettingsState extends SettingsState {
   @override
   final bool isActiveLevelD;
   @override
-  final BrokerDto broker;
+  final bool isActiveBasicVehicle;
+  @override
+  final bool isActiveBasicTraffic;
   @override
   final String propertiesPublishTopic;
   @override
@@ -42,11 +46,13 @@ class _$SettingsState extends SettingsState {
       (new SettingsStateBuilder()..update(updates)).build();
 
   _$SettingsState._(
-      {this.isActiveLevelA,
+      {this.broker,
+      this.isActiveLevelA,
       this.isActiveLevelB,
       this.isActiveLevelC,
       this.isActiveLevelD,
-      this.broker,
+      this.isActiveBasicVehicle,
+      this.isActiveBasicTraffic,
       this.propertiesPublishTopic,
       this.statusPublishTopic,
       this.propertiesRequestPublishTopic,
@@ -58,6 +64,9 @@ class _$SettingsState extends SettingsState {
       this.isBusy,
       this.exception})
       : super._() {
+    if (broker == null) {
+      throw new BuiltValueNullFieldError('SettingsState', 'broker');
+    }
     if (isActiveLevelA == null) {
       throw new BuiltValueNullFieldError('SettingsState', 'isActiveLevelA');
     }
@@ -70,8 +79,13 @@ class _$SettingsState extends SettingsState {
     if (isActiveLevelD == null) {
       throw new BuiltValueNullFieldError('SettingsState', 'isActiveLevelD');
     }
-    if (broker == null) {
-      throw new BuiltValueNullFieldError('SettingsState', 'broker');
+    if (isActiveBasicVehicle == null) {
+      throw new BuiltValueNullFieldError(
+          'SettingsState', 'isActiveBasicVehicle');
+    }
+    if (isActiveBasicTraffic == null) {
+      throw new BuiltValueNullFieldError(
+          'SettingsState', 'isActiveBasicTraffic');
     }
     if (propertiesPublishTopic == null) {
       throw new BuiltValueNullFieldError(
@@ -120,11 +134,13 @@ class _$SettingsState extends SettingsState {
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
     return other is SettingsState &&
+        broker == other.broker &&
         isActiveLevelA == other.isActiveLevelA &&
         isActiveLevelB == other.isActiveLevelB &&
         isActiveLevelC == other.isActiveLevelC &&
         isActiveLevelD == other.isActiveLevelD &&
-        broker == other.broker &&
+        isActiveBasicVehicle == other.isActiveBasicVehicle &&
+        isActiveBasicTraffic == other.isActiveBasicTraffic &&
         propertiesPublishTopic == other.propertiesPublishTopic &&
         statusPublishTopic == other.statusPublishTopic &&
         propertiesRequestPublishTopic == other.propertiesRequestPublishTopic &&
@@ -155,15 +171,22 @@ class _$SettingsState extends SettingsState {
                                                     $jc(
                                                         $jc(
                                                             $jc(
-                                                                0,
-                                                                isActiveLevelA
+                                                                $jc(
+                                                                    $jc(
+                                                                        0,
+                                                                        broker
+                                                                            .hashCode),
+                                                                    isActiveLevelA
+                                                                        .hashCode),
+                                                                isActiveLevelB
                                                                     .hashCode),
-                                                            isActiveLevelB
+                                                            isActiveLevelC
                                                                 .hashCode),
-                                                        isActiveLevelC
+                                                        isActiveLevelD
                                                             .hashCode),
-                                                    isActiveLevelD.hashCode),
-                                                broker.hashCode),
+                                                    isActiveBasicVehicle
+                                                        .hashCode),
+                                                isActiveBasicTraffic.hashCode),
                                             propertiesPublishTopic.hashCode),
                                         statusPublishTopic.hashCode),
                                     propertiesRequestPublishTopic.hashCode),
@@ -179,11 +202,13 @@ class _$SettingsState extends SettingsState {
   @override
   String toString() {
     return (newBuiltValueToStringHelper('SettingsState')
+          ..add('broker', broker)
           ..add('isActiveLevelA', isActiveLevelA)
           ..add('isActiveLevelB', isActiveLevelB)
           ..add('isActiveLevelC', isActiveLevelC)
           ..add('isActiveLevelD', isActiveLevelD)
-          ..add('broker', broker)
+          ..add('isActiveBasicVehicle', isActiveBasicVehicle)
+          ..add('isActiveBasicTraffic', isActiveBasicTraffic)
           ..add('propertiesPublishTopic', propertiesPublishTopic)
           ..add('statusPublishTopic', statusPublishTopic)
           ..add('propertiesRequestPublishTopic', propertiesRequestPublishTopic)
@@ -202,6 +227,10 @@ class _$SettingsState extends SettingsState {
 class SettingsStateBuilder
     implements Builder<SettingsState, SettingsStateBuilder> {
   _$SettingsState _$v;
+
+  BrokerDtoBuilder _broker;
+  BrokerDtoBuilder get broker => _$this._broker ??= new BrokerDtoBuilder();
+  set broker(BrokerDtoBuilder broker) => _$this._broker = broker;
 
   bool _isActiveLevelA;
   bool get isActiveLevelA => _$this._isActiveLevelA;
@@ -223,9 +252,15 @@ class SettingsStateBuilder
   set isActiveLevelD(bool isActiveLevelD) =>
       _$this._isActiveLevelD = isActiveLevelD;
 
-  BrokerDtoBuilder _broker;
-  BrokerDtoBuilder get broker => _$this._broker ??= new BrokerDtoBuilder();
-  set broker(BrokerDtoBuilder broker) => _$this._broker = broker;
+  bool _isActiveBasicVehicle;
+  bool get isActiveBasicVehicle => _$this._isActiveBasicVehicle;
+  set isActiveBasicVehicle(bool isActiveBasicVehicle) =>
+      _$this._isActiveBasicVehicle = isActiveBasicVehicle;
+
+  bool _isActiveBasicTraffic;
+  bool get isActiveBasicTraffic => _$this._isActiveBasicTraffic;
+  set isActiveBasicTraffic(bool isActiveBasicTraffic) =>
+      _$this._isActiveBasicTraffic = isActiveBasicTraffic;
 
   String _propertiesPublishTopic;
   String get propertiesPublishTopic => _$this._propertiesPublishTopic;
@@ -282,11 +317,13 @@ class SettingsStateBuilder
 
   SettingsStateBuilder get _$this {
     if (_$v != null) {
+      _broker = _$v.broker?.toBuilder();
       _isActiveLevelA = _$v.isActiveLevelA;
       _isActiveLevelB = _$v.isActiveLevelB;
       _isActiveLevelC = _$v.isActiveLevelC;
       _isActiveLevelD = _$v.isActiveLevelD;
-      _broker = _$v.broker?.toBuilder();
+      _isActiveBasicVehicle = _$v.isActiveBasicVehicle;
+      _isActiveBasicTraffic = _$v.isActiveBasicTraffic;
       _propertiesPublishTopic = _$v.propertiesPublishTopic;
       _statusPublishTopic = _$v.statusPublishTopic;
       _propertiesRequestPublishTopic = _$v.propertiesRequestPublishTopic;
@@ -321,11 +358,13 @@ class SettingsStateBuilder
     try {
       _$result = _$v ??
           new _$SettingsState._(
+              broker: broker.build(),
               isActiveLevelA: isActiveLevelA,
               isActiveLevelB: isActiveLevelB,
               isActiveLevelC: isActiveLevelC,
               isActiveLevelD: isActiveLevelD,
-              broker: broker.build(),
+              isActiveBasicVehicle: isActiveBasicVehicle,
+              isActiveBasicTraffic: isActiveBasicTraffic,
               propertiesPublishTopic: propertiesPublishTopic,
               statusPublishTopic: statusPublishTopic,
               propertiesRequestPublishTopic: propertiesRequestPublishTopic,

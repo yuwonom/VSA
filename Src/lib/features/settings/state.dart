@@ -21,6 +21,8 @@ abstract class SettingsState implements Built<SettingsState, SettingsStateBuilde
     isActiveLevelB: false,
     isActiveLevelC: false,
     isActiveLevelD: false,
+    isActiveBasicVehicle: true,
+    isActiveBasicTraffic: true,
     propertiesPublishTopic: "VSA/vehProp",
     statusPublishTopic: "VSA/vehSim",
     propertiesRequestPublishTopic: "VSA/request/vehProp/reqs",
@@ -40,6 +42,8 @@ abstract class SettingsState implements Built<SettingsState, SettingsStateBuilde
   bool get isActiveLevelB;
   bool get isActiveLevelC;
   bool get isActiveLevelD;
+  bool get isActiveBasicVehicle;
+  bool get isActiveBasicTraffic;
 
   String get propertiesPublishTopic;
   String get statusPublishTopic;
