@@ -64,6 +64,12 @@ class SettingsPage extends StatelessWidget {
       _buildTileCheckbox("Basic Traffic", viewModel.isActiveBasicTraffic, (bool checked) => store.dispatch(UpdateSettings(SwitchBasicTraffic, checked))),
     ]);
 
+    final levelATileGroup = _buildTileGroup("Level A Topics", <Widget>[
+      _buildTile(context, "Publish current properties", viewModel.propertiesPublishTopic, UpdateLevelAPropertiesPublishTopic),
+      _buildTile(context, "Publish current status", viewModel.propertiesPublishTopic, UpdateLevelAStatusPublishTopic),
+      _buildTile(context, "Subscribe intersection", viewModel.propertiesPublishTopic, UpdateLevelAIntersectionSubscribeTopic),
+    ]);
+
     final vehicleTopicsTileGroup = _buildTileGroup("Vehicle Topics", <Widget>[
       _buildTile(context, "Publish current properties", viewModel.propertiesPublishTopic, UpdatePropertiesPublishTopic),
       _buildTile(context, "Publish current status", viewModel.statusPublishTopic, UpdateStatusPublishTopic),
@@ -84,6 +90,7 @@ class SettingsPage extends StatelessWidget {
         profileTileGroup,
         brokerTileGroup,
         topicStructureTileGroup,
+        viewModel.isActiveLevelA ? levelATileGroup : Container(),
         viewModel.isActiveBasicVehicle ? vehicleTopicsTileGroup : Container(),
         viewModel.isActiveBasicTraffic ? trafficTopicsTileGroup : Container(),
       ],

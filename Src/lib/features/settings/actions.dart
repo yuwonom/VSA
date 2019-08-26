@@ -152,6 +152,36 @@ class SwitchBasicTraffic {
 }
 
 @immutable
+class UpdateLevelAPropertiesPublishTopic {
+  UpdateLevelAPropertiesPublishTopic(this.value) : assert (value != null);
+
+  final String value;
+  
+  @override
+  String toString() => "UpdateLevelAPropertiesPublishTopic $value";
+}
+
+@immutable
+class UpdateLevelAStatusPublishTopic {
+  UpdateLevelAStatusPublishTopic(this.value) : assert (value != null);
+
+  final String value;
+  
+  @override
+  String toString() => "UpdateLevelAStatusPublishTopic $value";
+}
+
+@immutable
+class UpdateLevelAIntersectionSubscribeTopic {
+  UpdateLevelAIntersectionSubscribeTopic(this.value) : assert (value != null);
+
+  final String value;
+  
+  @override
+  String toString() => "UpdateLevelAIntersectionSubscribeTopic $value";
+}
+
+@immutable
 class UpdatePropertiesPublishTopic {
   UpdatePropertiesPublishTopic(this.value) : assert (value != null);
 

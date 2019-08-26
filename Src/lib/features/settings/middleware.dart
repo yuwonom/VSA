@@ -35,6 +35,9 @@ class LocalSettings {
         SwitchLevelD,
         SwitchBasicVehicle,
         SwitchBasicTraffic,
+        UpdateLevelAPropertiesPublishTopic,
+        UpdateLevelAStatusPublishTopic,
+        UpdateLevelAIntersectionSubscribeTopic,
         UpdatePropertiesPublishTopic,
         UpdateStatusPublishTopic,
         UpdatePropertiesRequestPublishTopic,
@@ -123,6 +126,12 @@ class LocalSettings {
         return "switchBasicVehicle";
       case SwitchBasicTraffic:
         return "switchBasicTraffic";
+      case UpdateLevelAPropertiesPublishTopic:
+        return "levelAPropertiesPublishTopic";
+      case UpdateLevelAStatusPublishTopic:
+        return "levelAStatusPublishTopic";
+      case UpdateLevelAIntersectionSubscribeTopic:
+        return "levelAIntersectionSubscribeTopic";
       case UpdatePropertiesPublishTopic:
         return "propertiesPublishTopic";
       case UpdateStatusPublishTopic:
@@ -172,6 +181,12 @@ class LocalSettings {
         return SwitchBasicVehicle(value);
       case SwitchBasicTraffic:
         return SwitchBasicTraffic(value);
+      case UpdateLevelAPropertiesPublishTopic:
+        return UpdateLevelAPropertiesPublishTopic(value);
+      case UpdateLevelAStatusPublishTopic:
+        return UpdateLevelAStatusPublishTopic(value);
+      case UpdateLevelAIntersectionSubscribeTopic:
+        return UpdateLevelAIntersectionSubscribeTopic(value);
       case UpdatePropertiesPublishTopic:
         return UpdatePropertiesPublishTopic(value);
       case UpdateStatusPublishTopic:
