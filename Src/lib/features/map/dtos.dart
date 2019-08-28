@@ -151,3 +151,24 @@ class SecurityLevelDto extends EnumClass {
     }
   }
 }
+
+abstract class IntersectionDto implements Built<IntersectionDto, IntersectionDtoBuilder> {
+  factory IntersectionDto([void updates(IntersectionDtoBuilder b)]) = _$IntersectionDto;
+
+  factory IntersectionDto.fromLine(String line) {
+    final args = line.split(',');
+    final latLng = LatLng(double.parse(args[1]), double.parse(args[2]));
+    final radius = double.parse(args[3]);
+    return _$IntersectionDto._(
+      latLng: latLng,
+      radius: radius,
+    );
+  }
+
+  IntersectionDto._();
+
+  LatLng get latLng;
+  double get radius;
+
+  static Serializer<IntersectionDto> get serializer => _$intersectionDtoSerializer;
+}
