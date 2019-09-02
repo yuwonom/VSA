@@ -269,6 +269,13 @@ class MapPageState extends State<MapPage> {
         circles.add(otherAccuracyCircle);
       });
     }
+
+    if (viewModel.hasIntersections) {
+      viewModel.intersections.forEach((IntersectionDto intersection) {
+        final intersectionCircle = _buildIntersectionCircle(intersection);
+        circles.add(intersectionCircle);
+      });
+    }
     
     return GoogleMap(
       initialCameraPosition: CameraPosition(
@@ -349,6 +356,16 @@ class MapPageState extends State<MapPage> {
       zIndex: isUser
         ? MapViewModel.USER_ACCURACY_ZINDEX
         : MapViewModel.OTHER_ACCURACY_ZINDEX,
+    );
+  
+  Circle _buildIntersectionCircle(IntersectionDto intersection) => Circle(
+      circleId: CircleId("Intersection_${intersection.id}"),
+      center: intersection.latLng,
+      radius: intersection.radius,
+      fillColor: AppColors.darkGray.withAlpha(100),
+      strokeWidth: 10,
+      strokeColor: AppColors.white,
+      zIndex: MapViewModel.INTERSECTION_ZINDEX,
     );
 
   Future<void> _animateMapCamera(LatLng point) async {

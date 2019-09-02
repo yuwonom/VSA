@@ -157,9 +157,11 @@ abstract class IntersectionDto implements Built<IntersectionDto, IntersectionDto
 
   factory IntersectionDto.fromLine(String line) {
     final args = line.split(',');
+    final id = args[0];
     final latLng = LatLng(double.parse(args[1]), double.parse(args[2]));
     final radius = double.parse(args[3]);
     return _$IntersectionDto._(
+      id: id,
       latLng: latLng,
       radius: radius,
     );
@@ -167,6 +169,7 @@ abstract class IntersectionDto implements Built<IntersectionDto, IntersectionDto
 
   IntersectionDto._();
 
+  String get id;
   LatLng get latLng;
   double get radius;
 

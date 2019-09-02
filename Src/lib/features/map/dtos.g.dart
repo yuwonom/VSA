@@ -194,6 +194,7 @@ class _$VehicleDtoSerializer implements StructuredSerializer<VehicleDto> {
         ..add(serializers.serialize(object.point,
             specifiedType: const FullType(GpsPointDto)));
     }
+
     return result;
   }
 
@@ -346,6 +347,8 @@ class _$IntersectionDtoSerializer
   Iterable serialize(Serializers serializers, IntersectionDto object,
       {FullType specifiedType = FullType.unspecified}) {
     final result = <Object>[
+      'id',
+      serializers.serialize(object.id, specifiedType: const FullType(String)),
       'latLng',
       serializers.serialize(object.latLng,
           specifiedType: const FullType(LatLng)),
@@ -368,6 +371,10 @@ class _$IntersectionDtoSerializer
       iterator.moveNext();
       final dynamic value = iterator.current;
       switch (key) {
+        case 'id':
+          result.id = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String;
+          break;
         case 'latLng':
           result.latLng = serializers.deserialize(value,
               specifiedType: const FullType(LatLng)) as LatLng;
@@ -399,7 +406,7 @@ class _$GpsPointDto extends GpsPointDto {
   @override
   final double heading;
 
-  factory _$GpsPointDto([void Function(GpsPointDtoBuilder) updates]) =>
+  factory _$GpsPointDto([void updates(GpsPointDtoBuilder b)]) =>
       (new GpsPointDtoBuilder()..update(updates)).build();
 
   _$GpsPointDto._(
@@ -435,7 +442,7 @@ class _$GpsPointDto extends GpsPointDto {
   }
 
   @override
-  GpsPointDto rebuild(void Function(GpsPointDtoBuilder) updates) =>
+  GpsPointDto rebuild(void updates(GpsPointDtoBuilder b)) =>
       (toBuilder()..update(updates)).build();
 
   @override
@@ -538,7 +545,7 @@ class GpsPointDtoBuilder implements Builder<GpsPointDto, GpsPointDtoBuilder> {
   }
 
   @override
-  void update(void Function(GpsPointDtoBuilder) updates) {
+  void update(void updates(GpsPointDtoBuilder b)) {
     if (updates != null) updates(this);
   }
 
@@ -570,7 +577,7 @@ class _$VehicleDto extends VehicleDto {
   @override
   final GpsPointDto point;
 
-  factory _$VehicleDto([void Function(VehicleDtoBuilder) updates]) =>
+  factory _$VehicleDto([void updates(VehicleDtoBuilder b)]) =>
       (new VehicleDtoBuilder()..update(updates)).build();
 
   _$VehicleDto._({this.id, this.name, this.dimension, this.type, this.point})
@@ -590,7 +597,7 @@ class _$VehicleDto extends VehicleDto {
   }
 
   @override
-  VehicleDto rebuild(void Function(VehicleDtoBuilder) updates) =>
+  VehicleDto rebuild(void updates(VehicleDtoBuilder b)) =>
       (toBuilder()..update(updates)).build();
 
   @override
@@ -675,7 +682,7 @@ class VehicleDtoBuilder implements Builder<VehicleDto, VehicleDtoBuilder> {
   }
 
   @override
-  void update(void Function(VehicleDtoBuilder) updates) {
+  void update(void updates(VehicleDtoBuilder b)) {
     if (updates != null) updates(this);
   }
 
@@ -719,8 +726,7 @@ class _$VehicleDimensionDto extends VehicleDimensionDto {
   @override
   final double bottom;
 
-  factory _$VehicleDimensionDto(
-          [void Function(VehicleDimensionDtoBuilder) updates]) =>
+  factory _$VehicleDimensionDto([void updates(VehicleDimensionDtoBuilder b)]) =>
       (new VehicleDimensionDtoBuilder()..update(updates)).build();
 
   _$VehicleDimensionDto._({this.left, this.top, this.right, this.bottom})
@@ -740,8 +746,7 @@ class _$VehicleDimensionDto extends VehicleDimensionDto {
   }
 
   @override
-  VehicleDimensionDto rebuild(
-          void Function(VehicleDimensionDtoBuilder) updates) =>
+  VehicleDimensionDto rebuild(void updates(VehicleDimensionDtoBuilder b)) =>
       (toBuilder()..update(updates)).build();
 
   @override
@@ -808,7 +813,7 @@ class VehicleDimensionDtoBuilder
   }
 
   @override
-  void update(void Function(VehicleDimensionDtoBuilder) updates) {
+  void update(void updates(VehicleDimensionDtoBuilder b)) {
     if (updates != null) updates(this);
   }
 
@@ -824,14 +829,19 @@ class VehicleDimensionDtoBuilder
 
 class _$IntersectionDto extends IntersectionDto {
   @override
+  final String id;
+  @override
   final LatLng latLng;
   @override
   final double radius;
 
-  factory _$IntersectionDto([void Function(IntersectionDtoBuilder) updates]) =>
+  factory _$IntersectionDto([void updates(IntersectionDtoBuilder b)]) =>
       (new IntersectionDtoBuilder()..update(updates)).build();
 
-  _$IntersectionDto._({this.latLng, this.radius}) : super._() {
+  _$IntersectionDto._({this.id, this.latLng, this.radius}) : super._() {
+    if (id == null) {
+      throw new BuiltValueNullFieldError('IntersectionDto', 'id');
+    }
     if (latLng == null) {
       throw new BuiltValueNullFieldError('IntersectionDto', 'latLng');
     }
@@ -841,7 +851,7 @@ class _$IntersectionDto extends IntersectionDto {
   }
 
   @override
-  IntersectionDto rebuild(void Function(IntersectionDtoBuilder) updates) =>
+  IntersectionDto rebuild(void updates(IntersectionDtoBuilder b)) =>
       (toBuilder()..update(updates)).build();
 
   @override
@@ -852,18 +862,20 @@ class _$IntersectionDto extends IntersectionDto {
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
     return other is IntersectionDto &&
+        id == other.id &&
         latLng == other.latLng &&
         radius == other.radius;
   }
 
   @override
   int get hashCode {
-    return $jf($jc($jc(0, latLng.hashCode), radius.hashCode));
+    return $jf($jc($jc($jc(0, id.hashCode), latLng.hashCode), radius.hashCode));
   }
 
   @override
   String toString() {
     return (newBuiltValueToStringHelper('IntersectionDto')
+          ..add('id', id)
           ..add('latLng', latLng)
           ..add('radius', radius))
         .toString();
@@ -873,6 +885,10 @@ class _$IntersectionDto extends IntersectionDto {
 class IntersectionDtoBuilder
     implements Builder<IntersectionDto, IntersectionDtoBuilder> {
   _$IntersectionDto _$v;
+
+  String _id;
+  String get id => _$this._id;
+  set id(String id) => _$this._id = id;
 
   LatLng _latLng;
   LatLng get latLng => _$this._latLng;
@@ -886,6 +902,7 @@ class IntersectionDtoBuilder
 
   IntersectionDtoBuilder get _$this {
     if (_$v != null) {
+      _id = _$v.id;
       _latLng = _$v.latLng;
       _radius = _$v.radius;
       _$v = null;
@@ -902,14 +919,14 @@ class IntersectionDtoBuilder
   }
 
   @override
-  void update(void Function(IntersectionDtoBuilder) updates) {
+  void update(void updates(IntersectionDtoBuilder b)) {
     if (updates != null) updates(this);
   }
 
   @override
   _$IntersectionDto build() {
     final _$result =
-        _$v ?? new _$IntersectionDto._(latLng: latLng, radius: radius);
+        _$v ?? new _$IntersectionDto._(id: id, latLng: latLng, radius: radius);
     replace(_$result);
     return _$result;
   }

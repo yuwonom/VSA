@@ -26,7 +26,7 @@ class _$MapState extends MapState {
   @override
   final ActionException exception;
 
-  factory _$MapState([void Function(MapStateBuilder) updates]) =>
+  factory _$MapState([void updates(MapStateBuilder b)]) =>
       (new MapStateBuilder()..update(updates)).build();
 
   _$MapState._(
@@ -64,7 +64,7 @@ class _$MapState extends MapState {
   }
 
   @override
-  MapState rebuild(void Function(MapStateBuilder) updates) =>
+  MapState rebuild(void updates(MapStateBuilder b)) =>
       (toBuilder()..update(updates)).build();
 
   @override
@@ -197,7 +197,7 @@ class MapStateBuilder implements Builder<MapState, MapStateBuilder> {
   }
 
   @override
-  void update(void Function(MapStateBuilder) updates) {
+  void update(void updates(MapStateBuilder b)) {
     if (updates != null) updates(this);
   }
 
