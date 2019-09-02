@@ -20,6 +20,8 @@ class _$MapState extends MapState {
   @override
   final BuiltMap<String, VehicleDto> otherVehicles;
   @override
+  final BuiltList<IntersectionDto> intersections;
+  @override
   final bool isBusy;
   @override
   final ActionException exception;
@@ -34,6 +36,7 @@ class _$MapState extends MapState {
       this.startTime,
       this.recordedPoints,
       this.otherVehicles,
+      this.intersections,
       this.isBusy,
       this.exception})
       : super._() {
@@ -51,6 +54,9 @@ class _$MapState extends MapState {
     }
     if (otherVehicles == null) {
       throw new BuiltValueNullFieldError('MapState', 'otherVehicles');
+    }
+    if (intersections == null) {
+      throw new BuiltValueNullFieldError('MapState', 'intersections');
     }
     if (isBusy == null) {
       throw new BuiltValueNullFieldError('MapState', 'isBusy');
@@ -74,6 +80,7 @@ class _$MapState extends MapState {
         startTime == other.startTime &&
         recordedPoints == other.recordedPoints &&
         otherVehicles == other.otherVehicles &&
+        intersections == other.intersections &&
         isBusy == other.isBusy &&
         exception == other.exception;
   }
@@ -86,12 +93,14 @@ class _$MapState extends MapState {
                 $jc(
                     $jc(
                         $jc(
-                            $jc($jc(0, userVehicle.hashCode),
-                                connectionState.hashCode),
-                            securityLevel.hashCode),
-                        startTime.hashCode),
-                    recordedPoints.hashCode),
-                otherVehicles.hashCode),
+                            $jc(
+                                $jc($jc(0, userVehicle.hashCode),
+                                    connectionState.hashCode),
+                                securityLevel.hashCode),
+                            startTime.hashCode),
+                        recordedPoints.hashCode),
+                    otherVehicles.hashCode),
+                intersections.hashCode),
             isBusy.hashCode),
         exception.hashCode));
   }
@@ -105,6 +114,7 @@ class _$MapState extends MapState {
           ..add('startTime', startTime)
           ..add('recordedPoints', recordedPoints)
           ..add('otherVehicles', otherVehicles)
+          ..add('intersections', intersections)
           ..add('isBusy', isBusy)
           ..add('exception', exception))
         .toString();
@@ -146,6 +156,12 @@ class MapStateBuilder implements Builder<MapState, MapStateBuilder> {
   set otherVehicles(MapBuilder<String, VehicleDto> otherVehicles) =>
       _$this._otherVehicles = otherVehicles;
 
+  ListBuilder<IntersectionDto> _intersections;
+  ListBuilder<IntersectionDto> get intersections =>
+      _$this._intersections ??= new ListBuilder<IntersectionDto>();
+  set intersections(ListBuilder<IntersectionDto> intersections) =>
+      _$this._intersections = intersections;
+
   bool _isBusy;
   bool get isBusy => _$this._isBusy;
   set isBusy(bool isBusy) => _$this._isBusy = isBusy;
@@ -164,6 +180,7 @@ class MapStateBuilder implements Builder<MapState, MapStateBuilder> {
       _startTime = _$v.startTime;
       _recordedPoints = _$v.recordedPoints?.toBuilder();
       _otherVehicles = _$v.otherVehicles?.toBuilder();
+      _intersections = _$v.intersections?.toBuilder();
       _isBusy = _$v.isBusy;
       _exception = _$v.exception;
       _$v = null;
@@ -196,6 +213,7 @@ class MapStateBuilder implements Builder<MapState, MapStateBuilder> {
               startTime: startTime,
               recordedPoints: recordedPoints.build(),
               otherVehicles: otherVehicles.build(),
+              intersections: intersections.build(),
               isBusy: isBusy,
               exception: exception);
     } catch (_) {
@@ -208,6 +226,8 @@ class MapStateBuilder implements Builder<MapState, MapStateBuilder> {
         recordedPoints.build();
         _$failedField = 'otherVehicles';
         otherVehicles.build();
+        _$failedField = 'intersections';
+        intersections.build();
       } catch (e) {
         throw new BuiltValueNestedFieldError(
             'MapState', _$failedField, e.toString());

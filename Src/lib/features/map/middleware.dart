@@ -4,6 +4,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:built_collection/built_collection.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:redux/redux.dart';
@@ -20,6 +21,7 @@ List<Middleware<AppState>> getMiddleware(Geolocator geolocator, MqttApi mqttApi)
       LocalGpsIntegration(geolocator).getMiddlewareBindings(),
       MqttIntegration(mqttApi).getMiddlewareBindings(),
       CollisionCheck().getMiddlewareBindings(),
+      IntersectionsFileLoad().getMiddlewareBindings(),
     ].expand((x) => x).toList();
 
 @immutable
@@ -259,5 +261,36 @@ class CollisionCheck {
     }
 
     store.dispatch(UpdateSecurityLevel(securityLevel));
+  }
+}
+
+@immutable
+class IntersectionsFileLoad {
+  const IntersectionsFileLoad();
+
+  List<Middleware<AppState>> getMiddlewareBindings() => [
+        TypedMiddleware<AppState, LoadIntersections>(_handleLoadIntersections),
+      ];
+
+  void _handleLoadIntersections(Store<AppState> store, LoadIntersections action, NextDispatcher next) {
+    BuiltList<IntersectionDto> _processData(String data) {
+      final lines = data.split('\r\n')
+          ..removeAt(0);
+      final intersections = lines.map((String line) => IntersectionDto.fromLine(line));
+      return BuiltList<IntersectionDto>(intersections);
+    }
+    
+    void _loadIntersections(Store<AppState> store, LoadIntersections action) async {
+      try {
+        final data = await rootBundle.loadString("assets/files/intersections.csv");
+        final intersections = _processData(data);
+        store.dispatch(LoadIntersectionsSuccessful(intersections));
+      } on Exception catch (exception) {
+        store.dispatch(LoadIntersectionsFailed(ActionException(exception, action)));
+      }
+    }
+    
+    _loadIntersections(store, action);
+    next(action);
   }
 }

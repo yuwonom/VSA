@@ -17,6 +17,7 @@ abstract class MapState implements Built<MapState, MapStateBuilder> {
     securityLevel: SecurityLevelDto.unknown,
     recordedPoints: BuiltList<GpsPointDto>(),
     otherVehicles: BuiltMap<String, VehicleDto>(),
+    intersections: BuiltList<IntersectionDto>(),
     isBusy: false,
   );
 
@@ -29,7 +30,9 @@ abstract class MapState implements Built<MapState, MapStateBuilder> {
   @nullable
   DateTime get startTime;
   BuiltList<GpsPointDto> get recordedPoints;
+
   BuiltMap<String, VehicleDto> get otherVehicles;
+  BuiltList<IntersectionDto> get intersections;
 
   bool get isBusy;
   @nullable

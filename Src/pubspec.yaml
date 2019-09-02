@@ -36,6 +36,10 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
+    # files
+    - assets/files/intersections.csv
+      
+    # images
     - assets/images/vehicles/car_other.png
     - assets/images/vehicles/car_self.png
     - assets/images/vehicles/cycle_other.png
