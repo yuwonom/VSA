@@ -136,9 +136,6 @@ class UpdateOtherVehiclesProperties {
   String toString() => "UpdateOtherVehiclesProperties $map";
 }
 
-
-
-
 @immutable
 class LoadIntersections {
   @override

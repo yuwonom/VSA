@@ -19,6 +19,8 @@ final Reducer<MapState> mapStateReducer = combineReducers([
     TypedReducer<MapState, UpdateSecurityLevel>(_updateSecurityLevelReducer),
     TypedReducer<MapState, UpdateOtherVehiclesStatus>(_updateOtherVehiclesStatusReducer),
     TypedReducer<MapState, UpdateOtherVehiclesProperties>(_updateOtherVehiclesPropertiesReducer),
+    TypedReducer<MapState, LoadIntersectionsSuccessful>(_loadIntersectionsSuccessfulReducer),
+    TypedReducer<MapState, LoadIntersectionsFailed>(_loadIntersectionsFailedReducer),
     TypedReducer<MapState, UpdateVehicleType>(_updateVehicleTypeReducer),
     TypedReducer<MapState, UpdateDimension>(_updateDimensionReducer),
   ]);
@@ -96,6 +98,12 @@ MapState _updateOtherVehiclesPropertiesReducer(MapState state, UpdateOtherVehicl
   
   return state.rebuild((b) => b..otherVehicles.replace(newOtherVehiclesBuiltMap));
 }
+
+MapState _loadIntersectionsSuccessfulReducer(MapState state, LoadIntersectionsSuccessful action) => state.rebuild((b) => b
+  ..intersections.replace(action.intersections));
+
+MapState _loadIntersectionsFailedReducer(MapState state, LoadIntersectionsFailed action) => state.rebuild((b) => b
+  ..exception = action.exception);
 
 MapState _updateVehicleTypeReducer(MapState state, UpdateVehicleType action) => state.rebuild((b) => b
   ..userVehicle.type = VehicleTypeDto.valueOf(action.value));
