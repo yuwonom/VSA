@@ -22,11 +22,13 @@ class _$MapState extends MapState {
   @override
   final BuiltList<IntersectionDto> intersections;
   @override
+  final int currentIntersectionId;
+  @override
   final bool isBusy;
   @override
   final ActionException exception;
 
-  factory _$MapState([void updates(MapStateBuilder b)]) =>
+  factory _$MapState([void Function(MapStateBuilder) updates]) =>
       (new MapStateBuilder()..update(updates)).build();
 
   _$MapState._(
@@ -37,6 +39,7 @@ class _$MapState extends MapState {
       this.recordedPoints,
       this.otherVehicles,
       this.intersections,
+      this.currentIntersectionId,
       this.isBusy,
       this.exception})
       : super._() {
@@ -64,7 +67,7 @@ class _$MapState extends MapState {
   }
 
   @override
-  MapState rebuild(void updates(MapStateBuilder b)) =>
+  MapState rebuild(void Function(MapStateBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
@@ -81,6 +84,7 @@ class _$MapState extends MapState {
         recordedPoints == other.recordedPoints &&
         otherVehicles == other.otherVehicles &&
         intersections == other.intersections &&
+        currentIntersectionId == other.currentIntersectionId &&
         isBusy == other.isBusy &&
         exception == other.exception;
   }
@@ -94,13 +98,15 @@ class _$MapState extends MapState {
                     $jc(
                         $jc(
                             $jc(
-                                $jc($jc(0, userVehicle.hashCode),
-                                    connectionState.hashCode),
-                                securityLevel.hashCode),
-                            startTime.hashCode),
-                        recordedPoints.hashCode),
-                    otherVehicles.hashCode),
-                intersections.hashCode),
+                                $jc(
+                                    $jc($jc(0, userVehicle.hashCode),
+                                        connectionState.hashCode),
+                                    securityLevel.hashCode),
+                                startTime.hashCode),
+                            recordedPoints.hashCode),
+                        otherVehicles.hashCode),
+                    intersections.hashCode),
+                currentIntersectionId.hashCode),
             isBusy.hashCode),
         exception.hashCode));
   }
@@ -115,6 +121,7 @@ class _$MapState extends MapState {
           ..add('recordedPoints', recordedPoints)
           ..add('otherVehicles', otherVehicles)
           ..add('intersections', intersections)
+          ..add('currentIntersectionId', currentIntersectionId)
           ..add('isBusy', isBusy)
           ..add('exception', exception))
         .toString();
@@ -162,6 +169,11 @@ class MapStateBuilder implements Builder<MapState, MapStateBuilder> {
   set intersections(ListBuilder<IntersectionDto> intersections) =>
       _$this._intersections = intersections;
 
+  int _currentIntersectionId;
+  int get currentIntersectionId => _$this._currentIntersectionId;
+  set currentIntersectionId(int currentIntersectionId) =>
+      _$this._currentIntersectionId = currentIntersectionId;
+
   bool _isBusy;
   bool get isBusy => _$this._isBusy;
   set isBusy(bool isBusy) => _$this._isBusy = isBusy;
@@ -181,6 +193,7 @@ class MapStateBuilder implements Builder<MapState, MapStateBuilder> {
       _recordedPoints = _$v.recordedPoints?.toBuilder();
       _otherVehicles = _$v.otherVehicles?.toBuilder();
       _intersections = _$v.intersections?.toBuilder();
+      _currentIntersectionId = _$v.currentIntersectionId;
       _isBusy = _$v.isBusy;
       _exception = _$v.exception;
       _$v = null;
@@ -197,7 +210,7 @@ class MapStateBuilder implements Builder<MapState, MapStateBuilder> {
   }
 
   @override
-  void update(void updates(MapStateBuilder b)) {
+  void update(void Function(MapStateBuilder) updates) {
     if (updates != null) updates(this);
   }
 
@@ -214,6 +227,7 @@ class MapStateBuilder implements Builder<MapState, MapStateBuilder> {
               recordedPoints: recordedPoints.build(),
               otherVehicles: otherVehicles.build(),
               intersections: intersections.build(),
+              currentIntersectionId: currentIntersectionId,
               isBusy: isBusy,
               exception: exception);
     } catch (_) {
