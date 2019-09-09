@@ -161,3 +161,13 @@ class LoadIntersectionsFailed {
   @override
   String toString() => "LoadIntersectionsFailed $exception";
 }
+
+@immutable
+class SetCurrentIntersectionId {
+  SetCurrentIntersectionId(this.id);
+
+  final int id;
+
+  @override
+  String toString() => "SetCurrentIntersectionId $id";
+}
