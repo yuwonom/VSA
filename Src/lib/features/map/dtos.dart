@@ -9,6 +9,16 @@ part 'dtos.g.dart';
 
 abstract class GpsPointDto implements Built<GpsPointDto, GpsPointDtoBuilder> {
   factory GpsPointDto([void updates(GpsPointDtoBuilder b)]) = _$GpsPointDto;
+  
+  factory GpsPointDto.fromLatLng(LatLng latLng) => _$GpsPointDto._(
+    latitude: latLng.latitude,
+    longitude: latLng.longitude,
+    altitude: 0,
+    accuracy: 0,
+    dateTime: DateTime.now(),
+    speed: 0,
+    heading: 0,
+  );
 
   GpsPointDto._();
 

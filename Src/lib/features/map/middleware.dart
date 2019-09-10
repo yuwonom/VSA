@@ -237,7 +237,10 @@ class MqttIntegration {
   }
 
   void _handleSetCurrentIntersectionId(Store<AppState> store, SetCurrentIntersectionId action, NextDispatcher next) {
-    void _syncIntersectionSubscription(String topic, int oldId, int newId) {
+    void _syncIntersectionSubscription(String topic, String oldId, String newId) {
+      if (oldId == newId) {
+        return;
+      }
       if (oldId != null) {
         api.unsubscribe(["$topic/$oldId"]);
       }
@@ -263,12 +266,13 @@ class CollisionCheck {
   const CollisionCheck();
 
   List<Middleware<AppState>> getMiddlewareBindings() => [
-        TypedMiddleware<AppState, UpdateUserGpsPoint>(_handleCheckCollision),
-        TypedMiddleware<AppState, UpdateOtherVehiclesProperties>(_handleCheckCollision),
-        TypedMiddleware<AppState, UpdateOtherVehiclesStatus>(_handleCheckCollision),
+        TypedMiddleware<AppState, UpdateUserGpsPoint>(_handleCheckVehicleCollision),
+        TypedMiddleware<AppState, UpdateOtherVehiclesProperties>(_handleCheckVehicleCollision),
+        TypedMiddleware<AppState, UpdateOtherVehiclesStatus>(_handleCheckVehicleCollision),
+        TypedMiddleware<AppState, UpdateUserGpsPoint>(_handleCheckIntersectionsCollision),
       ];
   
-  void _handleCheckCollision(Store<AppState> store, dynamic action, NextDispatcher next) {
+  void _handleCheckVehicleCollision(Store<AppState> store, dynamic action, NextDispatcher next) {
     next(action);
 
     if (store.state.map.otherVehicles.length == 0) {
@@ -300,6 +304,21 @@ class CollisionCheck {
     }
 
     store.dispatch(UpdateSecurityLevel(securityLevel));
+  }
+
+  void _handleCheckIntersectionsCollision(Store<AppState> store, UpdateUserGpsPoint action, NextDispatcher next) {
+    final intersections = store.state.map.intersections;
+    final collidedIntersectionId = intersections
+      .where((IntersectionDto intersection) => GpsHelper
+          .isCollided(
+            action.point,
+            GpsPointDto.fromLatLng(intersection.latLng),
+            intersection.radius))
+      ?.first
+      ?.id;
+
+    store.dispatch(SetCurrentIntersectionId(collidedIntersectionId));
+    next(action);
   }
 }
 

@@ -166,7 +166,7 @@ class LoadIntersectionsFailed {
 class SetCurrentIntersectionId {
   SetCurrentIntersectionId(this.id);
 
-  final int id;
+  final String id;
 
   @override
   String toString() => "SetCurrentIntersectionId $id";

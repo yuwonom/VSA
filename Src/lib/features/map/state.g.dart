@@ -22,7 +22,7 @@ class _$MapState extends MapState {
   @override
   final BuiltList<IntersectionDto> intersections;
   @override
-  final int currentIntersectionId;
+  final String currentIntersectionId;
   @override
   final bool isBusy;
   @override
@@ -169,9 +169,9 @@ class MapStateBuilder implements Builder<MapState, MapStateBuilder> {
   set intersections(ListBuilder<IntersectionDto> intersections) =>
       _$this._intersections = intersections;
 
-  int _currentIntersectionId;
-  int get currentIntersectionId => _$this._currentIntersectionId;
-  set currentIntersectionId(int currentIntersectionId) =>
+  String _currentIntersectionId;
+  String get currentIntersectionId => _$this._currentIntersectionId;
+  set currentIntersectionId(String currentIntersectionId) =>
       _$this._currentIntersectionId = currentIntersectionId;
 
   bool _isBusy;
