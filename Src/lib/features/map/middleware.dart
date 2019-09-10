@@ -253,7 +253,7 @@ class MqttIntegration {
         settingsState.isActiveLevelA) {
       _syncIntersectionSubscription(settingsState.levelAIntersectionSubscribeTopic, mapState.currentIntersectionId, action.id);
     }
-
+    
     next(action);
   }
 }
