@@ -54,6 +54,7 @@ class MqttIntegration {
         TypedMiddleware<AppState, PublishMessageToMqttBroker>(_handlePublishMessageToMqttBroker),
         TypedMiddleware<AppState, ListenToMqttBroker>(_listenToMqttBroker),
         TypedMiddleware<AppState, RecordUserGpsPoint>(_handleRecordUserGpsPoint),
+        TypedMiddleware<AppState, SetCurrentIntersectionId>(_handleSetCurrentIntersectionId),
       ];
 
   StreamSubscription<MqttMessage> _mqttListener;
@@ -232,6 +233,27 @@ class MqttIntegration {
       store.dispatch(PublishMessageToMqttBroker(topic, message));
     }
 
+    next(action);
+  }
+
+  void _handleSetCurrentIntersectionId(Store<AppState> store, SetCurrentIntersectionId action, NextDispatcher next) {
+    void _syncIntersectionSubscription(String topic, int oldId, int newId) {
+      if (oldId != null) {
+        api.unsubscribe(["$topic/$oldId"]);
+      }
+      if (newId != null) {
+        api.subscribe(["$topic/$newId"]);
+      }
+    }
+    
+    final mapState = store.state.map;
+    final settingsState = store.state.settings;
+    if (mapState.connectionState == MqttConnectionState.connected &&
+        mapState.userVehicle.type == VehicleTypeDto.car &&
+        settingsState.isActiveLevelA) {
+      _syncIntersectionSubscription(settingsState.levelAIntersectionSubscribeTopic, mapState.currentIntersectionId, action.id);
+    }
+    
     next(action);
   }
 }
