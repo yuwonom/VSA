@@ -79,11 +79,21 @@ class MqttIntegration {
   }
 
   void _handleConnectToMqttBrokerSuccessful(Store<AppState> store, ConnectToMqttBrokerSuccessful action, NextDispatcher next) {
-    void _publishUserInformation(VehicleDto user, SettingsState settings, String clientId) {
+    void _publishUserBasicInformation(VehicleDto user, SettingsState settings, String clientId) {
       final topic = "${settings.propertiesPublishTopic}/$clientId";
       final message = MqttApi.propertiesMessage(user.id, user.name, user.type, user.dimension);
       store.dispatch(PublishMessageToMqttBroker(topic, message));
       store.dispatch(RecordUserGpsPoint(user.point));
+    }
+
+    void _publishCyclistInformation(VehicleDto user, SettingsState settings, String clientId) {
+      if (!settings.isActiveLevelA || user.type != VehicleTypeDto.cycle) {
+        return;
+      }
+
+      final topic = "${settings.levelAPropertiesPublishTopic}/$clientId";
+      final message = MqttApi.propertiesMessage(user.id, user.name, user.type, user.dimension);
+      store.dispatch(PublishMessageToMqttBroker(topic, message));
     }
     
     void _subscribeTopics(SettingsState settings, String clientId) {
@@ -119,7 +129,8 @@ class MqttIntegration {
     final clientId = settingsState.broker.clientId;
     const requestInterval = const Duration(milliseconds: 100);
 
-    _publishUserInformation(user, settingsState, clientId);
+    _publishUserBasicInformation(user, settingsState, clientId);
+    _publishCyclistInformation(user, settingsState, clientId);
     _subscribeTopics(settingsState, clientId);
     _startPeriodicRequests(_nearbyRequestTimer, requestInterval, user, settingsState, clientId);
     
@@ -212,9 +223,15 @@ class MqttIntegration {
 
   void _handleRecordUserGpsPoint(Store<AppState> store, RecordUserGpsPoint action, NextDispatcher next) {
     final clientId = store.state.settings.broker.clientId;
-    final topic = "${store.state.settings.statusPublishTopic}/$clientId";
+    String topic = "${store.state.settings.statusPublishTopic}/$clientId";
     final message = MqttApi.statusMessage(store.state.map.userVehicle.id, action.point);
     store.dispatch(PublishMessageToMqttBroker(topic, message));
+
+    if (store.state.settings.isActiveLevelA && store.state.map.userVehicle.type == VehicleTypeDto.cycle) {
+      topic = "${store.state.settings.levelAStatusPublishTopic}/$clientId";
+      store.dispatch(PublishMessageToMqttBroker(topic, message));
+    }
+
     next(action);
   }
 }
