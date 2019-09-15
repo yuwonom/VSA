@@ -308,16 +308,18 @@ class CollisionCheck {
 
   void _handleCheckIntersectionsCollision(Store<AppState> store, UpdateUserGpsPoint action, NextDispatcher next) {
     final intersections = store.state.map.intersections;
-    final collidedIntersectionId = intersections
+    final collidedIntersections = intersections
       .where((IntersectionDto intersection) => GpsHelper
           .isCollided(
             action.point,
             GpsPointDto.fromLatLng(intersection.latLng),
             intersection.radius))
-      ?.first
-      ?.id;
+      .toList();
 
-    store.dispatch(SetCurrentIntersectionId(collidedIntersectionId));
+    final id = collidedIntersections.length > 0 
+      ? collidedIntersections.first.id : null;
+
+    store.dispatch(SetCurrentIntersectionId(id));
     next(action);
   }
 }
