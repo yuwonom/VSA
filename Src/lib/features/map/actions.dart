@@ -135,3 +135,39 @@ class UpdateOtherVehiclesProperties {
   @override
   String toString() => "UpdateOtherVehiclesProperties $map";
 }
+
+@immutable
+class LoadIntersections {
+  @override
+  String toString() => "LoadIntersections";
+}
+
+@immutable
+class LoadIntersectionsSuccessful {
+  LoadIntersectionsSuccessful(this.intersections) : assert (intersections != null);
+
+  final BuiltList<IntersectionDto> intersections;
+  
+  @override
+  String toString() => "LoadIntersectionsSuccessful $intersections";
+}
+
+@immutable
+class LoadIntersectionsFailed {
+  LoadIntersectionsFailed(this.exception) : assert (exception != null);
+
+  final ActionException exception;
+
+  @override
+  String toString() => "LoadIntersectionsFailed $exception";
+}
+
+@immutable
+class SetCurrentIntersectionId {
+  SetCurrentIntersectionId(this.id);
+
+  final String id;
+
+  @override
+  String toString() => "SetCurrentIntersectionId $id";
+}

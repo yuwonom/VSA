@@ -43,7 +43,10 @@ class MapPageState extends State<MapPage> {
 
   @override
   Widget build(BuildContext context) => StoreConnector<AppState, MapViewModel>(
-      onInit: (Store<AppState> store) => store..dispatch(ListenToGeolocator())..dispatch(LoadSettings()),
+      onInit: (Store<AppState> store) => store
+        ..dispatch(ListenToGeolocator())
+        ..dispatch(LoadSettings())
+        ..dispatch(LoadIntersections()),
       converter: (Store<AppState> store) => MapViewModel(store.state.map, store.state.settings),
       builder: (BuildContext context, MapViewModel viewModel) => _buildPage(context, StoreProvider.of(context), viewModel),
     );
@@ -266,6 +269,13 @@ class MapPageState extends State<MapPage> {
         circles.add(otherAccuracyCircle);
       });
     }
+
+    if (viewModel.hasIntersections) {
+      viewModel.intersections.forEach((IntersectionDto intersection) {
+        final intersectionCircle = _buildIntersectionCircle(intersection);
+        circles.add(intersectionCircle);
+      });
+    }
     
     return GoogleMap(
       initialCameraPosition: CameraPosition(
@@ -314,9 +324,11 @@ class MapPageState extends State<MapPage> {
 
   Future<Marker> _buildVehicleMarker(VehicleDto vehicle, bool isUser) async {
     final iconPath = "assets/images/vehicles/";
+    final iconType = vehicle.type.toString();
+    final iconFor = isUser ? "self" : "other";
     final icon = BitmapDescriptor.fromAssetImage(
       const ImageConfiguration(),
-      isUser ? "${iconPath}car_blue.png" : "${iconPath}car_red.png",
+      "$iconPath${iconType}_$iconFor.png",
     );
 
     final marker = Marker(
@@ -344,6 +356,16 @@ class MapPageState extends State<MapPage> {
       zIndex: isUser
         ? MapViewModel.USER_ACCURACY_ZINDEX
         : MapViewModel.OTHER_ACCURACY_ZINDEX,
+    );
+  
+  Circle _buildIntersectionCircle(IntersectionDto intersection) => Circle(
+      circleId: CircleId("Intersection_${intersection.id}"),
+      center: intersection.latLng,
+      radius: intersection.radius,
+      fillColor: AppColors.darkGray.withAlpha(100),
+      strokeWidth: 10,
+      strokeColor: AppColors.white,
+      zIndex: MapViewModel.INTERSECTION_ZINDEX,
     );
 
   Future<void> _animateMapCamera(LatLng point) async {

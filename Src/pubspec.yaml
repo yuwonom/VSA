@@ -19,7 +19,7 @@ dependencies:
   cached_network_image: ^1.1.0
 
   shared_preferences: ^0.5.3+3
-  mqtt_client: ^5.5.3
+  mqtt_client: 5.5.3
   google_maps_flutter: ^0.5.19
   location: ^2.3.5
 
@@ -36,5 +36,17 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-    - assets/images/vehicles/car_blue.png
-    - assets/images/vehicles/car_red.png
+    # files
+    - assets/files/intersections.csv
+      
+    # images
+    - assets/images/vehicles/car_other.png
+    - assets/images/vehicles/car_self.png
+    - assets/images/vehicles/cycle_other.png
+    - assets/images/vehicles/cycle_self.png
+    - assets/images/vehicles/motorbike_other.png
+    - assets/images/vehicles/motorbike_self.png
+    - assets/images/vehicles/pedestrian_other.png
+    - assets/images/vehicles/pedestrian_self.png
+    - assets/images/vehicles/scooter_other.png
+    - assets/images/vehicles/scooter_self.png

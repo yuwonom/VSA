@@ -10,6 +10,24 @@ class _$SettingsState extends SettingsState {
   @override
   final BrokerDto broker;
   @override
+  final bool isActiveLevelA;
+  @override
+  final bool isActiveLevelB;
+  @override
+  final bool isActiveLevelC;
+  @override
+  final bool isActiveLevelD;
+  @override
+  final bool isActiveBasicVehicle;
+  @override
+  final bool isActiveBasicTraffic;
+  @override
+  final String levelAPropertiesPublishTopic;
+  @override
+  final String levelAStatusPublishTopic;
+  @override
+  final String levelAIntersectionSubscribeTopic;
+  @override
   final String propertiesPublishTopic;
   @override
   final String statusPublishTopic;
@@ -35,6 +53,15 @@ class _$SettingsState extends SettingsState {
 
   _$SettingsState._(
       {this.broker,
+      this.isActiveLevelA,
+      this.isActiveLevelB,
+      this.isActiveLevelC,
+      this.isActiveLevelD,
+      this.isActiveBasicVehicle,
+      this.isActiveBasicTraffic,
+      this.levelAPropertiesPublishTopic,
+      this.levelAStatusPublishTopic,
+      this.levelAIntersectionSubscribeTopic,
       this.propertiesPublishTopic,
       this.statusPublishTopic,
       this.propertiesRequestPublishTopic,
@@ -48,6 +75,38 @@ class _$SettingsState extends SettingsState {
       : super._() {
     if (broker == null) {
       throw new BuiltValueNullFieldError('SettingsState', 'broker');
+    }
+    if (isActiveLevelA == null) {
+      throw new BuiltValueNullFieldError('SettingsState', 'isActiveLevelA');
+    }
+    if (isActiveLevelB == null) {
+      throw new BuiltValueNullFieldError('SettingsState', 'isActiveLevelB');
+    }
+    if (isActiveLevelC == null) {
+      throw new BuiltValueNullFieldError('SettingsState', 'isActiveLevelC');
+    }
+    if (isActiveLevelD == null) {
+      throw new BuiltValueNullFieldError('SettingsState', 'isActiveLevelD');
+    }
+    if (isActiveBasicVehicle == null) {
+      throw new BuiltValueNullFieldError(
+          'SettingsState', 'isActiveBasicVehicle');
+    }
+    if (isActiveBasicTraffic == null) {
+      throw new BuiltValueNullFieldError(
+          'SettingsState', 'isActiveBasicTraffic');
+    }
+    if (levelAPropertiesPublishTopic == null) {
+      throw new BuiltValueNullFieldError(
+          'SettingsState', 'levelAPropertiesPublishTopic');
+    }
+    if (levelAStatusPublishTopic == null) {
+      throw new BuiltValueNullFieldError(
+          'SettingsState', 'levelAStatusPublishTopic');
+    }
+    if (levelAIntersectionSubscribeTopic == null) {
+      throw new BuiltValueNullFieldError(
+          'SettingsState', 'levelAIntersectionSubscribeTopic');
     }
     if (propertiesPublishTopic == null) {
       throw new BuiltValueNullFieldError(
@@ -97,6 +156,16 @@ class _$SettingsState extends SettingsState {
     if (identical(other, this)) return true;
     return other is SettingsState &&
         broker == other.broker &&
+        isActiveLevelA == other.isActiveLevelA &&
+        isActiveLevelB == other.isActiveLevelB &&
+        isActiveLevelC == other.isActiveLevelC &&
+        isActiveLevelD == other.isActiveLevelD &&
+        isActiveBasicVehicle == other.isActiveBasicVehicle &&
+        isActiveBasicTraffic == other.isActiveBasicTraffic &&
+        levelAPropertiesPublishTopic == other.levelAPropertiesPublishTopic &&
+        levelAStatusPublishTopic == other.levelAStatusPublishTopic &&
+        levelAIntersectionSubscribeTopic ==
+            other.levelAIntersectionSubscribeTopic &&
         propertiesPublishTopic == other.propertiesPublishTopic &&
         statusPublishTopic == other.statusPublishTopic &&
         propertiesRequestPublishTopic == other.propertiesRequestPublishTopic &&
@@ -121,7 +190,38 @@ class _$SettingsState extends SettingsState {
                             $jc(
                                 $jc(
                                     $jc(
-                                        $jc($jc(0, broker.hashCode),
+                                        $jc(
+                                            $jc(
+                                                $jc(
+                                                    $jc(
+                                                        $jc(
+                                                            $jc(
+                                                                $jc(
+                                                                    $jc(
+                                                                        $jc(
+                                                                            $jc(
+                                                                                $jc(
+                                                                                    0,
+                                                                                    broker
+                                                                                        .hashCode),
+                                                                                isActiveLevelA
+                                                                                    .hashCode),
+                                                                            isActiveLevelB
+                                                                                .hashCode),
+                                                                        isActiveLevelC
+                                                                            .hashCode),
+                                                                    isActiveLevelD
+                                                                        .hashCode),
+                                                                isActiveBasicVehicle
+                                                                    .hashCode),
+                                                            isActiveBasicTraffic
+                                                                .hashCode),
+                                                        levelAPropertiesPublishTopic
+                                                            .hashCode),
+                                                    levelAStatusPublishTopic
+                                                        .hashCode),
+                                                levelAIntersectionSubscribeTopic
+                                                    .hashCode),
                                             propertiesPublishTopic.hashCode),
                                         statusPublishTopic.hashCode),
                                     propertiesRequestPublishTopic.hashCode),
@@ -138,6 +238,16 @@ class _$SettingsState extends SettingsState {
   String toString() {
     return (newBuiltValueToStringHelper('SettingsState')
           ..add('broker', broker)
+          ..add('isActiveLevelA', isActiveLevelA)
+          ..add('isActiveLevelB', isActiveLevelB)
+          ..add('isActiveLevelC', isActiveLevelC)
+          ..add('isActiveLevelD', isActiveLevelD)
+          ..add('isActiveBasicVehicle', isActiveBasicVehicle)
+          ..add('isActiveBasicTraffic', isActiveBasicTraffic)
+          ..add('levelAPropertiesPublishTopic', levelAPropertiesPublishTopic)
+          ..add('levelAStatusPublishTopic', levelAStatusPublishTopic)
+          ..add('levelAIntersectionSubscribeTopic',
+              levelAIntersectionSubscribeTopic)
           ..add('propertiesPublishTopic', propertiesPublishTopic)
           ..add('statusPublishTopic', statusPublishTopic)
           ..add('propertiesRequestPublishTopic', propertiesRequestPublishTopic)
@@ -160,6 +270,55 @@ class SettingsStateBuilder
   BrokerDtoBuilder _broker;
   BrokerDtoBuilder get broker => _$this._broker ??= new BrokerDtoBuilder();
   set broker(BrokerDtoBuilder broker) => _$this._broker = broker;
+
+  bool _isActiveLevelA;
+  bool get isActiveLevelA => _$this._isActiveLevelA;
+  set isActiveLevelA(bool isActiveLevelA) =>
+      _$this._isActiveLevelA = isActiveLevelA;
+
+  bool _isActiveLevelB;
+  bool get isActiveLevelB => _$this._isActiveLevelB;
+  set isActiveLevelB(bool isActiveLevelB) =>
+      _$this._isActiveLevelB = isActiveLevelB;
+
+  bool _isActiveLevelC;
+  bool get isActiveLevelC => _$this._isActiveLevelC;
+  set isActiveLevelC(bool isActiveLevelC) =>
+      _$this._isActiveLevelC = isActiveLevelC;
+
+  bool _isActiveLevelD;
+  bool get isActiveLevelD => _$this._isActiveLevelD;
+  set isActiveLevelD(bool isActiveLevelD) =>
+      _$this._isActiveLevelD = isActiveLevelD;
+
+  bool _isActiveBasicVehicle;
+  bool get isActiveBasicVehicle => _$this._isActiveBasicVehicle;
+  set isActiveBasicVehicle(bool isActiveBasicVehicle) =>
+      _$this._isActiveBasicVehicle = isActiveBasicVehicle;
+
+  bool _isActiveBasicTraffic;
+  bool get isActiveBasicTraffic => _$this._isActiveBasicTraffic;
+  set isActiveBasicTraffic(bool isActiveBasicTraffic) =>
+      _$this._isActiveBasicTraffic = isActiveBasicTraffic;
+
+  String _levelAPropertiesPublishTopic;
+  String get levelAPropertiesPublishTopic =>
+      _$this._levelAPropertiesPublishTopic;
+  set levelAPropertiesPublishTopic(String levelAPropertiesPublishTopic) =>
+      _$this._levelAPropertiesPublishTopic = levelAPropertiesPublishTopic;
+
+  String _levelAStatusPublishTopic;
+  String get levelAStatusPublishTopic => _$this._levelAStatusPublishTopic;
+  set levelAStatusPublishTopic(String levelAStatusPublishTopic) =>
+      _$this._levelAStatusPublishTopic = levelAStatusPublishTopic;
+
+  String _levelAIntersectionSubscribeTopic;
+  String get levelAIntersectionSubscribeTopic =>
+      _$this._levelAIntersectionSubscribeTopic;
+  set levelAIntersectionSubscribeTopic(
+          String levelAIntersectionSubscribeTopic) =>
+      _$this._levelAIntersectionSubscribeTopic =
+          levelAIntersectionSubscribeTopic;
 
   String _propertiesPublishTopic;
   String get propertiesPublishTopic => _$this._propertiesPublishTopic;
@@ -217,6 +376,15 @@ class SettingsStateBuilder
   SettingsStateBuilder get _$this {
     if (_$v != null) {
       _broker = _$v.broker?.toBuilder();
+      _isActiveLevelA = _$v.isActiveLevelA;
+      _isActiveLevelB = _$v.isActiveLevelB;
+      _isActiveLevelC = _$v.isActiveLevelC;
+      _isActiveLevelD = _$v.isActiveLevelD;
+      _isActiveBasicVehicle = _$v.isActiveBasicVehicle;
+      _isActiveBasicTraffic = _$v.isActiveBasicTraffic;
+      _levelAPropertiesPublishTopic = _$v.levelAPropertiesPublishTopic;
+      _levelAStatusPublishTopic = _$v.levelAStatusPublishTopic;
+      _levelAIntersectionSubscribeTopic = _$v.levelAIntersectionSubscribeTopic;
       _propertiesPublishTopic = _$v.propertiesPublishTopic;
       _statusPublishTopic = _$v.statusPublishTopic;
       _propertiesRequestPublishTopic = _$v.propertiesRequestPublishTopic;
@@ -252,6 +420,16 @@ class SettingsStateBuilder
       _$result = _$v ??
           new _$SettingsState._(
               broker: broker.build(),
+              isActiveLevelA: isActiveLevelA,
+              isActiveLevelB: isActiveLevelB,
+              isActiveLevelC: isActiveLevelC,
+              isActiveLevelD: isActiveLevelD,
+              isActiveBasicVehicle: isActiveBasicVehicle,
+              isActiveBasicTraffic: isActiveBasicTraffic,
+              levelAPropertiesPublishTopic: levelAPropertiesPublishTopic,
+              levelAStatusPublishTopic: levelAStatusPublishTopic,
+              levelAIntersectionSubscribeTopic:
+                  levelAIntersectionSubscribeTopic,
               propertiesPublishTopic: propertiesPublishTopic,
               statusPublishTopic: statusPublishTopic,
               propertiesRequestPublishTopic: propertiesRequestPublishTopic,

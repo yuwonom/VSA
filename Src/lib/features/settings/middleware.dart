@@ -29,6 +29,15 @@ class LocalSettings {
         UpdateBrokerUsername,
         UpdateBrokerPassword,
         UpdateBrokerClientId,
+        SwitchLevelA,
+        SwitchLevelB,
+        SwitchLevelC,
+        SwitchLevelD,
+        SwitchBasicVehicle,
+        SwitchBasicTraffic,
+        UpdateLevelAPropertiesPublishTopic,
+        UpdateLevelAStatusPublishTopic,
+        UpdateLevelAIntersectionSubscribeTopic,
         UpdatePropertiesPublishTopic,
         UpdateStatusPublishTopic,
         UpdatePropertiesRequestPublishTopic,
@@ -45,7 +54,7 @@ class LocalSettings {
           return;
         }
 
-        final value = sharedPreferences.getString(key);
+        final value = sharedPreferences.get(key) as Object;
         final updateAction = _getActionFromActionType(actionType, value);
 
         store.dispatch(updateAction);
@@ -62,7 +71,21 @@ class LocalSettings {
 
       try {
         final key = _getKeyFromActionType(action.actionType);
-        await sharedPreferences.setString(key, action.value);
+
+        switch (action.value.runtimeType) {
+          case bool:
+            await sharedPreferences.setBool(key, action.value);
+            break;
+          case double:
+            await sharedPreferences.setDouble(key, action.value);
+            break;
+          case int:
+            await sharedPreferences.setInt(key, action.value);
+            break;
+          case String:
+            await sharedPreferences.setString(key, action.value);
+            break;
+        }
 
         final updateAction = _getActionFromActionType(action.actionType, action.value);
         store.dispatch(updateAction);
@@ -91,6 +114,24 @@ class LocalSettings {
         return "brokerPassword";
       case UpdateBrokerClientId:
         return "brokerClientId";
+      case SwitchLevelA:
+        return "levelA";
+      case SwitchLevelB:
+        return "levelB";
+      case SwitchLevelC:
+        return "levelC";
+      case SwitchLevelD:
+        return "levelD";
+      case SwitchBasicVehicle:
+        return "switchBasicVehicle";
+      case SwitchBasicTraffic:
+        return "switchBasicTraffic";
+      case UpdateLevelAPropertiesPublishTopic:
+        return "levelAPropertiesPublishTopic";
+      case UpdateLevelAStatusPublishTopic:
+        return "levelAStatusPublishTopic";
+      case UpdateLevelAIntersectionSubscribeTopic:
+        return "levelAIntersectionSubscribeTopic";
       case UpdatePropertiesPublishTopic:
         return "propertiesPublishTopic";
       case UpdateStatusPublishTopic:
@@ -112,7 +153,7 @@ class LocalSettings {
     return null;
   }
 
-  dynamic _getActionFromActionType(Type actionType, String value) {
+  dynamic _getActionFromActionType(Type actionType, Object value) {
     switch (actionType) {
       case UpdateVehicleType:
         return UpdateVehicleType(value);
@@ -128,6 +169,24 @@ class LocalSettings {
         return UpdateBrokerPassword(value);
       case UpdateBrokerClientId:
         return UpdateBrokerClientId(value);
+      case SwitchLevelA:
+        return SwitchLevelA(value);
+      case SwitchLevelB:
+        return SwitchLevelB(value);
+      case SwitchLevelC:
+        return SwitchLevelC(value);
+      case SwitchLevelD:
+        return SwitchLevelD(value);
+      case SwitchBasicVehicle:
+        return SwitchBasicVehicle(value);
+      case SwitchBasicTraffic:
+        return SwitchBasicTraffic(value);
+      case UpdateLevelAPropertiesPublishTopic:
+        return UpdateLevelAPropertiesPublishTopic(value);
+      case UpdateLevelAStatusPublishTopic:
+        return UpdateLevelAStatusPublishTopic(value);
+      case UpdateLevelAIntersectionSubscribeTopic:
+        return UpdateLevelAIntersectionSubscribeTopic(value);
       case UpdatePropertiesPublishTopic:
         return UpdatePropertiesPublishTopic(value);
       case UpdateStatusPublishTopic:

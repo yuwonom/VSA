@@ -17,6 +17,15 @@ abstract class SettingsState implements Built<SettingsState, SettingsStateBuilde
         ..username = "qut"
         ..password = "qut")
       .build(),
+    isActiveLevelA: false,
+    isActiveLevelB: false,
+    isActiveLevelC: false,
+    isActiveLevelD: false,
+    isActiveBasicVehicle: true,
+    isActiveBasicTraffic: true,
+    levelAPropertiesPublishTopic: "VSA/basicData/VRU/cycle",
+    levelAStatusPublishTopic: "VSA/vehProp/cycle",
+    levelAIntersectionSubscribeTopic: "VSA/requests/all/cycle",
     propertiesPublishTopic: "VSA/vehProp",
     statusPublishTopic: "VSA/vehSim",
     propertiesRequestPublishTopic: "VSA/request/vehProp/reqs",
@@ -31,6 +40,17 @@ abstract class SettingsState implements Built<SettingsState, SettingsStateBuilde
   SettingsState._();
 
   BrokerDto get broker;
+
+  bool get isActiveLevelA;
+  bool get isActiveLevelB;
+  bool get isActiveLevelC;
+  bool get isActiveLevelD;
+  bool get isActiveBasicVehicle;
+  bool get isActiveBasicTraffic;
+
+  String get levelAPropertiesPublishTopic;
+  String get levelAStatusPublishTopic;
+  String get levelAIntersectionSubscribeTopic;
 
   String get propertiesPublishTopic;
   String get statusPublishTopic;

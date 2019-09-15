@@ -14,11 +14,16 @@ import 'package:vsa/themes/vsa_button.dart';
 class SettingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) => StoreConnector<AppState, SettingsViewModel>(
-      converter: (Store<AppState> store) => SettingsViewModel(store.state.settings, store.state.map.userVehicle),
+      converter: (Store<AppState> store) => SettingsViewModel(
+          store.state.settings,
+          store.state.map.userVehicle.type,
+          store.state.map.userVehicle.dimension),
       builder: (BuildContext context, SettingsViewModel viewModel) => _buildPage(context, StoreProvider.of(context), viewModel),
     );
 
   Widget _buildPage(BuildContext context, Store<AppState> store, SettingsViewModel viewModel) {
+    final scaffoldKey = GlobalKey<ScaffoldState>();
+    
     final profileTileGroup = _buildTileGroup("Profile", <Widget>[
       _buildTileDropdown("Vehicle Type", viewModel.vehicleType.name, (String value) => store.dispatch(UpdateSettings(UpdateVehicleType, value))),
       _buildTile(context, "Dimension", viewModel.dimensionString, UpdateDimension, validity: (String value) {
@@ -40,6 +45,30 @@ class SettingsPage extends StatelessWidget {
       _buildTile(context, "Password", viewModel.password, UpdateBrokerPassword, obscureText: true),
       _buildTile(context, "Identifier", viewModel.clientId, UpdateBrokerClientId),
     ]);
+    
+    final notAvailableSnackBar = SnackBar(
+      duration: const Duration(seconds: 2),
+      content: Text("Level is not yet available"),
+      action: SnackBarAction(
+        label: "OKAY",
+        onPressed: () => scaffoldKey.currentState.hideCurrentSnackBar(),
+      ),
+    );
+
+    final topicStructureTileGroup = _buildTileGroup("Show Topics", <Widget>[
+      _buildTileCheckbox("Level A", viewModel.isActiveLevelA, (bool checked) => store.dispatch(UpdateSettings(SwitchLevelA, checked))),
+      _buildTileCheckbox("Level B", viewModel.isActiveLevelB, (bool checked) => scaffoldKey.currentState.showSnackBar(notAvailableSnackBar)),
+      _buildTileCheckbox("Level C", viewModel.isActiveLevelC, (bool checked) => scaffoldKey.currentState.showSnackBar(notAvailableSnackBar)),
+      _buildTileCheckbox("Level D", viewModel.isActiveLevelD, (bool checked) => scaffoldKey.currentState.showSnackBar(notAvailableSnackBar)),
+      _buildTileCheckbox("Basic Vehicle", viewModel.isActiveBasicVehicle, (bool checked) => store.dispatch(UpdateSettings(SwitchBasicVehicle, checked))),
+      _buildTileCheckbox("Basic Traffic", viewModel.isActiveBasicTraffic, (bool checked) => store.dispatch(UpdateSettings(SwitchBasicTraffic, checked))),
+    ]);
+
+    final levelATileGroup = _buildTileGroup("Level A Topics", <Widget>[
+      _buildTile(context, "Publish current properties", viewModel.propertiesPublishTopic, UpdateLevelAPropertiesPublishTopic),
+      _buildTile(context, "Publish current status", viewModel.propertiesPublishTopic, UpdateLevelAStatusPublishTopic),
+      _buildTile(context, "Subscribe intersection", viewModel.propertiesPublishTopic, UpdateLevelAIntersectionSubscribeTopic),
+    ]);
 
     final vehicleTopicsTileGroup = _buildTileGroup("Vehicle Topics", <Widget>[
       _buildTile(context, "Publish current properties", viewModel.propertiesPublishTopic, UpdatePropertiesPublishTopic),
@@ -55,16 +84,16 @@ class SettingsPage extends StatelessWidget {
       _buildTile(context, "Get traffic", viewModel.trafficRequestSubscribeTopic, UpdateTrafficRequestSubscribeTopic),
     ]);
 
-    final body = SingleChildScrollView(
+    final body = ListView(
       padding: AppEdges.mediumAll,
-      child: Column(
-        children: <Widget>[
-          profileTileGroup,
-          brokerTileGroup,
-          vehicleTopicsTileGroup,
-          trafficTopicsTileGroup,
-        ],
-      ),
+      children: <Widget>[
+        profileTileGroup,
+        brokerTileGroup,
+        topicStructureTileGroup,
+        viewModel.isActiveLevelA ? levelATileGroup : Container(),
+        viewModel.isActiveBasicVehicle ? vehicleTopicsTileGroup : Container(),
+        viewModel.isActiveBasicTraffic ? trafficTopicsTileGroup : Container(),
+      ],
     );
 
     final appBar = AppBar(
@@ -74,6 +103,7 @@ class SettingsPage extends StatelessWidget {
     );
 
     final scaffold = Scaffold(
+      key: scaffoldKey,
       appBar: appBar,
       body: body,
     );
@@ -96,6 +126,20 @@ class SettingsPage extends StatelessWidget {
         maxLines: 2,
       ),
       onTap: () => showDialog(context: context, builder: (_) => SettingsDialog(title, value, actionType, validity, obscureText)),
+    );
+
+   Widget _buildTileCheckbox(String title, bool value, Function onChanged) => ListTile(
+      leading: Checkbox(
+        activeColor: AppColors.blue,
+        value: value,
+        onChanged: onChanged,
+      ),
+      title: Text(
+        title,
+        style: AppTextStyles.body1.copyWith(color: AppColors.black),
+        overflow: TextOverflow.ellipsis,
+        softWrap: true,
+      ),
     );
   
   Widget _buildTileDropdown(String title, String value, Function onChanged) => ListTile(

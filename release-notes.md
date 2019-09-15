@@ -1,3 +1,16 @@
+## New in 1.2.0 (Released September 16th, 2019)
+* feature: Activate and deactivate basic topics
+* feature: Level A car topic
+* feature: Level A cyclist topic
+* feature: Level A topics UI
+* feature: Listen to intersections collision
+* feature: Load intersections
+* feature: Support various user types
+* feature: Store topic level locally
+* feature: Topic structure level settings
+* fix: Handle check intersections collision
+* fix: MQTT package version
+
 ## New in 1.1.0 (Released August 10th, 2019)
 * feature: Collision check
 * feature: Publish point on rotation

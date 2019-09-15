@@ -35,4 +35,9 @@ class GpsHelper {
 
 	  return d * 1000; // convert to meters
   }
+
+  static bool isCollided(GpsPointDto point1, GpsPointDto point2, double radius) {
+    final distance = GpsHelper.distance(point1, point2);
+    return distance <= radius;
+  }
 }

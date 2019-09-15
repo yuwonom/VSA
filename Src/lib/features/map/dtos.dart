@@ -9,6 +9,16 @@ part 'dtos.g.dart';
 
 abstract class GpsPointDto implements Built<GpsPointDto, GpsPointDtoBuilder> {
   factory GpsPointDto([void updates(GpsPointDtoBuilder b)]) = _$GpsPointDto;
+  
+  factory GpsPointDto.fromLatLng(LatLng latLng) => _$GpsPointDto._(
+    latitude: latLng.latitude,
+    longitude: latLng.longitude,
+    altitude: 0,
+    accuracy: 0,
+    dateTime: DateTime.now(),
+    speed: 0,
+    heading: 0,
+  );
 
   GpsPointDto._();
 
@@ -150,4 +160,28 @@ class SecurityLevelDto extends EnumClass {
         return _$unknown;
     }
   }
+}
+
+abstract class IntersectionDto implements Built<IntersectionDto, IntersectionDtoBuilder> {
+  factory IntersectionDto([void updates(IntersectionDtoBuilder b)]) = _$IntersectionDto;
+
+  factory IntersectionDto.fromLine(String line) {
+    final args = line.split(',');
+    final id = args[0];
+    final latLng = LatLng(double.parse(args[1]), double.parse(args[2]));
+    final radius = double.parse(args[3]);
+    return _$IntersectionDto._(
+      id: id,
+      latLng: latLng,
+      radius: radius,
+    );
+  }
+
+  IntersectionDto._();
+
+  String get id;
+  LatLng get latLng;
+  double get radius;
+
+  static Serializer<IntersectionDto> get serializer => _$intersectionDtoSerializer;
 }

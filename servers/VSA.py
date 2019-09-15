@@ -4,6 +4,7 @@ Copyright © Queensland University of Technology 2019
 Authored by @yuwonom (Michael Yuwono)
 '''
 import datetime, math
+from enum import Enum
 
 #list of topics
 TOPIC_TRAFFIC = "VSA/traffic/all"
@@ -16,15 +17,24 @@ TOPIC_VEHSIM_RETURN = "VSA/request/vehSim/return"
 TOPIC_VEHPROP_REQ = "VSA/request/vehProp/reqs"
 TOPIC_VEHPROP_RETURN = "VSA/request/vehProp/return"
 
+
+class VehicleType(Enum):
+	CAR = "car"
+	CYCLE = "cycle"
+	MOTORBIKE = "motorbike"
+	SCOOTER = "scooter"
+	PEDESTRIAN = "pedestrian"
+
+
 class Geolocation(object):
 	Latitude = 0
 	Longitude = 0
- 
+
 	def __init__(self, latitude, longitude):
 		self.Latitude = float(latitude)
 		self.Longitude = float(longitude)
 
-		
+
 class Geometry(object):
 	Type = "Point"
 	Coordinates = []
@@ -32,8 +42,8 @@ class Geometry(object):
 	def __init__(self, type, coordinates):
 		self.Type = type
 		self.Coordinates = coordinates
-		
-		
+
+
 class Vehicle(object):
 	UID = ""
 	Coordinate = Geolocation(0,0)
@@ -41,20 +51,22 @@ class Vehicle(object):
 	PositionError = 0
 	RotationAngle = 0
 	Name = ""
+	Type = VehicleType.CAR
 	Dimensions = (0,0,0,0)
-	
+
 	def UpdateStatus(self, latitude, longitude, velocity, positionError, rotationAngle):
 		self.Coordinate = Geolocation(latitude, longitude)
 		self.Velocity = velocity
 		self.PositionError = positionError
 		self.RotationAngle = rotationAngle
-		
-	def __init__(self, uid, name, dimensions):
+
+	def __init__(self, uid, name, type, dimensions):
 		self.UID = uid
 		self.Name = name
+		self.Type = VehicleType(type)
 		self.Dimensions = dimensions
 
-		
+
 class Feature(object):
 	ID = 0
 	Geometries = []
@@ -70,7 +82,7 @@ class Feature(object):
 	RecurrencesDescription = []
 	Description = ""
 	Information = ""
- 
+
 	def __init__(self, json):
 		self.ID = json["properties"]["id"]
 		
@@ -124,7 +136,7 @@ class Feature(object):
 		if (json["properties"]["information"] is not None):
 			self.Information = json["properties"]["information"]
 
-			
+
 def serialize(obj):
 	'''
 	JSON serializer for objects not serializable by default json code

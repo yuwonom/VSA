@@ -1,5 +1,6 @@
 /// Authored by `@yuwonom (Michael Yuwono)`
 
+import 'package:built_collection/built_collection.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:redux/redux.dart';
 import 'package:vsa/features/map/actions.dart';
@@ -18,6 +19,9 @@ final Reducer<MapState> mapStateReducer = combineReducers([
     TypedReducer<MapState, UpdateSecurityLevel>(_updateSecurityLevelReducer),
     TypedReducer<MapState, UpdateOtherVehiclesStatus>(_updateOtherVehiclesStatusReducer),
     TypedReducer<MapState, UpdateOtherVehiclesProperties>(_updateOtherVehiclesPropertiesReducer),
+    TypedReducer<MapState, LoadIntersectionsSuccessful>(_loadIntersectionsSuccessfulReducer),
+    TypedReducer<MapState, LoadIntersectionsFailed>(_loadIntersectionsFailedReducer),
+    TypedReducer<MapState, SetCurrentIntersectionId>(_setCurrentIntersectionIdReducer),
     TypedReducer<MapState, UpdateVehicleType>(_updateVehicleTypeReducer),
     TypedReducer<MapState, UpdateDimension>(_updateDimensionReducer),
   ]);
@@ -56,36 +60,54 @@ MapState _updateSecurityLevelReducer(MapState state, UpdateSecurityLevel action)
   ..securityLevel = action.level);
 
 MapState _updateOtherVehiclesStatusReducer(MapState state, UpdateOtherVehiclesStatus action) {
-  final newOtherVehicles = action.map
-    ..toMap()
-    .forEach((String key, VehicleDto value) {
-      if (!state.otherVehicles.toMap().containsKey(key)) {
-        return;
+  final newOtherVehiclesEntries = action.map.entries
+    .map((MapEntry<String, VehicleDto> entry) {
+      if (!state.otherVehicles.containsKey(entry.key)) {
+        return entry;
       }
 
-      value.rebuild((b) => b
-        ..name = state.otherVehicles[key].name
-        ..dimension.replace(state.otherVehicles[key].dimension));
+      final newValue = entry.value.rebuild((b) => b
+        ..name = state.otherVehicles[entry.key].name
+        ..type = state.otherVehicles[entry.key].type
+        ..dimension.replace(state.otherVehicles[entry.key].dimension));
+        
+      return MapEntry<String, VehicleDto>(entry.key, newValue);
     });
+
+  final newOtherVehiclesBuiltMap = BuiltMap<String, VehicleDto>(Map<String, VehicleDto>.fromEntries(newOtherVehiclesEntries));
   
-  return state.rebuild((b) => b..otherVehicles.replace(newOtherVehicles));
+  return state.rebuild((b) => b..otherVehicles.replace(newOtherVehiclesBuiltMap));
 }
 
 MapState _updateOtherVehiclesPropertiesReducer(MapState state, UpdateOtherVehiclesProperties action) {
-  final newOtherVehicles = state.otherVehicles
-    ..toMap()
-    .forEach((String key, VehicleDto value) {
-      if (!action.map.toMap().containsKey(key)) {
-        return;
+  final newOtherVehiclesEntries = state.otherVehicles.entries
+    .map((MapEntry<String, VehicleDto> entry) {
+      if (!action.map.containsKey(entry.key)) {
+        return null;
       }
 
-      value.rebuild((b) => b
-        ..name = action.map[key].name
-        ..dimension.replace(action.map[key].dimension));
-    });
+      final newValue = entry.value.rebuild((b) => b
+        ..name = action.map[entry.key].name
+        ..type = action.map[entry.key].type
+        ..dimension.replace(action.map[entry.key].dimension));
+
+      return MapEntry<String, VehicleDto>(entry.key, newValue);
+    })
+    .where((MapEntry<String, VehicleDto> entry) => entry != null);
+
+  final newOtherVehiclesBuiltMap = BuiltMap<String, VehicleDto>(Map<String, VehicleDto>.fromEntries(newOtherVehiclesEntries));
   
-  return state.rebuild((b) => b..otherVehicles.replace(newOtherVehicles));
+  return state.rebuild((b) => b..otherVehicles.replace(newOtherVehiclesBuiltMap));
 }
+
+MapState _loadIntersectionsSuccessfulReducer(MapState state, LoadIntersectionsSuccessful action) => state.rebuild((b) => b
+  ..intersections.replace(action.intersections));
+
+MapState _loadIntersectionsFailedReducer(MapState state, LoadIntersectionsFailed action) => state.rebuild((b) => b
+  ..exception = action.exception);
+
+MapState _setCurrentIntersectionIdReducer(MapState state, SetCurrentIntersectionId action) => state.rebuild((b) => b
+  ..currentIntersectionId = action.id);
 
 MapState _updateVehicleTypeReducer(MapState state, UpdateVehicleType action) => state.rebuild((b) => b
   ..userVehicle.type = VehicleTypeDto.valueOf(action.value));
