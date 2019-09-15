@@ -44,21 +44,16 @@ workflows:
                 pip install six
             fi
             
-            if [ ! -d flutter ]; then
-                git clone https://github.com/flutter/flutter.git
-            else
-                cd flutter
-                git fetch
-                git reset --hard $FLUTTER_SHA
-                cd ..
-            fi
-            
-            if [ ! `which flutter` ]; then
-                FLUTTER_PATH=$PWD/flutter
-                export PATH=$FLUTTER_PATH/bin:$PATH
-                envman add --key PATH --value $PATH
-            fi
+            rm -rf ./flutter
+            git clone https://github.com/flutter/flutter.git
+            FLUTTER_PATH=${BITRISE_SOURCE_DIR}/flutter
+            export PATH=$FLUTTER_PATH/bin:$PATH
+            envman add --key PATH --value $PATH
             echo "Flutter path is '${FLUTTER_PATH}'."
+            
+            cd flutter
+            git reset --hard $FLUTTER_SHA
+            cd ..
             
             flutter doctor -v
     - script:
