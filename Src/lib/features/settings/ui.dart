@@ -85,6 +85,7 @@ class SettingsPage extends StatelessWidget {
     ]);
 
     final body = ListView(
+      key: const PageStorageKey<String>("settingsListView"),
       padding: AppEdges.mediumAll,
       children: <Widget>[
         profileTileGroup,
