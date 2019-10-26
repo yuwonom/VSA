@@ -1,3 +1,7 @@
+## New in 1.2.1 (Released October 26th, 2019)
+* fix: Level A topics settings properties
+* fix: Settings page list scroll
+
 ## New in 1.2.0 (Released September 16th, 2019)
 * feature: Activate and deactivate basic topics
 * feature: Level A car topic

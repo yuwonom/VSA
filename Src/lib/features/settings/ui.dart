@@ -65,9 +65,9 @@ class SettingsPage extends StatelessWidget {
     ]);
 
     final levelATileGroup = _buildTileGroup("Level A Topics", <Widget>[
-      _buildTile(context, "Publish current properties", viewModel.propertiesPublishTopic, UpdateLevelAPropertiesPublishTopic),
-      _buildTile(context, "Publish current status", viewModel.propertiesPublishTopic, UpdateLevelAStatusPublishTopic),
-      _buildTile(context, "Subscribe intersection", viewModel.propertiesPublishTopic, UpdateLevelAIntersectionSubscribeTopic),
+      _buildTile(context, "Publish current properties", viewModel.levelAPropertiesPublishTopic, UpdateLevelAPropertiesPublishTopic),
+      _buildTile(context, "Publish current status", viewModel.levelAStatusPublishTopic, UpdateLevelAStatusPublishTopic),
+      _buildTile(context, "Subscribe intersection", viewModel.levelAIntersectionSubscribeTopic, UpdateLevelAIntersectionSubscribeTopic),
     ]);
 
     final vehicleTopicsTileGroup = _buildTileGroup("Vehicle Topics", <Widget>[
@@ -85,6 +85,7 @@ class SettingsPage extends StatelessWidget {
     ]);
 
     final body = ListView(
+      key: const PageStorageKey<String>("settingsListView"),
       padding: AppEdges.mediumAll,
       children: <Widget>[
         profileTileGroup,

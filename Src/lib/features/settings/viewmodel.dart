@@ -17,6 +17,12 @@ class SettingsViewModel {
 
   BrokerDto get broker => _state.broker;
 
+  String get address => broker.address;
+  String get port => broker.port;
+  String get username => broker.username;
+  String get password => broker.password;
+  String get clientId => broker.clientId;
+
   bool get isActiveLevelA => _state.isActiveLevelA;
   bool get isActiveLevelB => _state.isActiveLevelB;
   bool get isActiveLevelC => _state.isActiveLevelC;
@@ -24,11 +30,9 @@ class SettingsViewModel {
   bool get isActiveBasicVehicle => _state.isActiveBasicVehicle;
   bool get isActiveBasicTraffic => _state.isActiveBasicTraffic;
 
-  String get address => broker.address;
-  String get port => broker.port;
-  String get username => broker.username;
-  String get password => broker.password;
-  String get clientId => broker.clientId;
+  String get levelAPropertiesPublishTopic => _state.levelAPropertiesPublishTopic;
+  String get levelAStatusPublishTopic => _state.levelAStatusPublishTopic;
+  String get levelAIntersectionSubscribeTopic => _state.levelAIntersectionSubscribeTopic;
 
   String get propertiesPublishTopic => _state.propertiesPublishTopic;
   String get statusPublishTopic => _state.statusPublishTopic;
@@ -36,6 +40,7 @@ class SettingsViewModel {
   String get propertiesRequestSubscribeTopic => _state.propertiesRequestSubscribeTopic;
   String get statusRequestPublishTopic => _state.statusRequestPublishTopic;
   String get statusRequestSubscribeTopic => _state.statusRequestSubscribeTopic;
+
   String get trafficRequestPublishTopic => _state.trafficRequestPublishTopic;
   String get trafficRequestSubscribeTopic => _state.trafficRequestSubscribeTopic;
 }
