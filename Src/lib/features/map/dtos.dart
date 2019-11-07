@@ -15,7 +15,7 @@ abstract class GpsPointDto implements Built<GpsPointDto, GpsPointDtoBuilder> {
     longitude: latLng.longitude,
     altitude: 0,
     accuracy: 0,
-    dateTime: DateTime.now(),
+    dateTime: DateTime.now().toUtc(),
     speed: 0,
     heading: 0,
   );

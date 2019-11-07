@@ -1,3 +1,7 @@
+## New in 1.2.2 (Released November 7th, 2019)
+* fix: Add date and time in publish status payload
+* fix: Round speed, accuracy, and heading message
+
 ## New in 1.2.1 (Released October 26th, 2019)
 * fix: Level A topics settings properties
 * fix: Settings page list scroll

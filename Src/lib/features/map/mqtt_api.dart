@@ -57,7 +57,7 @@ class MqttApi {
 
   static String propertiesMessage(String id, String name, VehicleTypeDto type, VehicleDimensionDto dimension) => "$id,$name,${type.toString()},${dimension.toString()}";
 
-  static String statusMessage(String id, GpsPointDto point) => "$id,${point.latitude},${point.longitude},${point.speed},${point.accuracy},${point.heading}";
+  static String statusMessage(String id, GpsPointDto point) => "$id,${point.latitude},${point.longitude},${point.speed.toStringAsFixed(2)},${point.accuracy.toStringAsFixed(2)},${point.heading.toStringAsFixed(2)},${point.dateTime}";
   
   static String propertiesRequestMessage(List<String> ids) => ids.join(",");
 
