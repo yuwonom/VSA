@@ -69,7 +69,7 @@ workflows:
             echo "Semantic Version:"
             echo "v${SEMANTIC_VERSION}"
             
-            RELEASE_NOTES=`pcre2grep -M '\*[\w\W]+\n\n' release-notes.md | sed '/^$/d'`
+            RELEASE_NOTES=`pcre2grep -M '\*[\w\W]+\n\n' release-notes.md | sed -e '/##/,$d' | sed '$d'`
             if [ -n RELEASE_NOTES ]; then
                 RELEASE_NOTES=`pcre2grep -M '\*[\w\W]+' release-notes.md`
             fi
@@ -221,7 +221,7 @@ workflows:
         - channel: $SLACK_CHANNEL
         - title: "$GIT_CLONE_COMMIT_MESSAGE_SUBJECT"
         - author_name: ''
-        - message: ''
+        - message: '${RELEASE_NOTES}'
         - fields: ''
         - buttons: 'Install Page|${ANDROID_INSTALL_PAGE}'
         - emoji: ":android:"
