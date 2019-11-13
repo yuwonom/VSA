@@ -298,7 +298,9 @@ class MapPageState extends State<MapPage> {
             final topic = "${settingsState.statusPublishTopic}/${settingsState.broker.clientId}";
             final message = MqttApi.statusMessage(
               mapState.userVehicle.id,
-              mapState.userVehicle.point.rebuild((b) => b.heading = _direction),
+              mapState.userVehicle.point.rebuild((b) => b
+                ..heading = _direction
+                ..dateTime = DateTime.now().toUtc()),
             );
             store.dispatch(PublishMessageToMqttBroker(topic, message));
           }
