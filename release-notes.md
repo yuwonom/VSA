@@ -1,3 +1,6 @@
+## New in 1.2.3 (Released November 13th, 2019)
+* fix: Update GPS timestamp on heading change
+
 ## New in 1.2.2 (Released November 7th, 2019)
 * fix: Add date and time in publish status payload
 * fix: Round speed, accuracy, and heading message
