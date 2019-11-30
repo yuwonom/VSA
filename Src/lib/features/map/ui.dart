@@ -6,7 +6,7 @@ import 'dart:ui';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_compass/flutter_compass.dart';
+// import 'package:flutter_compass/flutter_compass.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:mqtt_client/mqtt_client.dart';
@@ -94,6 +94,7 @@ class MapPageState extends State<MapPage> {
     final appBar = AppBar(
       title: Text("VSA", style: AppTextStyles.header2.copyWith(color: AppColors.black)),
       backgroundColor: AppColors.white,
+      brightness: Brightness.light,
       elevation: 0.0,
       actions: <Widget>[
         settings,
@@ -287,24 +288,24 @@ class MapPageState extends State<MapPage> {
       onMapCreated: (GoogleMapController controller) {
         _mapController = controller;
 
-        FlutterCompass.events.listen((double direction) {
-          setState(() => _direction = direction);
-          _stickMap(store);
+        // FlutterCompass.events.listen((double direction) {
+        //   setState(() => _direction = direction);
+        //   _stickMap(store);
 
-          final mapState = store.state.map;
-          final settingsState = store.state.settings;
+        //   final mapState = store.state.map;
+        //   final settingsState = store.state.settings;
           
-          if (mapState.connectionState == MqttConnectionState.connected) {
-            final topic = "${settingsState.statusPublishTopic}/${settingsState.broker.clientId}";
-            final message = MqttApi.statusMessage(
-              mapState.userVehicle.id,
-              mapState.userVehicle.point.rebuild((b) => b
-                ..heading = _direction
-                ..dateTime = DateTime.now().toUtc()),
-            );
-            store.dispatch(PublishMessageToMqttBroker(topic, message));
-          }
-        });
+        //   if (mapState.connectionState == MqttConnectionState.connected) {
+        //     final topic = "${settingsState.statusPublishTopic}/${settingsState.broker.clientId}";
+        //     final message = MqttApi.statusMessage(
+        //       mapState.userVehicle.id,
+        //       mapState.userVehicle.point.rebuild((b) => b
+        //         ..heading = _direction
+        //         ..dateTime = DateTime.now().toUtc()),
+        //     );
+        //     store.dispatch(PublishMessageToMqttBroker(topic, message));
+        //   }
+        // });
 
         Geolocator.instance.events.listen((GpsPointDto point) {
           store.dispatch(UpdateUserGpsPoint(point));
