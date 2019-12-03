@@ -24,6 +24,8 @@
 	<true/>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>For Google Maps</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>For Google Maps</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
