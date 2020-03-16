@@ -32,8 +32,8 @@ class Geolocator {
       distanceFilter: distanceFilter,
     );
 
-    location.requestPermission().then((granted) {
-      if (granted) {
+    location.requestPermission().then((PermissionStatus status) {
+      if (status == PermissionStatus.GRANTED) {
         location.onLocationChanged().listen((LocationData data) => _addGpsPoint(data));
       }
     });

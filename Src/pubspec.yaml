@@ -13,7 +13,7 @@ dependencies:
   flutter_redux:
   redux:
   redux_epics:
-  rxdart: ^0.21.0
+  rxdart: ^0.23.1
 
   cupertino_icons: ^0.1.2
   cached_network_image: ^1.1.0
@@ -22,7 +22,7 @@ dependencies:
   mqtt_client: 5.6.0
   google_maps_flutter: ^0.5.19
   location: ^2.3.5
-  # flutter_compass: ^0.3.2
+  flutter_compass: ^0.4.1
 
 dev_dependencies:
   flutter_test:

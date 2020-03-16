@@ -8,6 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
@@ -17,7 +19,6 @@ void main() {
   final mqttApi = MqttApi.instance;
 
   final applicationInformation = createApplicationInformation(geolocator, mqttApi);
-
   globals.applicationInformation = applicationInformation;
 
   runApp(applicationInformation.applicationWidget);
