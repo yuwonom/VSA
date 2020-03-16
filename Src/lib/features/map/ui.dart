@@ -94,6 +94,7 @@ class MapPageState extends State<MapPage> {
     final appBar = AppBar(
       title: Text("VSA", style: AppTextStyles.header2.copyWith(color: AppColors.black)),
       backgroundColor: AppColors.white,
+      brightness: Brightness.light,
       elevation: 0.0,
       actions: <Widget>[
         settings,

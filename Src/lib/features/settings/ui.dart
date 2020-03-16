@@ -100,6 +100,7 @@ class SettingsPage extends StatelessWidget {
     final appBar = AppBar(
       title: Text("Settings", style: AppTextStyles.header2.copyWith(color: AppColors.black)),
       backgroundColor: AppColors.white,
+      brightness: Brightness.light,
       iconTheme: IconThemeData(color: AppColors.black),
     );
 
