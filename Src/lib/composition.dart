@@ -2,7 +2,7 @@
 
 import 'package:vsa/features/map/geolocator.dart';
 import 'package:vsa/features/map/mqtt_api.dart';
-import 'package:vsa/features/map/ui.dart';
+import 'package:vsa/features/map/ui/map_page.dart';
 import 'package:vsa/globals.dart';
 import 'package:vsa/middleware.dart';
 import 'package:vsa/reducers.dart';
