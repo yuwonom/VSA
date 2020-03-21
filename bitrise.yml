@@ -7,8 +7,8 @@ app:
   - PROJECT_NAME: VSA
   - APP_BUNDLE_IDENTIFIER: au.com.vsa.app
   # Flutter Version
-  - FLUTTER_SHA: "362b999b90d53859aa7b926a59c970f3ea31abf4"
-  
+  - FLUTTER_SHA: "0b8abb4724aa590dd0f429683339b1e045a1594d"
+
 workflows:
   _build:
     steps:
@@ -162,6 +162,7 @@ workflows:
             set -x # debug logging
             
             cd ${BITRISE_SOURCE_DIR}/Src
+            chmod a+rx android/gradlew
             flutter build apk --build-name ${SEMANTIC_VERSION} --build-number ${BITRISE_BUILD_NUMBER}
             cp ${BITRISE_SOURCE_DIR}/Src/build/app/outputs/apk/release/app-release.apk ${BITRISE_DEPLOY_DIR}/${PROJECT_NAME}-${SEMANTIC_VERSION}-${BITRISE_BUILD_NUMBER}.apk
     - deploy-to-bitrise-io:
@@ -182,7 +183,6 @@ workflows:
         - public_install_page_url: "$ANDROID_INSTALL_PAGE"
     - slack:
         title: Notify (apk)
-        is_always_run: false
         run_if: |-
                 {{.IsCI | and (getenv "BUILD_ANDROID" | eq "1")}}
         inputs:
