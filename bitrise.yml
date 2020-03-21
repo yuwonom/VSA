@@ -7,8 +7,8 @@ app:
   - PROJECT_NAME: VSA
   - APP_BUNDLE_IDENTIFIER: au.com.vsa.app
   # Flutter Version
-  - FLUTTER_SHA: "362b999b90d53859aa7b926a59c970f3ea31abf4"
-  
+  - FLUTTER_SHA: "0b8abb4724aa590dd0f429683339b1e045a1594d"
+
 workflows:
   _build:
     steps:
