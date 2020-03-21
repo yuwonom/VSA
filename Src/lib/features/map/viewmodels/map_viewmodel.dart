@@ -7,7 +7,6 @@ import 'package:vsa/features/map/dtos.dart';
 import 'package:vsa/features/map/state.dart';
 import 'package:vsa/features/settings/dtos.dart';
 import 'package:vsa/features/settings/state.dart';
-import 'package:vsa/utility/gps_helper.dart';
 
 class MapViewModel {
   static const LatLng BRISBANE_LATLNG = const LatLng(-27.4698, 153.0251);
@@ -52,40 +51,4 @@ class MapViewModel {
   String get username => broker.username;
   String get password => broker.password;
   String get clientId => broker.clientId;
-}
-
-class DetailsViewModel {
-  final MapState _state;
-
-  const DetailsViewModel(this._state) : assert(_state != null);
-
-  bool get connectedToBroker => _state.connectionState == MqttConnectionState.connected;
-  
-  DateTime get startTime => _state.startTime;
-
-  String get securityLevelText => connectedToBroker ? _state.securityLevel.toString() : "-";
-
-  String get currentSpeedText => _state.userVehicle.point?.speed?.toStringAsFixed(2) ?? "0.0";
-
-  String get averageSpeedText {
-    if (!connectedToBroker) {
-      return "-";
-    }
-
-    return _state.recordedPoints.isNotEmpty
-      ? GpsHelper.averageSpeed(_state.recordedPoints.asList()).toStringAsFixed(2)
-      : "0.0";
-  }
-
-  String get distanceText {
-    if (!connectedToBroker) {
-      return "-";
-    }
-
-    return _state.recordedPoints.isNotEmpty
-      ? GpsHelper.totalDistance(_state.recordedPoints.asList()).toStringAsFixed(2)
-      : "0.0";
-  }
-
-  String get accuracyText => _state.userVehicle.point?.accuracy?.toStringAsFixed(2) ?? "0";
 }
