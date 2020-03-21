@@ -162,6 +162,7 @@ workflows:
             set -x # debug logging
             
             cd ${BITRISE_SOURCE_DIR}/Src
+            chmod a+rx android/gradlew
             flutter build apk --build-name ${SEMANTIC_VERSION} --build-number ${BITRISE_BUILD_NUMBER}
             cp ${BITRISE_SOURCE_DIR}/Src/build/app/outputs/apk/release/app-release.apk ${BITRISE_DEPLOY_DIR}/${PROJECT_NAME}-${SEMANTIC_VERSION}-${BITRISE_BUILD_NUMBER}.apk
     - deploy-to-bitrise-io:
