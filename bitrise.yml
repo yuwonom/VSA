@@ -183,7 +183,6 @@ workflows:
         - public_install_page_url: "$ANDROID_INSTALL_PAGE"
     - slack:
         title: Notify (apk)
-        is_always_run: false
         run_if: |-
                 {{.IsCI | and (getenv "BUILD_ANDROID" | eq "1")}}
         inputs:
