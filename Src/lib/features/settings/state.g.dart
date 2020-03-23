@@ -48,7 +48,7 @@ class _$SettingsState extends SettingsState {
   @override
   final ActionException exception;
 
-  factory _$SettingsState([void updates(SettingsStateBuilder b)]) =>
+  factory _$SettingsState([void Function(SettingsStateBuilder) updates]) =>
       (new SettingsStateBuilder()..update(updates)).build();
 
   _$SettingsState._(
@@ -145,7 +145,7 @@ class _$SettingsState extends SettingsState {
   }
 
   @override
-  SettingsState rebuild(void updates(SettingsStateBuilder b)) =>
+  SettingsState rebuild(void Function(SettingsStateBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
@@ -409,7 +409,7 @@ class SettingsStateBuilder
   }
 
   @override
-  void update(void updates(SettingsStateBuilder b)) {
+  void update(void Function(SettingsStateBuilder) updates) {
     if (updates != null) updates(this);
   }
 

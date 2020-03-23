@@ -14,10 +14,7 @@ import 'package:vsa/themes/theme.dart';
 class SettingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) => StoreConnector<AppState, SettingsViewModel>(
-      converter: (Store<AppState> store) => SettingsViewModel(
-          store.state.settings,
-          store.state.map.userVehicle.type,
-          store.state.map.userVehicle.dimension),
+      converter: (Store<AppState> store) => SettingsViewModel(store.state.settings, store.state.map.userVehicle),
       builder: (BuildContext context, SettingsViewModel viewModel) => _buildPage(context, StoreProvider.of(context), viewModel),
     );
 
@@ -25,6 +22,8 @@ class SettingsPage extends StatelessWidget {
     final scaffoldKey = GlobalKey<ScaffoldState>();
     
     final profileTileGroup = _buildTileGroup("Profile", <Widget>[
+      _buildTile(context, "Identifier", viewModel.vehicleId, UpdateVehicleId, validity: (String value) => value.isNotEmpty),
+      _buildTile(context, "Name", viewModel.vehicleName, UpdateVehicleName),
       _buildTileDropdown("Vehicle Type", viewModel.vehicleType.name, (String value) => store.dispatch(UpdateSettings(UpdateVehicleType, value))),
       _buildTile(context, "Dimension", viewModel.dimensionString, UpdateDimension, validity: (String value) {
         final values = value.split(',');
@@ -43,7 +42,6 @@ class SettingsPage extends StatelessWidget {
       _buildTile(context, "Port", viewModel.port, UpdateBrokerPort),
       _buildTile(context, "Username", viewModel.username, UpdateBrokerUsername),
       _buildTile(context, "Password", viewModel.password, UpdateBrokerPassword, obscureText: true),
-      _buildTile(context, "Identifier", viewModel.clientId, UpdateBrokerClientId),
     ]);
     
     final notAvailableSnackBar = SnackBar(
@@ -65,23 +63,23 @@ class SettingsPage extends StatelessWidget {
     ]);
 
     final levelATileGroup = _buildTileGroup("Level A Topics", <Widget>[
-      _buildTile(context, "Publish current properties", viewModel.levelAPropertiesPublishTopic, UpdateLevelAPropertiesPublishTopic),
-      _buildTile(context, "Publish current status", viewModel.levelAStatusPublishTopic, UpdateLevelAStatusPublishTopic),
-      _buildTile(context, "Subscribe intersection", viewModel.levelAIntersectionSubscribeTopic, UpdateLevelAIntersectionSubscribeTopic),
+      _buildTile(context, "Publish current properties", viewModel.levelAPropertiesPublishTopic, UpdateLevelAPropertiesPublishTopic, validity: (String value) => value.isNotEmpty),
+      _buildTile(context, "Publish current status", viewModel.levelAStatusPublishTopic, UpdateLevelAStatusPublishTopic, validity: (String value) => value.isNotEmpty),
+      _buildTile(context, "Subscribe intersection", viewModel.levelAIntersectionSubscribeTopic, UpdateLevelAIntersectionSubscribeTopic, validity: (String value) => value.isNotEmpty),
     ]);
 
     final vehicleTopicsTileGroup = _buildTileGroup("Vehicle Topics", <Widget>[
-      _buildTile(context, "Publish current properties", viewModel.propertiesPublishTopic, UpdatePropertiesPublishTopic),
-      _buildTile(context, "Publish current status", viewModel.statusPublishTopic, UpdateStatusPublishTopic),
-      _buildTile(context, "Request vehicle properties", viewModel.propertiesRequestPublishTopic, UpdatePropertiesRequestPublishTopic),
-      _buildTile(context, "Get vehicle properties", viewModel.propertiesRequestSubscribeTopic, UpdatePropertiesRequestSubscribeTopic),
-      _buildTile(context, "Request nearby vehicles", viewModel.statusRequestPublishTopic, UpdateStatusRequestPublishTopic),
-      _buildTile(context, "Get nearby vehicles", viewModel.statusRequestSubscribeTopic, UpdateStatusRequestSubscribeTopic),
+      _buildTile(context, "Publish current properties", viewModel.propertiesPublishTopic, UpdatePropertiesPublishTopic, validity: (String value) => value.isNotEmpty),
+      _buildTile(context, "Publish current status", viewModel.statusPublishTopic, UpdateStatusPublishTopic, validity: (String value) => value.isNotEmpty),
+      _buildTile(context, "Request vehicle properties", viewModel.propertiesRequestPublishTopic, UpdatePropertiesRequestPublishTopic, validity: (String value) => value.isNotEmpty),
+      _buildTile(context, "Get vehicle properties", viewModel.propertiesRequestSubscribeTopic, UpdatePropertiesRequestSubscribeTopic, validity: (String value) => value.isNotEmpty),
+      _buildTile(context, "Request nearby vehicles", viewModel.statusRequestPublishTopic, UpdateStatusRequestPublishTopic, validity: (String value) => value.isNotEmpty),
+      _buildTile(context, "Get nearby vehicles", viewModel.statusRequestSubscribeTopic, UpdateStatusRequestSubscribeTopic, validity: (String value) => value.isNotEmpty),
     ]);
 
     final trafficTopicsTileGroup = _buildTileGroup("Traffic Topics", <Widget>[
-      _buildTile(context, "Request traffic", viewModel.trafficRequestPublishTopic, UpdateTrafficRequestPublishTopic),
-      _buildTile(context, "Get traffic", viewModel.trafficRequestSubscribeTopic, UpdateTrafficRequestSubscribeTopic),
+      _buildTile(context, "Request traffic", viewModel.trafficRequestPublishTopic, UpdateTrafficRequestPublishTopic, validity: (String value) => value.isNotEmpty),
+      _buildTile(context, "Get traffic", viewModel.trafficRequestSubscribeTopic, UpdateTrafficRequestSubscribeTopic, validity: (String value) => value.isNotEmpty),
     ]);
 
     final body = ListView(
@@ -113,7 +111,7 @@ class SettingsPage extends StatelessWidget {
     return scaffold;
   }
 
-  Widget _buildTile(BuildContext context, String title, String value, Type actionType, {Function validity, bool obscureText = false}) => ListTile(
+  Widget _buildTile(BuildContext context, String title, String value, Type actionType, {bool Function(String) validity, bool obscureText = false}) => ListTile(
       title: Text(
         title,
         style: AppTextStyles.body1.copyWith(color: AppColors.black),
@@ -127,7 +125,16 @@ class SettingsPage extends StatelessWidget {
         softWrap: true,
         maxLines: 2,
       ),
-      onTap: () => showDialog(context: context, builder: (_) => SettingsDialog(title, value, actionType, validity, obscureText)),
+      onTap: () => showDialog(
+        context: context,
+        builder: (_) => SettingsDialog(
+          title: title,
+          value: value,
+          actionType: actionType,
+          validity: validity,
+          obscureText: obscureText,
+        ),
+      ),
     );
 
    Widget _buildTileCheckbox(String title, bool value, Function onChanged) => ListTile(

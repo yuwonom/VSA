@@ -16,6 +16,7 @@ import 'package:vsa/features/map/dtos.dart';
 import 'package:vsa/features/map/geolocator.dart';
 import 'package:vsa/features/map/mqtt_api.dart';
 import 'package:vsa/features/map/ui/details_bar.dart';
+import 'package:vsa/features/map/ui/user_identifier_dialog.dart';
 import 'package:vsa/features/map/viewmodels/details_viewmodel.dart';
 import 'package:vsa/features/map/viewmodels/map_viewmodel.dart';
 import 'package:vsa/features/settings/actions.dart';
@@ -114,13 +115,23 @@ class _MapPageState extends State<MapPage> {
   Widget _buildActionButtons(Store<AppState> store, MapViewModel viewModel) {
     Widget playButton;
 
-    final VoidCallback connectCallback =
-      () => store.dispatch(ConnectToMqttBroker(
-          viewModel.address,
-          viewModel.clientId,
-          username: viewModel.username,
-          password: viewModel.password,
-        ));
+    final VoidCallback connectCallback = () {
+      if (viewModel.userVehicle.id.isEmpty) {
+        showDialog(
+          context: context,
+          builder: (_) => UserIdentifierDialog(viewModel.broker),
+        );
+        return;
+      }
+
+      store.dispatch(ConnectToMqttBroker(
+        viewModel.address,
+        viewModel.userVehicle.id,
+        username: viewModel.username,
+        password: viewModel.password,
+      ));
+    };
+
     final VoidCallback disconnectCallback =
       () => store.dispatch(DisconnectFromMqttBroker());
 
@@ -298,7 +309,7 @@ class _MapPageState extends State<MapPage> {
           final settingsState = store.state.settings;
           
           if (mapState.connectionState == MqttConnectionState.connected) {
-            final topic = "${settingsState.statusPublishTopic}/${settingsState.broker.clientId}";
+            final topic = "${settingsState.statusPublishTopic}/${mapState.userVehicle.id}";
             final message = MqttApi.statusMessage(
               mapState.userVehicle.id,
               mapState.userVehicle.point.rebuild((b) => b

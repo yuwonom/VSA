@@ -11,9 +11,8 @@ abstract class SettingsState implements Built<SettingsState, SettingsStateBuilde
   
   factory SettingsState.initial() => _$SettingsState._(
     broker: (BrokerDtoBuilder()
-        ..address = "203.101.225.244"
-        ..port = "3306"
-        ..clientId = "VSA1"
+        ..address = "203.101.226.126"
+        ..port = "1883"
         ..username = "qut"
         ..password = "qut")
       .build(),

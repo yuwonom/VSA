@@ -12,7 +12,6 @@ abstract class BrokerDto implements Built<BrokerDto, BrokerDtoBuilder> {
 
   String get address;
   String get port;
-  String get clientId;
   String get username;
   String get password;
 

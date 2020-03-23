@@ -22,13 +22,14 @@ class LocalSettings {
       final sharedPreferences = await SharedPreferences.getInstance();
 
       final listToLoad = [
+        UpdateVehicleId,
+        UpdateVehicleName,
         UpdateVehicleType,
         UpdateDimension,
         UpdateBrokerAddress,
         UpdateBrokerPort,
         UpdateBrokerUsername,
         UpdateBrokerPassword,
-        UpdateBrokerClientId,
         SwitchLevelA,
         SwitchLevelB,
         SwitchLevelC,
@@ -100,6 +101,10 @@ class LocalSettings {
 
   String _getKeyFromActionType(Type actionType) {
     switch (actionType) {
+      case UpdateVehicleId:
+        return "vehicleId";
+      case UpdateVehicleName:
+        return "vehicleName";
       case UpdateVehicleType:
         return "vehicleType";
       case UpdateDimension:
@@ -112,8 +117,6 @@ class LocalSettings {
         return "brokerUsername";
       case UpdateBrokerPassword:
         return "brokerPassword";
-      case UpdateBrokerClientId:
-        return "brokerClientId";
       case SwitchLevelA:
         return "levelA";
       case SwitchLevelB:
@@ -155,6 +158,10 @@ class LocalSettings {
 
   dynamic _getActionFromActionType(Type actionType, Object value) {
     switch (actionType) {
+      case UpdateVehicleId:
+        return UpdateVehicleId(value);
+      case UpdateVehicleName:
+        return UpdateVehicleName(value);
       case UpdateVehicleType:
         return UpdateVehicleType(value);
       case UpdateDimension:
@@ -167,8 +174,6 @@ class LocalSettings {
         return UpdateBrokerUsername(value);
       case UpdateBrokerPassword:
         return UpdateBrokerPassword(value);
-      case UpdateBrokerClientId:
-        return UpdateBrokerClientId(value);
       case SwitchLevelA:
         return SwitchLevelA(value);
       case SwitchLevelB:

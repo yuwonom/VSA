@@ -15,7 +15,7 @@ class _$DateDtoSerializer implements StructuredSerializer<DateDto> {
   final String wireName = 'DateDto';
 
   @override
-  Iterable serialize(Serializers serializers, DateDto object,
+  Iterable<Object> serialize(Serializers serializers, DateDto object,
       {FullType specifiedType = FullType.unspecified}) {
     final result = <Object>[
       'year',
@@ -30,7 +30,7 @@ class _$DateDtoSerializer implements StructuredSerializer<DateDto> {
   }
 
   @override
-  DateDto deserialize(Serializers serializers, Iterable serialized,
+  DateDto deserialize(Serializers serializers, Iterable<Object> serialized,
       {FullType specifiedType = FullType.unspecified}) {
     final result = new DateDtoBuilder();
 
@@ -67,7 +67,7 @@ class _$DateDto extends DateDto {
   @override
   final int day;
 
-  factory _$DateDto([void updates(DateDtoBuilder b)]) =>
+  factory _$DateDto([void Function(DateDtoBuilder) updates]) =>
       (new DateDtoBuilder()..update(updates)).build();
 
   _$DateDto._({this.year, this.month, this.day}) : super._() {
@@ -83,7 +83,7 @@ class _$DateDto extends DateDto {
   }
 
   @override
-  DateDto rebuild(void updates(DateDtoBuilder b)) =>
+  DateDto rebuild(void Function(DateDtoBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
@@ -140,7 +140,7 @@ class DateDtoBuilder implements Builder<DateDto, DateDtoBuilder> {
   }
 
   @override
-  void update(void updates(DateDtoBuilder b)) {
+  void update(void Function(DateDtoBuilder) updates) {
     if (updates != null) updates(this);
   }
 

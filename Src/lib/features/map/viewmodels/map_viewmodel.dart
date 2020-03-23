@@ -50,5 +50,4 @@ class MapViewModel {
   String get port => broker.port;
   String get username => broker.username;
   String get password => broker.password;
-  String get clientId => broker.clientId;
 }
