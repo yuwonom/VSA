@@ -337,7 +337,7 @@ class IntersectionsFileLoad {
 
   void _handleLoadIntersections(Store<AppState> store, LoadIntersections action, NextDispatcher next) {
     BuiltList<IntersectionDto> _processData(String data) {
-      final lines = data.split('\r\n')
+      final lines = data.split('\n')
           ..removeAt(0);
       final intersections = lines.map((String line) => IntersectionDto.fromLine(line));
       return BuiltList<IntersectionDto>(intersections);
