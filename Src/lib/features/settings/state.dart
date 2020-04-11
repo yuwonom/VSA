@@ -7,7 +7,7 @@ import 'package:vsa/utility/action_exception.dart';
 part 'state.g.dart';
 
 abstract class SettingsState implements Built<SettingsState, SettingsStateBuilder> {
-  factory SettingsState([void updates(SettingsStateBuilder b)]) = _$SettingsState;
+  factory SettingsState([void updates(SettingsStateBuilder bf)]) = _$SettingsState;
   
   factory SettingsState.initial() => _$SettingsState._(
     broker: (BrokerDtoBuilder()
@@ -16,14 +16,14 @@ abstract class SettingsState implements Built<SettingsState, SettingsStateBuilde
         ..username = "qut"
         ..password = "qut")
       .build(),
-    isActiveLevelA: false,
+    isActiveLevelA: true,
     isActiveLevelB: false,
     isActiveLevelC: false,
     isActiveLevelD: false,
-    isActiveBasicVehicle: true,
-    isActiveBasicTraffic: true,
-    levelAPropertiesPublishTopic: "VSA/basicData/VRU/cycle",
-    levelAStatusPublishTopic: "VSA/vehProp/cycle",
+    isActiveBasicVehicle: false,
+    isActiveBasicTraffic: false,
+    levelAPropertiesPublishTopic: "VSA/vehProp/cycle",
+    levelAStatusPublishTopic: "VSA/basicData/VRU/cycle",
     levelAIntersectionSubscribeTopic: "VSA/requests/all/cycle",
     propertiesPublishTopic: "VSA/vehProp",
     statusPublishTopic: "VSA/vehSim",

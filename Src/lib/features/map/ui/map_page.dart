@@ -14,7 +14,6 @@ import 'package:redux/redux.dart';
 import 'package:vsa/features/map/actions.dart';
 import 'package:vsa/features/map/dtos.dart';
 import 'package:vsa/features/map/geolocator.dart';
-import 'package:vsa/features/map/mqtt_api.dart';
 import 'package:vsa/features/map/ui/details_bar.dart';
 import 'package:vsa/features/map/ui/user_identifier_dialog.dart';
 import 'package:vsa/features/map/viewmodels/details_viewmodel.dart';
@@ -291,7 +290,7 @@ class _MapPageState extends State<MapPage> {
       });
     }
     
-    return GoogleMap(
+    final map = GoogleMap(
       initialCameraPosition: CameraPosition(
         target: viewModel.userPoint,
         zoom: _defaultZoom,
@@ -305,29 +304,27 @@ class _MapPageState extends State<MapPage> {
           setState(() => _direction = direction);
           _stickMap(store);
 
-          final mapState = store.state.map;
-          final settingsState = store.state.settings;
-          
-          if (mapState.connectionState == MqttConnectionState.connected) {
-            final topic = "${settingsState.statusPublishTopic}/${mapState.userVehicle.id}";
-            final message = MqttApi.statusMessage(
-              mapState.userVehicle.id,
-              mapState.userVehicle.point.rebuild((b) => b
-                ..heading = _direction
-                ..dateTime = DateTime.now().toUtc()),
-            );
-            store.dispatch(PublishMessageToMqttBroker(topic, message));
+          final userVehicle = store.state.map.userVehicle;
+
+          if (userVehicle.point == null) {
+            return;
           }
+
+          final point = userVehicle.point
+            .rebuild((b) => b
+              ..heading = _direction
+              ..dateTime = DateTime.now().toUtc());
+          store.dispatch(UpdateUserGpsPoint(point));
         });
 
         Geolocator.instance.events.listen((GpsPointDto point) {
-          store.dispatch(UpdateUserGpsPoint(point));
           _stickMap(store);
+          store.dispatch(UpdateUserGpsPoint(point));
         });
       },
       gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>[
-          Factory<OneSequenceGestureRecognizer>(() => EagerGestureRecognizer()),
-        ].toSet(),
+        Factory<OneSequenceGestureRecognizer>(() => EagerGestureRecognizer()),
+      ].toSet(),
       mapType: MapType.normal,
       markers: markers,
       circles: circles,
@@ -336,6 +333,8 @@ class _MapPageState extends State<MapPage> {
       myLocationButtonEnabled: false,
       tiltGesturesEnabled: false,
     );
+
+    return map;
   }
 
   Future<Marker> _buildVehicleMarker(VehicleDto vehicle, bool isUser) async {

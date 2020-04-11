@@ -9,7 +9,7 @@ import VSA, Broker
 
 #properties
 NAME = "Queensland Traffic Listener"
-VERSION = "2.0.2"
+VERSION = "2.1.0"
 
 #qldtraffic API
 apiKey = "3e83add325cbb69ac4d8e5bf433d770b"

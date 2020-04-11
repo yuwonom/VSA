@@ -7,6 +7,9 @@ import datetime, math
 from enum import Enum
 
 #list of topics
+TOPIC_LEVEL_A_VEHSIM = "VSA/basicData/VRU/cycle"
+TOPIC_LEVEL_A_VEHPROP = "VSA/vehProp/cycle"
+TOPIC_LEVEL_A_REQ = "VSA/requests/all/cycle"
 TOPIC_TRAFFIC = "VSA/traffic/all"
 TOPIC_TRAFFIC_NEARBY_REQ = "VSA/traffic/nearby/reqs"
 TOPIC_TRAFFIC_NEARBY_RETURN = "VSA/traffic/nearby/return"
@@ -53,12 +56,14 @@ class Vehicle(object):
 	name = ""
 	type = VehicleType.CAR
 	dimensions = (0,0,0,0)
+	intersection_id = ""
 
-	def update_status(self, latitude, longitude, velocity, position_error, rotation_angle):
+	def update_status(self, latitude, longitude, velocity, position_error, rotation_angle, intersection_id = ""):
 		self.coordinate = Geolocation(latitude, longitude)
 		self.velocity = velocity
 		self.position_error = position_error
 		self.rotation_angle = rotation_angle
+		self.intersection_id = intersection_id
 
 	def __init__(self, uid, name, type, dimensions):
 		self.uid = uid

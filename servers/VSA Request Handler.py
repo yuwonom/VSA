@@ -3,15 +3,19 @@ Developed for Vehicle Situational Awareness Project
 Copyright © Queensland University of Technology 2020
 Authored by @yuwonom (Michael Yuwono)
 '''
+from threading import Thread
 import sys, time, math, json
 import paho.mqtt.client as mqtt
 import VSA, Broker
 
 #properties
 NAME = "VSA Request Handler"
-VERSION = "2.0.2"
+VERSION = "2.1.0"
 
 # ------------------------------------------------------------------------ #
+
+def map_to_string(key, value):
+	return "\"" + key + "\":\"" + str(value) + "\""
 
 def on_connect(client, userdata, flags, rc):
 	if rc == 0:
@@ -29,6 +33,71 @@ def on_disconnect(client, userdata, rc=0):
 def on_message(mqttc, obj, msg):
 	payload = str(msg.payload.decode("utf-8"))
 	print("Message published to topic: " + msg.topic)
+	print("- with payload: " + payload)
+
+def topic_level_a_vehsim_callback(mqttc, obj, msg):
+	payload = str(msg.payload.decode("utf-8"))
+	items = payload.split(',')
+	uid = items[0]
+	latitude = float(items[1])
+	longitude = float(items[2])
+	velocity = float(items[3])
+	accuracy = float(items[4])
+	direction = float(items[5])
+	intersection_id = msg.topic.split('/')[-1]
+
+	global vehicles
+
+	if uid not in vehicles:
+		pass
+
+	vehicles[uid].update_status(latitude, longitude, velocity, accuracy, direction, intersection_id)
+	intersections.add(intersection_id)
+	
+def topic_level_a_vehprop_callback(mqttc, obj, msg):
+	payload = str(msg.payload.decode("utf-8"))
+	items = payload.split(',')
+	uid = items[0]
+	name = items[1]
+	type = items[2]
+	left = float(items[3])
+	top = float(items[4])
+	right = float(items[5])
+	bottom = float(items[6])
+	dimensions = (left, top, right, bottom)
+
+	global vehicles
+
+	if uid in vehicles:
+		del vehicles[uid]
+
+	vehicle = VSA.Vehicle(uid, name, type, dimensions)
+	vehicles[uid] = vehicle
+
+def topic_level_a_req_callback():
+	def publish_messages():
+		global intersections, vehicles
+
+		for intersection in intersections:
+			vehsim_list = []
+
+			detected_vehicles = [veh for veh in list(vehicles.values()) if veh.intersection_id == intersection]
+			for vehicle in detected_vehicles:
+				data_id = map_to_string("id", vehicle.uid)
+				data_lng = map_to_string("lng", vehicle.coordinate.longitude)
+				data_lat = map_to_string("lat", vehicle.coordinate.latitude)
+				data_vel = map_to_string("vel", vehicle.velocity)
+				data_ang = map_to_string("ang", vehicle.rotation_angle)
+				data_acc = map_to_string("acc", vehicle.position_error)
+				combined = ",".join([data_id, data_lng, data_lat, data_vel, data_ang, data_acc])
+				vehsim_list.append("{" + combined + "}")
+
+			vehsim_json = "[" + ",".join(vehsim_list) + "]"
+			client.publish(VSA.TOPIC_LEVEL_A_REQ + "/" + intersection, vehsim_json)
+
+	while client.connected_flag:
+		publish_messages()
+		time.sleep(0.1)
 	
 def topic_traffic_callback(mqttc, obj, msg):
 	payload = str(msg.payload.decode("utf-8"))
@@ -110,9 +179,6 @@ def topic_vehprop_callback(mqttc, obj, msg):
 	vehicles[uid] = vehicle
 
 def topic_vehsim_req_callback(mqttc, obj, msg):
-	def map_to_string(key, value):
-		return "\"" + key + "\":\"" + str(value) + "\""
-
 	payload = str(msg.payload.decode("utf-8"))
 	items = payload.split(',')
 	veh_id = items[0]
@@ -139,9 +205,6 @@ def topic_vehsim_req_callback(mqttc, obj, msg):
 	client.publish(VSA.TOPIC_VEHSIM_RETURN + "/" + veh_id, vehsim_json)
 	
 def topic_vehprop_req_callback(mqttc, obj, msg):
-	def map_to_string(key, value):
-		return "\"" + key + "\":\"" + str(value) + "\""
-
 	payload = str(msg.payload.decode("utf-8"))
 	items = payload.split(',')
 	veh_id = msg.topic.split('/')[-1]
@@ -172,6 +235,7 @@ print("===== " + NAME + " v" + VERSION + " =====")
 
 #global variables
 vehicles = {}
+intersections = set()
 features = []
 
 #new client
@@ -179,7 +243,9 @@ client = mqtt.Client()
 client.connected_flag = False
 client.on_connect = on_connect
 client.on_disconnect = on_disconnect
-client.on_message = on_message
+#client.on_message = on_message
+client.message_callback_add(VSA.TOPIC_LEVEL_A_VEHSIM + "/#", topic_level_a_vehsim_callback)
+client.message_callback_add(VSA.TOPIC_LEVEL_A_VEHPROP + "/#", topic_level_a_vehprop_callback)
 client.message_callback_add(VSA.TOPIC_TRAFFIC + "/#", topic_traffic_callback)
 client.message_callback_add(VSA.TOPIC_TRAFFIC_NEARBY_REQ + "/#", topic_traffic_nearby_req_callback)
 client.message_callback_add(VSA.TOPIC_VEHSIM + "/#", topic_vehsim_callback)
@@ -198,6 +264,10 @@ while not client.connected_flag:
 #subscribing VSA/#
 client.subscribe("VSA/#")
 print("Subscribing to every topic under " + "VSA/#")
+
+#register threads
+level_a_req_thread = Thread(target=topic_level_a_req_callback)
+level_a_req_thread.start()
 
 try:
 	while client.connected_flag:

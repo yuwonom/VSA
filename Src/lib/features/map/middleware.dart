@@ -81,60 +81,59 @@ class MqttIntegration {
   }
 
   void _handleConnectToMqttBrokerSuccessful(Store<AppState> store, ConnectToMqttBrokerSuccessful action, NextDispatcher next) {
-    void _publishUserBasicInformation(VehicleDto user, SettingsState settings, String clientId) {
-      final topic = "${settings.propertiesPublishTopic}/$clientId";
-      final message = MqttApi.propertiesMessage(user.id, user.name, user.type, user.dimension);
-      store.dispatch(PublishMessageToMqttBroker(topic, message));
+    void _publishProperties(SettingsState settings, VehicleDto user) {
+      if (settings.isActiveBasicVehicle) {
+        final topic = "${settings.propertiesPublishTopic}/${user.id}";
+        final message = MqttApi.propertiesMessage(user.id, user.name, user.type, user.dimension);
+        store.dispatch(PublishMessageToMqttBroker(topic, message));
+      }
+      if (settings.isActiveLevelA && user.type == VehicleTypeDto.cycle) {
+        final topic = "${settings.levelAPropertiesPublishTopic}";
+        final message = MqttApi.propertiesMessage(user.id, user.name, user.type, user.dimension);
+        store.dispatch(PublishMessageToMqttBroker(topic, message));
+      }
+      
       store.dispatch(RecordUserGpsPoint(user.point));
     }
-
-    void _publishCyclistInformation(VehicleDto user, SettingsState settings, String clientId) {
-      if (!settings.isActiveLevelA || user.type != VehicleTypeDto.cycle) {
-        return;
-      }
-
-      final topic = "${settings.levelAPropertiesPublishTopic}/$clientId";
-      final message = MqttApi.propertiesMessage(user.id, user.name, user.type, user.dimension);
-      store.dispatch(PublishMessageToMqttBroker(topic, message));
-    }
     
-    void _subscribeTopics(SettingsState settings, String clientId) {
-      final topics = <String>[];
+    void _subscribeTopics(SettingsState settings, VehicleDto user) {
+      final topics = <String>[
+        "${settings.propertiesRequestSubscribeTopic}/${user.id}",
+      ];
       
       if (settings.isActiveBasicVehicle) {
-        topics
-          ..add("${settings.propertiesRequestSubscribeTopic}/$clientId")
-          ..add("${settings.statusRequestSubscribeTopic}/$clientId");
+        topics.add("${settings.statusRequestSubscribeTopic}/${user.id}");
       }
       if (settings.isActiveBasicTraffic) {
-        topics.add("${settings.trafficRequestSubscribeTopic}/$clientId");
+        topics.add("${settings.trafficRequestSubscribeTopic}/${user.id}");
       }
 
-      api.subscribe(topics);
+      if (topics.isNotEmpty) {
+        api.subscribe(topics);
+      }
     }
 
-    void _startPeriodicRequests(Timer timer, Duration interval, VehicleDto user, SettingsState settings, String clientId) {
+    void _startPeriodicRequests(SettingsState settings, Timer timer, Duration interval, VehicleDto user) {
       _nearbyRequestTimer = Timer.periodic(interval, (_) {
         String topic;
         String message;
 
         if (settings.isActiveBasicVehicle) {
-          topic = "${settings.statusRequestPublishTopic}/$clientId";
+          topic = "${settings.statusRequestPublishTopic}/${user.id}";
           message = MqttApi.statusRequestMessage(user.id, 500);
           store.dispatch(PublishMessageToMqttBroker(topic, message));
         }
       });
     }
     
-    final user = store.state.map.userVehicle;
+    final mapState = store.state.map;
+    final user = mapState.userVehicle;
     final settingsState = store.state.settings;
-    final clientId = user.id;
     const requestInterval = const Duration(milliseconds: 100);
 
-    _publishUserBasicInformation(user, settingsState, clientId);
-    _publishCyclistInformation(user, settingsState, clientId);
-    _subscribeTopics(settingsState, clientId);
-    _startPeriodicRequests(_nearbyRequestTimer, requestInterval, user, settingsState, clientId);
+    _publishProperties(settingsState, user);
+    _subscribeTopics(settingsState, user);
+    _startPeriodicRequests(settingsState, _nearbyRequestTimer, requestInterval, user);
     
     store.dispatch(ListenToMqttBroker());
     next(action);
@@ -175,10 +174,11 @@ class MqttIntegration {
 
     void _handleStatusRequestCallback(String data) {
       final vehicles = (jsonDecode(data) as List)
-            .map((veh) => VehicleDto.fromJson(veh))
-            .toList();
+        .map((veh) => VehicleDto.fromJson(veh))
+        .where((veh) => veh.id != store.state.map.userVehicle.id)
+        .toList();
       final map = BuiltMap<String, VehicleDto>(Map<String, VehicleDto>
-          .fromIterable(vehicles, key: (vehicle) => vehicle.id, value: (vehicle) => vehicle));
+        .fromIterable(vehicles, key: (vehicle) => vehicle.id, value: (vehicle) => vehicle));
 
       final newVehicleIds = vehicles
         .where((VehicleDto veh) => !store.state.map.otherVehicles.containsKey(veh.id))
@@ -201,6 +201,10 @@ class MqttIntegration {
       // TODO: Handle traffic request callback
     }
 
+    void _handleLevelAIntersectionCallback(String data) {
+      _handleStatusRequestCallback(data);
+    }
+
     void _handleRequestCallback(MqttMessage message) {
       final publishMessage = message as MqttPublishMessage;
       if (message == null) {
@@ -217,6 +221,8 @@ class MqttIntegration {
         _handleStatusRequestCallback(data);
       } else if (topic.startsWith(settingsState.trafficRequestSubscribeTopic)) {
         _handleTrafficRequestCallback(data);
+      } else if (topic.startsWith(settingsState.levelAIntersectionSubscribeTopic)) {
+        _handleLevelAIntersectionCallback(data);
       }
     }
 
@@ -225,14 +231,20 @@ class MqttIntegration {
   }
 
   void _handleRecordUserGpsPoint(Store<AppState> store, RecordUserGpsPoint action, NextDispatcher next) {
+    final mapState = store.state.map;
+    final user = mapState.userVehicle;
+    final intersectionId = mapState.currentIntersectionId;
     final settingsState = store.state.settings;
-    final clientId = store.state.map.userVehicle.id;
-    var topic = "${settingsState.statusPublishTopic}/$clientId";
-    final message = MqttApi.statusMessage(clientId, action.point);
-    store.dispatch(PublishMessageToMqttBroker(topic, message));
 
-    if (settingsState.isActiveLevelA && store.state.map.userVehicle.type == VehicleTypeDto.cycle) {
-      topic = "${settingsState.levelAStatusPublishTopic}/$clientId";
+    String topic;
+    final message = MqttApi.statusMessage(user.id, action.point);
+
+    if (settingsState.isActiveBasicVehicle) {
+      topic = "${settingsState.statusPublishTopic}/${user.id}";
+      store.dispatch(PublishMessageToMqttBroker(topic, message));
+    }
+    if (settingsState.isActiveLevelA && user.type == VehicleTypeDto.cycle && intersectionId != null) {
+      topic = "${settingsState.levelAStatusPublishTopic}/$intersectionId";
       store.dispatch(PublishMessageToMqttBroker(topic, message));
     }
 
@@ -241,25 +253,29 @@ class MqttIntegration {
 
   void _handleSetCurrentIntersectionId(Store<AppState> store, SetCurrentIntersectionId action, NextDispatcher next) {
     void _syncIntersectionSubscription(String topic, String oldId, String newId) {
-      if (oldId == newId) {
-        return;
-      }
-      if (oldId != null) {
+      if (oldId != null && oldId != newId) {
         api.unsubscribe(["$topic/$oldId"]);
       }
       if (newId != null) {
         api.subscribe(["$topic/$newId"]);
       }
     }
-    
+
     final mapState = store.state.map;
     final settingsState = store.state.settings;
-    if (mapState.connectionState == MqttConnectionState.connected &&
-        mapState.userVehicle.type == VehicleTypeDto.car &&
-        settingsState.isActiveLevelA) {
-      _syncIntersectionSubscription(settingsState.levelAIntersectionSubscribeTopic, mapState.currentIntersectionId, action.id);
+
+    if (mapState.connectionState != MqttConnectionState.connected) {
+      next(action);
+      return;
     }
-    
+
+    if (settingsState.isActiveLevelA && mapState.userVehicle.type == VehicleTypeDto.car) {
+      _syncIntersectionSubscription(
+        settingsState.levelAIntersectionSubscribeTopic,
+        mapState.currentIntersectionId,
+        action.id);
+    }
+
     next(action);
   }
 }

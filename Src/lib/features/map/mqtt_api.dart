@@ -17,13 +17,19 @@ class MqttApi {
   static MqttClient _client;
   static StreamController<MqttMessage> _controller;
 
-  const MqttApi._();
+  MqttApi._() : this._subscribedTopics = [];
+
+  final List<String> _subscribedTopics;
+
+  bool _isSubscribed(String topic) => _subscribedTopics.contains(topic);
 
   Future<bool> connect(String server, String clientId, String username, String password) async {
     // Disconnect any ongoing connection
     this.disconnect();
 
     _client = MqttClient(server, clientId);
+    _client.onSubscribed = (topic) => _subscribedTopics.add(topic);
+    _client.onUnsubscribed = (topic) => _subscribedTopics.remove(topic);
     final status = await _client.connect(username, password);
     
     return status.state == MqttConnectionState.connected;
@@ -51,9 +57,19 @@ class MqttApi {
     _client.publishMessage(topic, MqttQos.atLeastOnce, builder.payload);
   }
 
-  void subscribe(List<String> topics) => topics.forEach((topic) => _client.subscribe(topic, MqttQos.exactlyOnce));
+  void subscribe(List<String> topics) => topics.forEach((topic) {
+      if (_isSubscribed(topic)) {
+        return;
+      }
+      _client.subscribe(topic, MqttQos.exactlyOnce);
+    });
 
-  void unsubscribe(List<String> topics) => topics.forEach((topic) => _client.unsubscribe(topic));
+  void unsubscribe(List<String> topics) => topics.forEach((topic) {
+      if (!_isSubscribed(topic)) {
+        return;
+      }
+      _client.unsubscribe(topic);
+    });
 
   static String propertiesMessage(String id, String name, VehicleTypeDto type, VehicleDimensionDto dimension) => "$id,$name,${type.toString()},${dimension.toString()}";
 

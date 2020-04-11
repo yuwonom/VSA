@@ -58,41 +58,50 @@ class SettingsPage extends StatelessWidget {
       _buildTileCheckbox("Level B", viewModel.isActiveLevelB, (bool checked) => scaffoldKey.currentState.showSnackBar(notAvailableSnackBar)),
       _buildTileCheckbox("Level C", viewModel.isActiveLevelC, (bool checked) => scaffoldKey.currentState.showSnackBar(notAvailableSnackBar)),
       _buildTileCheckbox("Level D", viewModel.isActiveLevelD, (bool checked) => scaffoldKey.currentState.showSnackBar(notAvailableSnackBar)),
-      _buildTileCheckbox("Basic Vehicle", viewModel.isActiveBasicVehicle, (bool checked) => store.dispatch(UpdateSettings(SwitchBasicVehicle, checked))),
-      _buildTileCheckbox("Basic Traffic", viewModel.isActiveBasicTraffic, (bool checked) => store.dispatch(UpdateSettings(SwitchBasicTraffic, checked))),
+      // Hide vehicle & traffic for now
+      // _buildTileCheckbox("Basic Vehicle", viewModel.isActiveBasicVehicle, (bool checked) => store.dispatch(UpdateSettings(SwitchBasicVehicle, checked))),
+      // _buildTileCheckbox("Basic Traffic", viewModel.isActiveBasicTraffic, (bool checked) => store.dispatch(UpdateSettings(SwitchBasicTraffic, checked))),
     ]);
 
-    final levelATileGroup = _buildTileGroup("Level A Topics", <Widget>[
-      _buildTile(context, "Publish current properties", viewModel.levelAPropertiesPublishTopic, UpdateLevelAPropertiesPublishTopic, validity: (String value) => value.isNotEmpty),
-      _buildTile(context, "Publish current status", viewModel.levelAStatusPublishTopic, UpdateLevelAStatusPublishTopic, validity: (String value) => value.isNotEmpty),
-      _buildTile(context, "Subscribe intersection", viewModel.levelAIntersectionSubscribeTopic, UpdateLevelAIntersectionSubscribeTopic, validity: (String value) => value.isNotEmpty),
-    ]);
+    var listItems = <Widget>[
+        profileTileGroup,
+        brokerTileGroup,
+        topicStructureTileGroup,
+    ];
 
-    final vehicleTopicsTileGroup = _buildTileGroup("Vehicle Topics", <Widget>[
-      _buildTile(context, "Publish current properties", viewModel.propertiesPublishTopic, UpdatePropertiesPublishTopic, validity: (String value) => value.isNotEmpty),
-      _buildTile(context, "Publish current status", viewModel.statusPublishTopic, UpdateStatusPublishTopic, validity: (String value) => value.isNotEmpty),
-      _buildTile(context, "Request vehicle properties", viewModel.propertiesRequestPublishTopic, UpdatePropertiesRequestPublishTopic, validity: (String value) => value.isNotEmpty),
-      _buildTile(context, "Get vehicle properties", viewModel.propertiesRequestSubscribeTopic, UpdatePropertiesRequestSubscribeTopic, validity: (String value) => value.isNotEmpty),
-      _buildTile(context, "Request nearby vehicles", viewModel.statusRequestPublishTopic, UpdateStatusRequestPublishTopic, validity: (String value) => value.isNotEmpty),
-      _buildTile(context, "Get nearby vehicles", viewModel.statusRequestSubscribeTopic, UpdateStatusRequestSubscribeTopic, validity: (String value) => value.isNotEmpty),
-    ]);
+    if (viewModel.isActiveLevelA) {
+      final levelATileGroup = _buildTileGroup("Level A Topics", <Widget>[
+        _buildTile(context, "Publish current properties", viewModel.levelAPropertiesPublishTopic, UpdateLevelAPropertiesPublishTopic, validity: (String value) => value.isNotEmpty),
+        _buildTile(context, "Publish current status", viewModel.levelAStatusPublishTopic, UpdateLevelAStatusPublishTopic, validity: (String value) => value.isNotEmpty),
+        _buildTile(context, "Subscribe intersection", viewModel.levelAIntersectionSubscribeTopic, UpdateLevelAIntersectionSubscribeTopic, validity: (String value) => value.isNotEmpty),
+      ]);
+      listItems.add(levelATileGroup);
+    }
 
-    final trafficTopicsTileGroup = _buildTileGroup("Traffic Topics", <Widget>[
-      _buildTile(context, "Request traffic", viewModel.trafficRequestPublishTopic, UpdateTrafficRequestPublishTopic, validity: (String value) => value.isNotEmpty),
-      _buildTile(context, "Get traffic", viewModel.trafficRequestSubscribeTopic, UpdateTrafficRequestSubscribeTopic, validity: (String value) => value.isNotEmpty),
-    ]);
+    if (viewModel.isActiveBasicVehicle) {
+      final vehicleTopicsTileGroup = _buildTileGroup("Vehicle Topics", <Widget>[
+        _buildTile(context, "Publish current properties", viewModel.propertiesPublishTopic, UpdatePropertiesPublishTopic, validity: (String value) => value.isNotEmpty),
+        _buildTile(context, "Publish current status", viewModel.statusPublishTopic, UpdateStatusPublishTopic, validity: (String value) => value.isNotEmpty),
+        _buildTile(context, "Request vehicle properties", viewModel.propertiesRequestPublishTopic, UpdatePropertiesRequestPublishTopic, validity: (String value) => value.isNotEmpty),
+        _buildTile(context, "Get vehicle properties", viewModel.propertiesRequestSubscribeTopic, UpdatePropertiesRequestSubscribeTopic, validity: (String value) => value.isNotEmpty),
+        _buildTile(context, "Request nearby vehicles", viewModel.statusRequestPublishTopic, UpdateStatusRequestPublishTopic, validity: (String value) => value.isNotEmpty),
+        _buildTile(context, "Get nearby vehicles", viewModel.statusRequestSubscribeTopic, UpdateStatusRequestSubscribeTopic, validity: (String value) => value.isNotEmpty),
+      ]);
+      listItems.add(vehicleTopicsTileGroup);
+    }
+
+    if (viewModel.isActiveBasicTraffic) {
+      final trafficTopicsTileGroup = _buildTileGroup("Traffic Topics", <Widget>[
+        _buildTile(context, "Request traffic", viewModel.trafficRequestPublishTopic, UpdateTrafficRequestPublishTopic, validity: (String value) => value.isNotEmpty),
+        _buildTile(context, "Get traffic", viewModel.trafficRequestSubscribeTopic, UpdateTrafficRequestSubscribeTopic, validity: (String value) => value.isNotEmpty),
+      ]);
+      listItems.add(trafficTopicsTileGroup);
+    }
 
     final body = ListView(
       key: const PageStorageKey<String>("settingsListView"),
       padding: AppEdges.mediumAll,
-      children: <Widget>[
-        profileTileGroup,
-        brokerTileGroup,
-        topicStructureTileGroup,
-        viewModel.isActiveLevelA ? levelATileGroup : Container(),
-        viewModel.isActiveBasicVehicle ? vehicleTopicsTileGroup : Container(),
-        viewModel.isActiveBasicTraffic ? trafficTopicsTileGroup : Container(),
-      ],
+      children: listItems,
     );
 
     final appBar = AppBar(
