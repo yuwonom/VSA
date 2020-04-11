@@ -89,7 +89,8 @@ def topic_level_a_req_callback():
 				data_vel = map_to_string("vel", vehicle.velocity)
 				data_ang = map_to_string("ang", vehicle.rotation_angle)
 				data_acc = map_to_string("acc", vehicle.position_error)
-				combined = ",".join([data_id, data_lng, data_lat, data_vel, data_ang, data_acc])
+				data_type = map_to_string("type", vehicle.type.value)
+				combined = ",".join([data_id, data_lng, data_lat, data_vel, data_ang, data_acc, data_type])
 				vehsim_list.append("{" + combined + "}")
 
 			vehsim_json = "[" + ",".join(vehsim_list) + "]"
