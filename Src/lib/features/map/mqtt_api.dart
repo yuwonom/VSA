@@ -38,6 +38,7 @@ class MqttApi {
   void disconnect() {
     if (_client?.connectionStatus?.state != MqttConnectionState.disconnected) {
       _client?.disconnect();
+      _subscribedTopics.clear();
     }
   }
 
