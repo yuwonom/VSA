@@ -317,10 +317,12 @@ class _MapPageState extends State<MapPage> {
           store.dispatch(UpdateUserGpsPoint(point));
         });
 
-        Geolocator.instance.events.listen((GpsPointDto point) {
-          _stickMap(store);
-          store.dispatch(UpdateUserGpsPoint(point));
-        });
+        Geolocator.instance
+          .getEvents()
+          .listen((GpsPointDto point) {
+            _stickMap(store);
+            store.dispatch(UpdateUserGpsPoint(point));
+          });
       },
       gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>[
         Factory<OneSequenceGestureRecognizer>(() => EagerGestureRecognizer()),
