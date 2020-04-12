@@ -19,7 +19,7 @@ class Geolocator {
  
   Geolocator._() {
     const int interval = 1000;
-    const double distanceFilter = 0;
+    const double distanceFilter = 1;
 
     _controller = StreamController<GpsPointDto>();
     _location = Location()
