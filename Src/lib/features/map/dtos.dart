@@ -59,8 +59,8 @@ abstract class VehicleDto implements Built<VehicleDto, VehicleDtoBuilder> {
   );
 
   factory VehicleDto.initial() => _$VehicleDto._(
-    id: "VSA1",
-    name: "VSA Autocar",
+    id: "",
+    name: "",
     dimension: VehicleDimensionDto.none(),
     type: VehicleTypeDto.car,
   );

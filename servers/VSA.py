@@ -1,12 +1,15 @@
 '''
 Developed for Vehicle Situational Awareness Project
-Copyright © Queensland University of Technology 2019
+Copyright © Queensland University of Technology 2020
 Authored by @yuwonom (Michael Yuwono)
 '''
 import datetime, math
 from enum import Enum
 
 #list of topics
+TOPIC_LEVEL_A_VEHSIM = "VSA/basicData/VRU/cycle"
+TOPIC_LEVEL_A_VEHPROP = "VSA/vehProp/cycle"
+TOPIC_LEVEL_A_REQ = "VSA/requests/all/cycle"
 TOPIC_TRAFFIC = "VSA/traffic/all"
 TOPIC_TRAFFIC_NEARBY_REQ = "VSA/traffic/nearby/reqs"
 TOPIC_TRAFFIC_NEARBY_RETURN = "VSA/traffic/nearby/return"
@@ -27,66 +30,68 @@ class VehicleType(Enum):
 
 
 class Geolocation(object):
-	Latitude = 0
-	Longitude = 0
+	latitude = 0
+	longitude = 0
 
 	def __init__(self, latitude, longitude):
-		self.Latitude = float(latitude)
-		self.Longitude = float(longitude)
+		self.latitude = float(latitude)
+		self.longitude = float(longitude)
 
 
 class Geometry(object):
-	Type = "Point"
-	Coordinates = []
+	type = "Point"
+	coordinates = []
  
 	def __init__(self, type, coordinates):
-		self.Type = type
-		self.Coordinates = coordinates
+		self.type = type
+		self.coordinates = coordinates
 
 
 class Vehicle(object):
-	UID = ""
-	Coordinate = Geolocation(0,0)
-	Velocity = 0
-	PositionError = 0
-	RotationAngle = 0
-	Name = ""
-	Type = VehicleType.CAR
-	Dimensions = (0,0,0,0)
+	uid = ""
+	coordinate = Geolocation(0,0)
+	velocity = 0
+	position_error = 0
+	rotation_angle = 0
+	name = ""
+	type = VehicleType.CAR
+	dimensions = (0,0,0,0)
+	intersection_id = ""
 
-	def UpdateStatus(self, latitude, longitude, velocity, positionError, rotationAngle):
-		self.Coordinate = Geolocation(latitude, longitude)
-		self.Velocity = velocity
-		self.PositionError = positionError
-		self.RotationAngle = rotationAngle
+	def update_status(self, latitude, longitude, velocity, position_error, rotation_angle, intersection_id = ""):
+		self.coordinate = Geolocation(latitude, longitude)
+		self.velocity = velocity
+		self.position_error = position_error
+		self.rotation_angle = rotation_angle
+		self.intersection_id = intersection_id
 
 	def __init__(self, uid, name, type, dimensions):
-		self.UID = uid
-		self.Name = name
-		self.Type = VehicleType(type)
-		self.Dimensions = dimensions
+		self.uid = uid
+		self.name = name
+		self.type = VehicleType(type)
+		self.dimensions = dimensions
 
 
 class Feature(object):
-	ID = 0
-	Geometries = []
-	SourceName = ""
-	EventType = ""
-	EventSubType = ""
-	ImpactType = ""
-	ImpactSubType = ""
-	StartTime = datetime.datetime(2018, 8, 30)
-	EndTime = datetime.datetime.now()
-	EventPriority = ""
-	ActiveDays = []
-	RecurrencesDescription = []
-	Description = ""
-	Information = ""
+	id = 0
+	geometries = []
+	source_name = ""
+	event_type = ""
+	event_subtype = ""
+	impact_type = ""
+	impact_subtype = ""
+	start_time = datetime.datetime(2018, 8, 30)
+	end_time = datetime.datetime.now()
+	event_priority = ""
+	active_days = []
+	recurrences_description = []
+	description = ""
+	information = ""
 
 	def __init__(self, json):
-		self.ID = json["properties"]["id"]
+		self.id = json["properties"]["id"]
 		
-		self.Geometries = []
+		self.geometries = []
 		for geometry in json["geometry"]["geometries"]:
 			type = geometry["type"]
 			coordinates = []
@@ -95,46 +100,46 @@ class Feature(object):
 			elif type == "LineString":
 				for coordinate in geometry["coordinates"]:
 					coordinates.append(Geolocation(coordinate[1], coordinate[0]))
-			newGeometry = Geometry(type, coordinates)
-			self.Geometries.append(newGeometry)
+			new_geometry = Geometry(type, coordinates)
+			self.geometries.append(new_geometry)
 		
 		if (json["properties"]["source"]["source_name"] is not None):
-			self.SourceName = json["properties"]["source"]["source_name"]
+			self.source_name = json["properties"]["source"]["source_name"]
 		
 		if (json["properties"]["event_type"] is not None):
-			self.EventType = json["properties"]["event_type"]
+			self.event_type = json["properties"]["event_type"]
 		
 		if (json["properties"]["event_subtype"] is not None):
-			self.SubType = json["properties"]["event_subtype"]
+			self.event_subtype = json["properties"]["event_subtype"]
 
 		if (json["properties"]["impact"]["impact_type"] is not None):
-			self.ImpactType = json["properties"]["impact"]["impact_type"]
+			self.impact_type = json["properties"]["impact"]["impact_type"]
 		
 		if (json["properties"]["impact"]["impact_subtype"] is not None):
-			self.ImpactSubType = json["properties"]["impact"]["impact_subtype"]	
+			self.impact_subtype = json["properties"]["impact"]["impact_subtype"]	
 		
 		if (json["properties"]["duration"]["start"] is not None):
-			self.StartTime = datetime.datetime.strptime(json["properties"]["duration"]["start"], '%Y-%m-%dT%H:%M:%S%z')
+			self.start_time = datetime.datetime.strptime(json["properties"]["duration"]["start"], '%Y-%m-%dT%H:%M:%S%z')
 			
 		if (json["properties"]["duration"]["end"] is not None):
-			self.EndTime = datetime.datetime.strptime(json["properties"]["duration"]["end"], '%Y-%m-%dT%H:%M:%S%z')
+			self.end_time = datetime.datetime.strptime(json["properties"]["duration"]["end"], '%Y-%m-%dT%H:%M:%S%z')
 		
 		if (json["properties"]["event_priority"] is not None):
-			self.EventPriority = json["properties"]["event_priority"]
+			self.event_priority = json["properties"]["event_priority"]
 			
-		self.ActiveDays = []
+		self.active_days = []
 		for days in (json["properties"]["duration"]["active_days"] or []):
-			self.ActiveDays.append(days)
+			self.active_days.append(days)
 			
-		self.RecurrencesDescription = []
+		self.recurrences_description = []
 		for recur in (json["properties"]["duration"]["recurrences"] or []):
-			self.RecurrencesDescription.append(recur["description"])
+			self.recurrences_description.append(recur["description"])
 		
 		if (json["properties"]["description"] is not None):
-			self.Description = json["properties"]["description"]
+			self.description = json["properties"]["description"]
 		
 		if (json["properties"]["information"] is not None):
-			self.Information = json["properties"]["information"]
+			self.information = json["properties"]["information"]
 
 
 def serialize(obj):

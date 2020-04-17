@@ -15,7 +15,7 @@ class _$BrokerDtoSerializer implements StructuredSerializer<BrokerDto> {
   final String wireName = 'BrokerDto';
 
   @override
-  Iterable serialize(Serializers serializers, BrokerDto object,
+  Iterable<Object> serialize(Serializers serializers, BrokerDto object,
       {FullType specifiedType = FullType.unspecified}) {
     final result = <Object>[
       'address',
@@ -23,9 +23,6 @@ class _$BrokerDtoSerializer implements StructuredSerializer<BrokerDto> {
           specifiedType: const FullType(String)),
       'port',
       serializers.serialize(object.port, specifiedType: const FullType(String)),
-      'clientId',
-      serializers.serialize(object.clientId,
-          specifiedType: const FullType(String)),
       'username',
       serializers.serialize(object.username,
           specifiedType: const FullType(String)),
@@ -38,7 +35,7 @@ class _$BrokerDtoSerializer implements StructuredSerializer<BrokerDto> {
   }
 
   @override
-  BrokerDto deserialize(Serializers serializers, Iterable serialized,
+  BrokerDto deserialize(Serializers serializers, Iterable<Object> serialized,
       {FullType specifiedType = FullType.unspecified}) {
     final result = new BrokerDtoBuilder();
 
@@ -54,10 +51,6 @@ class _$BrokerDtoSerializer implements StructuredSerializer<BrokerDto> {
           break;
         case 'port':
           result.port = serializers.deserialize(value,
-              specifiedType: const FullType(String)) as String;
-          break;
-        case 'clientId':
-          result.clientId = serializers.deserialize(value,
               specifiedType: const FullType(String)) as String;
           break;
         case 'username':
@@ -81,26 +74,20 @@ class _$BrokerDto extends BrokerDto {
   @override
   final String port;
   @override
-  final String clientId;
-  @override
   final String username;
   @override
   final String password;
 
-  factory _$BrokerDto([void updates(BrokerDtoBuilder b)]) =>
+  factory _$BrokerDto([void Function(BrokerDtoBuilder) updates]) =>
       (new BrokerDtoBuilder()..update(updates)).build();
 
-  _$BrokerDto._(
-      {this.address, this.port, this.clientId, this.username, this.password})
+  _$BrokerDto._({this.address, this.port, this.username, this.password})
       : super._() {
     if (address == null) {
       throw new BuiltValueNullFieldError('BrokerDto', 'address');
     }
     if (port == null) {
       throw new BuiltValueNullFieldError('BrokerDto', 'port');
-    }
-    if (clientId == null) {
-      throw new BuiltValueNullFieldError('BrokerDto', 'clientId');
     }
     if (username == null) {
       throw new BuiltValueNullFieldError('BrokerDto', 'username');
@@ -111,7 +98,7 @@ class _$BrokerDto extends BrokerDto {
   }
 
   @override
-  BrokerDto rebuild(void updates(BrokerDtoBuilder b)) =>
+  BrokerDto rebuild(void Function(BrokerDtoBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
@@ -123,7 +110,6 @@ class _$BrokerDto extends BrokerDto {
     return other is BrokerDto &&
         address == other.address &&
         port == other.port &&
-        clientId == other.clientId &&
         username == other.username &&
         password == other.password;
   }
@@ -131,10 +117,7 @@ class _$BrokerDto extends BrokerDto {
   @override
   int get hashCode {
     return $jf($jc(
-        $jc(
-            $jc($jc($jc(0, address.hashCode), port.hashCode),
-                clientId.hashCode),
-            username.hashCode),
+        $jc($jc($jc(0, address.hashCode), port.hashCode), username.hashCode),
         password.hashCode));
   }
 
@@ -143,7 +126,6 @@ class _$BrokerDto extends BrokerDto {
     return (newBuiltValueToStringHelper('BrokerDto')
           ..add('address', address)
           ..add('port', port)
-          ..add('clientId', clientId)
           ..add('username', username)
           ..add('password', password))
         .toString();
@@ -161,10 +143,6 @@ class BrokerDtoBuilder implements Builder<BrokerDto, BrokerDtoBuilder> {
   String get port => _$this._port;
   set port(String port) => _$this._port = port;
 
-  String _clientId;
-  String get clientId => _$this._clientId;
-  set clientId(String clientId) => _$this._clientId = clientId;
-
   String _username;
   String get username => _$this._username;
   set username(String username) => _$this._username = username;
@@ -179,7 +157,6 @@ class BrokerDtoBuilder implements Builder<BrokerDto, BrokerDtoBuilder> {
     if (_$v != null) {
       _address = _$v.address;
       _port = _$v.port;
-      _clientId = _$v.clientId;
       _username = _$v.username;
       _password = _$v.password;
       _$v = null;
@@ -196,7 +173,7 @@ class BrokerDtoBuilder implements Builder<BrokerDto, BrokerDtoBuilder> {
   }
 
   @override
-  void update(void updates(BrokerDtoBuilder b)) {
+  void update(void Function(BrokerDtoBuilder) updates) {
     if (updates != null) updates(this);
   }
 
@@ -206,7 +183,6 @@ class BrokerDtoBuilder implements Builder<BrokerDto, BrokerDtoBuilder> {
         new _$BrokerDto._(
             address: address,
             port: port,
-            clientId: clientId,
             username: username,
             password: password);
     replace(_$result);

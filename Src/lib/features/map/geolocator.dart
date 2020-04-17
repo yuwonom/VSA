@@ -15,31 +15,44 @@ class Geolocator {
   }
 
   static StreamController<GpsPointDto> _controller;
-
-  const Geolocator._();
-
-  Stream<GpsPointDto> get events {
+  static Location _location;
+ 
+  Geolocator._() {
     const int interval = 1000;
     const double distanceFilter = 1;
 
-    _controller?.close();
     _controller = StreamController<GpsPointDto>();
+    _location = Location()
+      ..changeSettings(
+        accuracy: LocationAccuracy.high,
+        interval: interval,
+        distanceFilter: distanceFilter,
+      );
 
-    final location = Location();
-    location.changeSettings(
-      accuracy: LocationAccuracy.HIGH,
-      interval: interval,
-      distanceFilter: distanceFilter,
-    );
-
-    location.requestPermission().then((granted) {
-      if (granted) {
-        location.onLocationChanged().listen((LocationData data) => _addGpsPoint(data));
-      }
-    });
-    
-    return _controller.stream;
+    _requestLocation()
+      .then((_) => _location.onLocationChanged
+        .listen((LocationData data) => _addGpsPoint(data)));
   }
+
+  Future<void> _requestLocation() async {
+    var enabled = await _location.serviceEnabled();
+    if (!enabled) {
+      enabled = await _location.requestService();
+      if (!enabled) {
+        return;
+      }
+    }
+
+    var status = await _location.hasPermission();
+    if (status == PermissionStatus.denied) {
+      status = await _location.requestPermission();
+      if (status != PermissionStatus.granted) {
+        return;
+      }
+    }
+  }
+
+  Stream<GpsPointDto> getEvents() => _controller.stream;
 
   void _addGpsPoint(LocationData data) => _controller.add(GpsPointDto((b) => b
     ..latitude = data.latitude

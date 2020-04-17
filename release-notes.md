@@ -1,3 +1,16 @@
+## New in 1.3.0 (Released April 18th, 2020)
+* feature: add scalability tester tool
+* feature: level A topic
+* feature: prompt user to set a unique identifier
+* feature: support iOS build
+* fix: clear subscribed topics on disconnected
+* fix: filter geolocation update to 1 meter
+* fix: get location after permission granted
+* fix: include type as vehicle status response
+* fix: recorded total distance
+* fix: split intersections csv data
+* fix: upgrade flutter version
+
 ## New in 1.2.3 (Released November 13th, 2019)
 * fix: Update GPS timestamp on heading change
 

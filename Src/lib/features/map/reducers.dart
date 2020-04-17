@@ -11,7 +11,6 @@ import 'package:vsa/features/settings/actions.dart';
 final Reducer<MapState> mapStateReducer = combineReducers([
     TypedReducer<MapState, UpdateUserGpsPoint>(_updateUserGpsPointReducer),
     TypedReducer<MapState, RecordUserGpsPoint>(_recordUserGpsPointReducer),
-    TypedReducer<MapState, UpdateBrokerClientId>(_updateBrokerClientIdReducer),
     TypedReducer<MapState, ConnectToMqttBroker>(_connectToMqttBrokerReducer),
     TypedReducer<MapState, ConnectToMqttBrokerSuccessful>(_connectToMqttBrokerSuccessfulReducer),
     TypedReducer<MapState, ConnectToMqttBrokerFailed>(_connectToMqttBrokerFailedReducer),
@@ -22,6 +21,8 @@ final Reducer<MapState> mapStateReducer = combineReducers([
     TypedReducer<MapState, LoadIntersectionsSuccessful>(_loadIntersectionsSuccessfulReducer),
     TypedReducer<MapState, LoadIntersectionsFailed>(_loadIntersectionsFailedReducer),
     TypedReducer<MapState, SetCurrentIntersectionId>(_setCurrentIntersectionIdReducer),
+    TypedReducer<MapState, UpdateVehicleId>(_updateVehicleIdReducer),
+    TypedReducer<MapState, UpdateVehicleName>(_updateVehicleNameReducer),
     TypedReducer<MapState, UpdateVehicleType>(_updateVehicleTypeReducer),
     TypedReducer<MapState, UpdateDimension>(_updateDimensionReducer),
   ]);
@@ -31,9 +32,6 @@ MapState _updateUserGpsPointReducer(MapState state, UpdateUserGpsPoint action) =
 
 MapState _recordUserGpsPointReducer(MapState state, RecordUserGpsPoint action) => state.rebuild((b) => b
   ..recordedPoints.add(action.point));
-
-MapState _updateBrokerClientIdReducer(MapState state, UpdateBrokerClientId action) => state.rebuild((b) => b
-  ..userVehicle.id = action.value);
 
 MapState _connectToMqttBrokerReducer(MapState state, ConnectToMqttBroker action) => state.rebuild((b) => b
   ..isBusy = true
@@ -108,6 +106,12 @@ MapState _loadIntersectionsFailedReducer(MapState state, LoadIntersectionsFailed
 
 MapState _setCurrentIntersectionIdReducer(MapState state, SetCurrentIntersectionId action) => state.rebuild((b) => b
   ..currentIntersectionId = action.id);
+
+MapState _updateVehicleIdReducer(MapState state, UpdateVehicleId action) => state.rebuild((b) => b
+  ..userVehicle.id = action.value);
+
+MapState _updateVehicleNameReducer(MapState state, UpdateVehicleName action) => state.rebuild((b) => b
+  ..userVehicle.name = action.value);
 
 MapState _updateVehicleTypeReducer(MapState state, UpdateVehicleType action) => state.rebuild((b) => b
   ..userVehicle.type = VehicleTypeDto.valueOf(action.value));

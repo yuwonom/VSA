@@ -6,14 +6,15 @@ import 'package:vsa/features/settings/state.dart';
 
 class SettingsViewModel {
   final SettingsState _state;
-  final VehicleTypeDto _vehicleType;
-  final VehicleDimensionDto _vehicleDimension;
+  final VehicleDto _userVehicle;
 
-  const SettingsViewModel(this._state, this._vehicleType, this._vehicleDimension)
-    : assert(_state != null && _vehicleType != null && _vehicleDimension != null);
+  const SettingsViewModel(this._state, this._userVehicle)
+    : assert(_state != null && _userVehicle != null);
 
-  VehicleTypeDto get vehicleType => _vehicleType;
-  String get dimensionString => _vehicleDimension.toString();
+  String get vehicleId => _userVehicle.id;
+  String get vehicleName => _userVehicle.name;
+  VehicleTypeDto get vehicleType => _userVehicle.type;
+  String get dimensionString => _userVehicle.dimension.toString();
 
   BrokerDto get broker => _state.broker;
 
@@ -21,7 +22,6 @@ class SettingsViewModel {
   String get port => broker.port;
   String get username => broker.username;
   String get password => broker.password;
-  String get clientId => broker.clientId;
 
   bool get isActiveLevelA => _state.isActiveLevelA;
   bool get isActiveLevelB => _state.isActiveLevelB;

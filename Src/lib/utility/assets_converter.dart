@@ -13,7 +13,7 @@ class AssetsConverter {
     final Canvas canvas = Canvas(pictureRecorder);
 
     final ByteData datai = await rootBundle.load(urlAsset);
-    final ui.Image imaged = await _loadImage(new Uint8List.view(datai.buffer));
+    final ui.Image imaged = await _loadImage(Uint8List.view(datai.buffer));
     canvas.drawImageRect(
       imaged,
       Rect.fromLTRB(0.0, 0.0, imaged.width.toDouble(), imaged.height.toDouble()),

@@ -9,7 +9,6 @@ final Reducer<SettingsState> settingsStateReducer = combineReducers([
     TypedReducer<SettingsState, UpdateBrokerPort>(_updateBrokerPortReducer),
     TypedReducer<SettingsState, UpdateBrokerUsername>(_updateBrokerUsernameReducer),
     TypedReducer<SettingsState, UpdateBrokerPassword>(_updateBrokerPasswordReducer),
-    TypedReducer<SettingsState, UpdateBrokerClientId>(_updateBrokerClientIdReducer),
     TypedReducer<SettingsState, SwitchLevelA>(_switchLevelAReducer),
     TypedReducer<SettingsState, SwitchLevelB>(_switchLevelBReducer),
     TypedReducer<SettingsState, SwitchLevelC>(_switchLevelCReducer),
@@ -40,9 +39,6 @@ SettingsState _updateBrokerUsernameReducer(SettingsState state, UpdateBrokerUser
   
 SettingsState _updateBrokerPasswordReducer(SettingsState state, UpdateBrokerPassword action) => state.rebuild((b) => b
   ..broker.password = action.value);
-  
-SettingsState _updateBrokerClientIdReducer(SettingsState state, UpdateBrokerClientId action) => state.rebuild((b) => b
-  ..broker.clientId = action.value);
 
 SettingsState _switchLevelAReducer(SettingsState state, SwitchLevelA action) => state.rebuild((b) => b
   ..isActiveLevelA = action.value);
