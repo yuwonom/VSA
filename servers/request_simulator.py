@@ -1,14 +1,14 @@
 '''
 Developed for Vehicle Situational Awareness Project
-Copyright © Queensland University of Technology 2020
+Copyright Queensland University of Technology 2020
 Authored by @yuwonom (Michael Yuwono)
 '''
 import paho.mqtt.client as mqtt
-import VSA, Broker
+import vsa, broker
 
 #properties
 NAME = "VSA Request Simulator"
-VERSION = "2.1.0"
+VERSION = "2.1.1"
 
 # ------------------------------------------------------------------------ #
 
@@ -16,11 +16,11 @@ print("===== " + NAME + " v" + VERSION + " =====")
 
 #new client
 client = mqtt.Client()
-client.username_pw_set(Broker.USERNAME, Broker.PASSWORD)
-client.connect(Broker.ADDRESS, Broker.PORT)
+client.username_pw_set(broker.USERNAME, broker.PASSWORD)
+client.connect(broker.ADDRESS, broker.PORT)
 print("Connected to broker.")
 
-main_topic = VSA.TOPIC_TRAFFIC_NEARBY_REQ + "/1"
+main_topic = vsa.TOPIC_TRAFFIC_NEARBY_REQ + "/1"
 
 try:
 	while True:

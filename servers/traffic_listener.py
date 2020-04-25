@@ -1,15 +1,15 @@
 '''
 Developed for Vehicle Situational Awareness Project
-Copyright © Queensland University of Technology 2020
+Copyright Queensland University of Technology 2020
 Authored by @yuwonom (Michael Yuwono)
 '''
 import requests, time, json
 import paho.mqtt.client as mqtt
-import VSA, Broker
+import vsa, broker
 
 #properties
 NAME = "Queensland Traffic Listener"
-VERSION = "2.1.0"
+VERSION = "2.1.1"
 
 #qldtraffic API
 apiKey = "3e83add325cbb69ac4d8e5bf433d770b"
@@ -28,8 +28,8 @@ client = mqtt.Client()
 
 #connecting to broker
 print("Connecting to broker...")
-client.username_pw_set(Broker.USERNAME, Broker.PASSWORD)
-client.connect(Broker.ADDRESS, Broker.PORT)
+client.username_pw_set(broker.USERNAME, broker.PASSWORD)
+client.connect(broker.ADDRESS, broker.PORT)
 print("Connected.")
 
 request_interval_sec = 60
@@ -44,8 +44,8 @@ try:
 		
 		print(str(len(json_features)) + " features received.")
 		
-		message = json.dumps(json_features, default = VSA.serialize)
-		client.publish(VSA.TOPIC_TRAFFIC, message)
+		message = json.dumps(json_features, default = vsa.serialize)
+		client.publish(vsa.TOPIC_TRAFFIC, message)
 		
 		# interval
 		counter = request_interval_sec

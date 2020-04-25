@@ -1,16 +1,16 @@
 '''
 Developed for Vehicle Situational Awareness Project
-Copyright © Queensland University of Technology 2020
+Copyright Queensland University of Technology 2020
 Authored by @yuwonom (Michael Yuwono)
 '''
 from threading import Thread
 import sys, time, math, json
 import paho.mqtt.client as mqtt
-import VSA, Broker
+import vsa, broker
 
 #properties
 NAME = "VSA Request Handler"
-VERSION = "2.1.0"
+VERSION = "2.1.1"
 
 # ------------------------------------------------------------------------ #
 
@@ -71,7 +71,7 @@ def topic_level_a_vehprop_callback(mqttc, obj, msg):
 	if uid in vehicles:
 		del vehicles[uid]
 
-	vehicle = VSA.Vehicle(uid, name, type, dimensions)
+	vehicle = vsa.Vehicle(uid, name, type, dimensions)
 	vehicles[uid] = vehicle
 
 def topic_level_a_req_callback():
@@ -94,7 +94,7 @@ def topic_level_a_req_callback():
 				vehsim_list.append("{" + combined + "}")
 
 			vehsim_json = "[" + ",".join(vehsim_list) + "]"
-			client.publish(VSA.TOPIC_LEVEL_A_REQ + "/" + intersection, vehsim_json)
+			client.publish(vsa.TOPIC_LEVEL_A_REQ + "/" + intersection, vehsim_json)
 
 	while client.connected_flag:
 		publish_messages()
@@ -108,7 +108,7 @@ def topic_traffic_callback(mqttc, obj, msg):
 	features = []
 	
 	for data in json_features:
-		feature = VSA.Feature(data)
+		feature = vsa.Feature(data)
 		features.append(feature)
 	
 	print("Features updated.")
@@ -123,7 +123,7 @@ def topic_traffic_nearby_req_callback(mqttc, obj, msg):
 	
 	global features
 	
-	user_geolocation = VSA.Geolocation(latitude, longitude)
+	user_geolocation = vsa.Geolocation(latitude, longitude)
 	features_res = []
 	features_tmp = features
 
@@ -131,7 +131,7 @@ def topic_traffic_nearby_req_callback(mqttc, obj, msg):
 		include = False
 		for geometry in feature.geometries:
 			for coordinate in geometry.coordinates:
-				if (VSA.distance(user_geolocation, coordinate) <= radius):
+				if (vsa.distance(user_geolocation, coordinate) <= radius):
 					include = True
 					break
 			if (include):
@@ -140,7 +140,7 @@ def topic_traffic_nearby_req_callback(mqttc, obj, msg):
 			features_res.append(feature)
 	
 	print(str(len(features_res)) + " events found.")
-	client.publish(VSA.TOPIC_TRAFFIC_NEARBY_RETURN + "/" + veh_id, json.dumps(features_res, default = VSA.serialize))
+	client.publish(vsa.TOPIC_TRAFFIC_NEARBY_RETURN + "/" + veh_id, json.dumps(features_res, default = vsa.serialize))
 	
 def topic_vehsim_callback(mqttc, obj, msg):
 	payload = str(msg.payload.decode("utf-8"))
@@ -176,7 +176,7 @@ def topic_vehprop_callback(mqttc, obj, msg):
 	if uid in vehicles:
 		del vehicles[uid]
 
-	vehicle = VSA.Vehicle(uid, name, type, dimensions)
+	vehicle = vsa.Vehicle(uid, name, type, dimensions)
 	vehicles[uid] = vehicle
 
 def topic_vehsim_req_callback(mqttc, obj, msg):
@@ -203,7 +203,7 @@ def topic_vehsim_req_callback(mqttc, obj, msg):
 		vehsim_list.append("{" + combined + "}")
 
 	vehsim_json = "[" + ",".join(vehsim_list) + "]"
-	client.publish(VSA.TOPIC_VEHSIM_RETURN + "/" + veh_id, vehsim_json)
+	client.publish(vsa.TOPIC_VEHSIM_RETURN + "/" + veh_id, vehsim_json)
 	
 def topic_vehprop_req_callback(mqttc, obj, msg):
 	payload = str(msg.payload.decode("utf-8"))
@@ -228,7 +228,7 @@ def topic_vehprop_req_callback(mqttc, obj, msg):
 		vehprop_list.append("{" + combined + "}")
 
 	vehprop_json = "[" + ",".join(vehprop_list) + "]"
-	client.publish(VSA.TOPIC_VEHPROP_RETURN + "/" + veh_id, vehprop_json)
+	client.publish(vsa.TOPIC_VEHPROP_RETURN + "/" + veh_id, vehprop_json)
 
 # ------------------------------------------------------------------------ #	
 	
@@ -245,26 +245,26 @@ client.connected_flag = False
 client.on_connect = on_connect
 client.on_disconnect = on_disconnect
 #client.on_message = on_message
-client.message_callback_add(VSA.TOPIC_LEVEL_A_VEHSIM + "/#", topic_level_a_vehsim_callback)
-client.message_callback_add(VSA.TOPIC_LEVEL_A_VEHPROP + "/#", topic_level_a_vehprop_callback)
-client.message_callback_add(VSA.TOPIC_TRAFFIC + "/#", topic_traffic_callback)
-client.message_callback_add(VSA.TOPIC_TRAFFIC_NEARBY_REQ + "/#", topic_traffic_nearby_req_callback)
-client.message_callback_add(VSA.TOPIC_VEHSIM + "/#", topic_vehsim_callback)
-client.message_callback_add(VSA.TOPIC_VEHPROP + "/#", topic_vehprop_callback)
-client.message_callback_add(VSA.TOPIC_VEHSIM_REQ + "/#", topic_vehsim_req_callback)
-client.message_callback_add(VSA.TOPIC_VEHPROP_REQ + "/#", topic_vehprop_req_callback)
+client.message_callback_add(vsa.TOPIC_LEVEL_A_VEHSIM + "/#", topic_level_a_vehsim_callback)
+client.message_callback_add(vsa.TOPIC_LEVEL_A_VEHPROP + "/#", topic_level_a_vehprop_callback)
+client.message_callback_add(vsa.TOPIC_TRAFFIC + "/#", topic_traffic_callback)
+client.message_callback_add(vsa.TOPIC_TRAFFIC_NEARBY_REQ + "/#", topic_traffic_nearby_req_callback)
+client.message_callback_add(vsa.TOPIC_VEHSIM + "/#", topic_vehsim_callback)
+client.message_callback_add(vsa.TOPIC_VEHPROP + "/#", topic_vehprop_callback)
+client.message_callback_add(vsa.TOPIC_VEHSIM_REQ + "/#", topic_vehsim_req_callback)
+client.message_callback_add(vsa.TOPIC_VEHPROP_REQ + "/#", topic_vehprop_req_callback)
 
 #connecting to broker
 print("Connecting to broker...")
-client.username_pw_set(Broker.USERNAME, Broker.PASSWORD)
-client.connect(Broker.ADDRESS, Broker.PORT)
+client.username_pw_set(broker.USERNAME, broker.PASSWORD)
+client.connect(broker.ADDRESS, broker.PORT)
 client.loop_start()
 while not client.connected_flag:
 	time.sleep(1)
 
-#subscribing VSA/#
-client.subscribe("VSA/#")
-print("Subscribing to every topic under " + "VSA/#")
+#subscribing vsa/#
+client.subscribe("vsa/#")
+print("Subscribing to every topic under " + "vsa/#")
 
 #register threads
 level_a_req_thread = Thread(target=topic_level_a_req_callback)
