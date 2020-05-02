@@ -329,10 +329,10 @@ class CollisionCheck {
     final intersections = store.state.map.intersections;
     final collidedIntersections = intersections
       .where((IntersectionDto intersection) => GpsHelper
-          .isCollided(
-            action.point,
-            GpsPointDto.fromLatLng(intersection.latLng),
-            intersection.radius))
+        .isCollided(
+          action.point,
+          GpsPointDto.fromLatLng(intersection.latLng),
+          intersection.radius))
       .toList();
 
     final id = collidedIntersections.length > 0 

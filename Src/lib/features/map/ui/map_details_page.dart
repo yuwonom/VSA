@@ -18,7 +18,6 @@ import 'package:vsa/features/map/geolocator.dart';
 import 'package:vsa/features/map/ui/user_identifier_dialog.dart';
 import 'package:vsa/features/map/viewmodels/details_viewmodel.dart';
 import 'package:vsa/features/map/viewmodels/map_viewmodel.dart';
-import 'package:vsa/features/settings/actions.dart';
 import 'package:vsa/state.dart';
 import 'package:vsa/themes/theme.dart';
 
@@ -56,10 +55,6 @@ class _MapDetailsPageState extends State<MapDetailsPage> {
 
   @override
   Widget build(BuildContext context) => StoreConnector<AppState, MapViewModel>(
-      onInit: (Store<AppState> store) => store
-        ..dispatch(ListenToGeolocator())
-        ..dispatch(LoadSettings())
-        ..dispatch(LoadIntersections()),
       converter: (Store<AppState> store) => MapViewModel(store.state.map, store.state.settings),
       builder: (BuildContext context, MapViewModel viewModel) => _buildPage(context, StoreProvider.of(context), viewModel),
     );
