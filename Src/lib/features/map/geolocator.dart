@@ -14,14 +14,14 @@ class Geolocator {
     return _instance;
   }
 
-  static StreamController<GpsPointDto> _controller;
-  static Location _location;
+  StreamController<GpsPointDto> _controller;
+  Location _location;
+  StreamSubscription<LocationData> _locationDataStream;
  
   Geolocator._() {
     const int interval = 1000;
     const double distanceFilter = 1;
 
-    _controller = StreamController<GpsPointDto>();
     _location = Location()
       ..changeSettings(
         accuracy: LocationAccuracy.high,
@@ -32,6 +32,8 @@ class Geolocator {
     _requestLocation()
       .then((_) => _location.onLocationChanged
         .listen((LocationData data) => _addGpsPoint(data)));
+
+    resetController();
   }
 
   Future<void> _requestLocation() async {
@@ -53,6 +55,11 @@ class Geolocator {
   }
 
   Stream<GpsPointDto> getEvents() => _controller.stream;
+
+  void resetController() {
+    _controller?.close();
+    _controller = StreamController<GpsPointDto>();
+  }
 
   void _addGpsPoint(LocationData data) => _controller.add(GpsPointDto((b) => b
     ..latitude = data.latitude

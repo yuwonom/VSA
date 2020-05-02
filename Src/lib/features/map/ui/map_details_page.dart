@@ -49,8 +49,9 @@ class _MapDetailsPageState extends State<MapDetailsPage> {
   @override
   void dispose() {
     super.dispose();
-    _directionStream.pause();
-    _gpsPointStream.pause();
+    Geolocator.instance.resetController();
+    _directionStream?.cancel();
+    _gpsPointStream?.cancel();
   }
 
   @override
@@ -285,37 +286,34 @@ class _MapDetailsPageState extends State<MapDetailsPage> {
       onMapCreated: (GoogleMapController controller) {
         _mapController = controller;
 
-        if (_directionStream == null) {
-          _directionStream = FlutterCompass.events.listen((double direction) {
-            setState(() => _direction = direction);
-            _stickMap(store);
+        _directionStream = FlutterCompass.events
+          .listen((double direction) {
+              setState(() => _direction = direction);
+              _stickMap(store);
 
-            final userVehicle = store.state.map.userVehicle;
+              final userVehicle = store.state.map.userVehicle;
 
-            if (userVehicle.point == null) {
-              return;
-            }
+              if (userVehicle.point == null) {
+                return;
+              }
 
-            final point = userVehicle.point
-              .rebuild((b) => b
-                ..heading = _direction
-                ..dateTime = DateTime.now().toUtc());
-            store.dispatch(UpdateUserGpsPoint(point));
-          });
-        } else if (_directionStream.isPaused) {
-          _directionStream.resume();
-        }
+              final point = userVehicle.point
+                .rebuild((b) => b
+                  ..heading = _direction
+                  ..dateTime = DateTime.now().toUtc());
+              store.dispatch(UpdateUserGpsPoint(point));
+            },
+            cancelOnError: true,
+          );
 
-        if (_gpsPointStream == null) {
-          _gpsPointStream = Geolocator.instance
-            .getEvents()
-            .listen((GpsPointDto point) {
+        _gpsPointStream = Geolocator.instance
+          .getEvents()
+          .listen((GpsPointDto point) {
               _stickMap(store);
               store.dispatch(UpdateUserGpsPoint(point));
-            });
-        } else if (_gpsPointStream.isPaused) {
-          _gpsPointStream.resume();
-        }
+            },
+            cancelOnError: true,
+          );
       },
       gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>[
         Factory<OneSequenceGestureRecognizer>(() => EagerGestureRecognizer()),
