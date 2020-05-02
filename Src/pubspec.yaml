@@ -37,6 +37,7 @@ flutter:
   assets:
     # files
     - assets/files/intersections.csv
+    - assets/files/simple_map_style.txt
       
     # images
     - assets/images/vehicles/car_other.png

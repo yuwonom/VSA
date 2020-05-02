@@ -285,11 +285,13 @@ class _MapDetailsPageState extends State<MapDetailsPage> {
       ),
       onMapCreated: (GoogleMapController controller) {
         _mapController = controller;
-
+        rootBundle
+          .loadString("assets/files/simple_map_style.txt")
+          .then((String style) => _mapController.setMapStyle(style));
+        
         _directionStream = FlutterCompass.events
           .listen((double direction) {
               setState(() => _direction = direction);
-              _stickMap(store);
 
               final userVehicle = store.state.map.userVehicle;
 
@@ -302,6 +304,7 @@ class _MapDetailsPageState extends State<MapDetailsPage> {
                   ..heading = _direction
                   ..dateTime = DateTime.now().toUtc());
               store.dispatch(UpdateUserGpsPoint(point));
+              _stickMap(point);
             },
             cancelOnError: true,
           );
@@ -309,8 +312,8 @@ class _MapDetailsPageState extends State<MapDetailsPage> {
         _gpsPointStream = Geolocator.instance
           .getEvents()
           .listen((GpsPointDto point) {
-              _stickMap(store);
               store.dispatch(UpdateUserGpsPoint(point));
+              _stickMap(point);
             },
             cancelOnError: true,
           );
@@ -393,9 +396,7 @@ class _MapDetailsPageState extends State<MapDetailsPage> {
     );
   }
 
-  void _stickMap(Store<AppState> store) {
-    final point = store.state.map.userVehicle.point;
-
+  void _stickMap(GpsPointDto point) {
     if (!_isSticky || point == null || _mapController == null) {
       return;
     }

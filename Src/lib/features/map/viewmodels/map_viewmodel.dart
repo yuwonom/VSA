@@ -44,6 +44,8 @@ class MapViewModel {
   
   bool get hasIntersections => intersections.isNotEmpty;
 
+  String get currentIntersectionId => _mapState.currentIntersectionId;
+
   BrokerDto get broker => _settingsState.broker;
 
   String get address => broker.address;
