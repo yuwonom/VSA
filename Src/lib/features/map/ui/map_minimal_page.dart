@@ -18,12 +18,26 @@ import 'package:vsa/features/map/viewmodels/map_viewmodel.dart';
 import 'package:vsa/state.dart';
 import 'package:vsa/themes/theme.dart';
 
-class MapMinimalPage extends StatefulWidget {
+class MapMinimalPage extends StatelessWidget {
   @override
-  _MapMinimalPageState createState() => _MapMinimalPageState();
+  Widget build(BuildContext context) => StoreConnector<AppState, MapViewModel>(
+      converter: (Store<AppState> store) => MapViewModel(store.state.map, store.state.settings),
+      builder: (BuildContext context, MapViewModel viewModel) => viewModel.userVehicle.type == VehicleTypeDto.car
+        ? _CarPage()
+        : _buildCyclePage(context, StoreProvider.of(context), viewModel),
+    );
+
+  Widget _buildCyclePage(BuildContext context, Store<AppState> store, MapViewModel viewModel) {
+    return Container();
+  }
 }
 
-class _MapMinimalPageState extends State<MapMinimalPage> {
+class _CarPage extends StatefulWidget {
+  @override
+  _CarPageState createState() => _CarPageState();
+}
+
+class _CarPageState extends State<_CarPage> {
   final double _defaultZoom = 20;
   final double _defaultBearing = 0;
   final double _defaultTilt = 0;
@@ -51,16 +65,10 @@ class _MapMinimalPageState extends State<MapMinimalPage> {
   @override
   Widget build(BuildContext context) => StoreConnector<AppState, MapViewModel>(
       converter: (Store<AppState> store) => MapViewModel(store.state.map, store.state.settings),
-      builder: (BuildContext context, MapViewModel viewModel) => viewModel.userVehicle.type == VehicleTypeDto.car
-        ? _buildCarPage(context, StoreProvider.of(context), viewModel)
-        : _buildCyclePage(context, StoreProvider.of(context), viewModel),
+      builder: (BuildContext context, MapViewModel viewModel) => _buildPage(context, StoreProvider.of(context), viewModel),
     );
-
-  Widget _buildCyclePage(BuildContext context, Store<AppState> store, MapViewModel viewModel) {
-    return Container();
-  }
     
-  Widget _buildCarPage(BuildContext context, Store<AppState> store, MapViewModel viewModel) {
+  Widget _buildPage(BuildContext context, Store<AppState> store, MapViewModel viewModel) {
     final map = AbsorbPointer(
       absorbing: true,
       child: _buildMap(store, viewModel),

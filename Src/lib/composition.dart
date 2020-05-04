@@ -1,8 +1,8 @@
 /// Authored by `@yuwonom (Michael Yuwono)`
 
+import 'package:vsa/features/main_page.dart';
 import 'package:vsa/features/map/geolocator.dart';
 import 'package:vsa/features/map/mqtt_api.dart';
-import 'package:vsa/features/map/ui/map_page.dart';
 import 'package:vsa/globals.dart';
 import 'package:vsa/middleware.dart';
 import 'package:vsa/reducers.dart';
@@ -19,7 +19,7 @@ ApplicationInformation createApplicationInformation(Geolocator geolocator, MqttA
   final materialApp = MaterialApp(
     title: "VSA",
     key: appKey,
-    home: MapPage(),
+    home: MainPage(),
     navigatorKey: navigatorKey,
     navigatorObservers: [navigatorObserver],
   );

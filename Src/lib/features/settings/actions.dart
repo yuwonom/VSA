@@ -9,6 +9,12 @@ class LoadSettings {
 }
 
 @immutable
+class LoadSettingsSuccessful {
+  @override
+  String toString() => "LoadSettingsSuccessful";
+}
+
+@immutable
 class UpdateSettings {
   UpdateSettings(
     this.actionType,

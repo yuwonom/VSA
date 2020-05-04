@@ -3,11 +3,13 @@
 import 'package:flutter/material.dart';
 import 'package:redux/redux.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:vsa/features/map/ui/map_page.dart';
 import 'package:vsa/features/settings/actions.dart';
 import 'package:vsa/state.dart';
 
-List<Middleware<AppState>> getMiddleware() => [
+List<Middleware<AppState>> getMiddleware(GlobalKey<NavigatorState> navigatorKey) => [
       LocalSettings().getMiddlewareBindings(),
+      Routing(navigatorKey).getMiddlewareBindings(),
     ].expand((x) => x).toList();
 
 @immutable
@@ -60,6 +62,8 @@ class LocalSettings {
 
         store.dispatch(updateAction);
       });
+
+      store.dispatch(LoadSettingsSuccessful());
     }
     
     _loadSettings(store, action);
@@ -211,5 +215,23 @@ class LocalSettings {
     }
 
     assert(false);
+  }
+}
+
+@immutable
+class Routing {
+  const Routing(this.navigatorKey);
+
+  final GlobalKey<NavigatorState> navigatorKey;
+
+  List<Middleware<AppState>> getMiddlewareBindings() => [
+        TypedMiddleware<AppState, LoadSettingsSuccessful>(_handleLoadSettingsSucessful),
+      ];
+
+  NavigatorState get _navigatorState => navigatorKey.currentState;
+
+  void _handleLoadSettingsSucessful(Store<AppState> store, LoadSettingsSuccessful action, NextDispatcher next) {
+    final route = MaterialPageRoute(builder: (_) => MapPage());
+    _navigatorState.pushReplacement(route);
   }
 }

@@ -6,12 +6,6 @@ import 'package:vsa/features/map/dtos.dart';
 import 'package:vsa/utility/action_exception.dart';
 
 @immutable
-class ListenToGeolocator {
-  @override
-  String toString() => "ListenToGeolocator";
-}
-
-@immutable
 class UpdateUserGpsPoint {
   UpdateUserGpsPoint(this.point) : assert (point != null);
 

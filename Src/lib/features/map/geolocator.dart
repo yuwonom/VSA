@@ -16,7 +16,6 @@ class Geolocator {
 
   StreamController<GpsPointDto> _controller;
   Location _location;
-  StreamSubscription<LocationData> _locationDataStream;
  
   Geolocator._() {
     const int interval = 1000;

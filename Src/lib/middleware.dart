@@ -14,5 +14,5 @@ List<Middleware<AppState>> getMiddleware(
   GlobalKey<NavigatorState> navigatorKey,
 ) => [
     map.getMiddleware(geolocator, mqttApi),
-    settings.getMiddleware(),
+    settings.getMiddleware(navigatorKey),
   ].expand((x) => x).toList();
