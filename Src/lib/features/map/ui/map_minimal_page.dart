@@ -14,6 +14,7 @@ import 'package:vsa/features/map/actions.dart';
 import 'package:vsa/features/map/dtos.dart';
 import 'package:vsa/features/map/geolocator.dart';
 import 'package:vsa/features/map/ui/user_identifier_dialog.dart';
+import 'package:vsa/features/map/viewmodels/details_viewmodel.dart';
 import 'package:vsa/features/map/viewmodels/map_viewmodel.dart';
 import 'package:vsa/state.dart';
 import 'package:vsa/themes/theme.dart';
@@ -23,13 +24,8 @@ class MapMinimalPage extends StatelessWidget {
   Widget build(BuildContext context) => StoreConnector<AppState, MapViewModel>(
       converter: (Store<AppState> store) => MapViewModel(store.state.map, store.state.settings),
       builder: (BuildContext context, MapViewModel viewModel) => viewModel.userVehicle.type == VehicleTypeDto.car
-        ? _CarPage()
-        : _buildCyclePage(context, StoreProvider.of(context), viewModel),
+        ? _CarPage() : _CyclePage(),
     );
-
-  Widget _buildCyclePage(BuildContext context, Store<AppState> store, MapViewModel viewModel) {
-    return Container();
-  }
 }
 
 class _CarPage extends StatefulWidget {
@@ -201,7 +197,7 @@ class _CarPageState extends State<_CarPage> {
       children: <Widget>[
         Expanded(child: intersectionText),
         SizedBox(width: AppLengths.small),
-        _buildPlayButton(store, viewModel),
+        _buildPlayButton(context, store, viewModel),
       ],
     );
 
@@ -261,73 +257,6 @@ class _CarPageState extends State<_CarPage> {
     );
 
     return card;
-  }
-
-  Widget _buildPlayButton(Store<AppState> store, MapViewModel viewModel) {
-    Widget playButton;
-
-    final VoidCallback connectCallback = () {
-      if (viewModel.userVehicle.id.isEmpty) {
-        showDialog(
-          context: context,
-          builder: (_) => UserIdentifierDialog(viewModel.broker),
-        );
-        return;
-      }
-
-      store.dispatch(ConnectToMqttBroker(
-        viewModel.address,
-        viewModel.userVehicle.id,
-        username: viewModel.username,
-        password: viewModel.password,
-      ));
-    };
-
-    final VoidCallback disconnectCallback =
-      () => store.dispatch(DisconnectFromMqttBroker());
-
-    final loading = CircularProgressIndicator(
-      valueColor: AlwaysStoppedAnimation(AppColors.white),
-    );
-
-    switch (viewModel.connectionState) {
-      case MqttConnectionState.connected:
-        playButton = FloatingActionButton(
-          heroTag: "playButton",
-          backgroundColor: AppColors.blue,
-          onPressed: disconnectCallback,
-          child: Icon(Icons.stop, color: AppColors.white),
-        );
-      break;
-      case MqttConnectionState.disconnected:
-        playButton = FloatingActionButton(
-          heroTag: "playButton",
-          backgroundColor: AppColors.blue,
-          onPressed: viewModel.hasUserPoint ? connectCallback : null,
-          child: Icon(Icons.play_arrow, color: AppColors.white),
-        );
-      break;
-      case MqttConnectionState.faulted:
-        playButton = FloatingActionButton(
-          heroTag: "playButton",
-          backgroundColor: AppColors.blue,
-          onPressed: connectCallback,
-          child: Icon(Icons.play_arrow, color: AppColors.white),
-        );
-      break;
-      default:
-        playButton = FloatingActionButton(
-          heroTag: "playButton",
-          backgroundColor: AppColors.gray,
-          onPressed: null,
-          child: Padding(
-            padding: AppEdges.smallAll,
-            child: loading,
-          ),
-        );
-    }
-
-    return playButton;
   }
 
   Widget _buildMap(Store<AppState> store, MapViewModel viewModel) {
@@ -439,4 +368,241 @@ class _CarPageState extends State<_CarPage> {
       ),
     );
   }
+}
+
+class _CyclePage extends StatefulWidget {
+  @override
+  _CyclePageState createState() => _CyclePageState();
+}
+
+class _CyclePageState extends State<_CyclePage> with TickerProviderStateMixin {
+  StreamSubscription<double> _directionStream;
+  StreamSubscription<GpsPointDto> _gpsPointStream;
+  StreamSubscription _timerStream;
+
+  @override
+  void initState() {
+    super.initState();
+    // Rebuild page every second
+    _timerStream = Stream.periodic(Duration(seconds: 1))
+      .listen((_) => setState((){}));
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    Geolocator.instance.resetController();
+    _directionStream?.cancel();
+    _gpsPointStream?.cancel();
+    _timerStream?.cancel();
+  }
+
+  @override
+  Widget build(BuildContext context) => StoreConnector<AppState, MapViewModel>(
+      onInit: (Store<AppState> store) => _startGpsListeners(store),
+      converter: (Store<AppState> store) => MapViewModel(store.state.map, store.state.settings),
+      builder: (BuildContext context, MapViewModel viewModel) => _buildPage(context, StoreProvider.of(context), viewModel),
+    );
+
+  Widget _buildPage(BuildContext context, Store<AppState> store, MapViewModel viewModel) {
+    final body = Column(
+      children: [
+        Expanded(
+          child: Center(
+            child: _buildPlayButton(context, store, viewModel),
+          ),
+        ),
+        _buildBottomBar(DetailsViewModel(store.state.map)),
+      ],
+    );
+
+    final contents = <Widget>[
+      Expanded(
+        flex: 1,
+        child: _buildTopBar(viewModel),
+      ),
+      Expanded(
+        flex: 2,
+        child: body,
+      ),
+    ];
+
+    final page = Column(
+      children: contents,
+    );
+
+    return page;
+  }
+
+  Widget _buildTopBar(MapViewModel viewModel) {
+    Color barColor = AppColors.gray;
+    Color textColor = AppColors.darkGray;
+    String text = "Not connected to any broker service. Press start to share your geolocation status.";
+
+    if (viewModel.connectionState == MqttConnectionState.connected) {
+      barColor = AppColors.green;
+      textColor = AppColors.white;
+      text = "Connected to broker service. Sharing your geolocation status.";
+    } else if (viewModel.connectionState == MqttConnectionState.connecting) {
+      barColor = AppColors.gray;
+      textColor = AppColors.darkGray;
+      text = "Connecting to broker service...";
+    } else if (viewModel.connectionState == MqttConnectionState.disconnecting) {
+      barColor = AppColors.gray;
+      textColor = AppColors.darkGray;
+      text = "Disconnecting from broker service...";
+    }
+
+    final topBar = Container(
+      color: barColor,
+      padding: AppEdges.mediumAll,
+      width: MediaQuery.of(context).size.width,
+      child: Align(
+        alignment: Alignment.center,
+        child: Text(
+          text,
+          style: AppTextStyles.header1.copyWith(
+            color: textColor,
+            fontWeight: FontWeight.normal,
+          ),
+          textAlign: TextAlign.center,
+        ),
+      ),
+    );
+
+    return topBar;
+  }
+
+  Widget _buildBottomBar(DetailsViewModel viewModel) {
+    final labelStyle = AppTextStyles.body2.copyWith(color: AppColors.darkGray);
+    final valueStyle = AppTextStyles.body2.copyWith(color: AppColors.black);
+
+    final speedLabel = Text("Speed: ", style: labelStyle);
+    final speedValue = Text("${viewModel.currentSpeedText} km/h", style: valueStyle);
+    final speedText = Row(
+      children: <Widget>[
+        speedLabel,
+        speedValue,
+      ],
+    );
+
+    final elapsedTimeLabel = Text("Elapsed Time: ", style: labelStyle);
+    final elapsedTimeValue = Text(viewModel.connectedToBroker
+      ? viewModel.getDurationDisplay() : "00:00:00", style: valueStyle);
+    final elapsedTimeText = Row(
+      children: <Widget>[
+        elapsedTimeLabel,
+        elapsedTimeValue,
+      ],
+    );
+
+    final contents = Column(
+      mainAxisSize: MainAxisSize.min,
+      children: <Widget>[
+        speedText,
+        elapsedTimeText,
+      ],
+    );
+
+    final bottomBar = Container(
+      padding: AppEdges.smallAll,
+      child: contents,
+    );
+
+    return bottomBar;
+  }
+
+  void _startGpsListeners(Store<AppState> store) {
+    _directionStream = FlutterCompass.events
+      .listen((double direction) {
+          final userVehicle = store.state.map.userVehicle;
+
+          if (userVehicle.point == null) {
+            return;
+          }
+
+          final point = userVehicle.point
+            .rebuild((b) => b
+              ..heading = direction
+              ..dateTime = DateTime.now().toUtc());
+          store.dispatch(UpdateUserGpsPoint(point));
+        },
+        cancelOnError: true,
+      );
+
+    _gpsPointStream = Geolocator.instance
+      .getEvents()
+      .listen((GpsPointDto point) {
+          store.dispatch(UpdateUserGpsPoint(point));
+        },
+        cancelOnError: true,
+      );
+  }
+}
+
+Widget _buildPlayButton(BuildContext context, Store<AppState> store, MapViewModel viewModel) {
+  Widget playButton;
+
+  final VoidCallback connectCallback = () {
+    if (viewModel.userVehicle.id.isEmpty) {
+      showDialog(
+        context: context,
+        builder: (_) => UserIdentifierDialog(viewModel.broker),
+      );
+      return;
+    }
+
+    store.dispatch(ConnectToMqttBroker(
+      viewModel.address,
+      viewModel.userVehicle.id,
+      username: viewModel.username,
+      password: viewModel.password,
+    ));
+  };
+
+  final VoidCallback disconnectCallback =
+    () => store.dispatch(DisconnectFromMqttBroker());
+
+  final loading = CircularProgressIndicator(
+    valueColor: AlwaysStoppedAnimation(AppColors.white),
+  );
+
+  switch (viewModel.connectionState) {
+    case MqttConnectionState.connected:
+      playButton = FloatingActionButton(
+        heroTag: "playButton",
+        backgroundColor: AppColors.blue,
+        onPressed: disconnectCallback,
+        child: Icon(Icons.stop, color: AppColors.white),
+      );
+    break;
+    case MqttConnectionState.disconnected:
+      playButton = FloatingActionButton(
+        heroTag: "playButton",
+        backgroundColor: AppColors.blue,
+        onPressed: viewModel.hasUserPoint ? connectCallback : null,
+        child: Icon(Icons.play_arrow, color: AppColors.white),
+      );
+    break;
+    case MqttConnectionState.faulted:
+      playButton = FloatingActionButton(
+        heroTag: "playButton",
+        backgroundColor: AppColors.blue,
+        onPressed: connectCallback,
+        child: Icon(Icons.play_arrow, color: AppColors.white),
+      );
+    break;
+    default:
+      playButton = FloatingActionButton(
+        heroTag: "playButton",
+        backgroundColor: AppColors.gray,
+        onPressed: null,
+        child: Padding(
+          padding: AppEdges.smallAll,
+          child: loading,
+        ),
+      );
+  }
+
+  return playButton;
 }

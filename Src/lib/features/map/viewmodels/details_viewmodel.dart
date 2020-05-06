@@ -38,4 +38,19 @@ class DetailsViewModel {
   }
 
   String get accuracyText => _state.userVehicle.point?.accuracy?.toStringAsFixed(2) ?? "0";
+
+  String getDurationDisplay() {
+    final diff = DateTime.now().difference(startTime);
+    final milliseconds = diff.inMilliseconds;
+
+    final seconds = (milliseconds / 1000).truncate();
+    final minutes = (seconds / 60).truncate();
+    final hours = (minutes / 60).truncate();
+
+    final ss = (seconds % 60).toStringAsFixed(0).padLeft(2, "0");
+    final mm = (minutes % 60).toStringAsFixed(0).padLeft(2, "0");
+    final hh = hours.toStringAsFixed(0).padLeft(2, "0");
+
+    return "$hh:$mm:$ss";
+  }
 }

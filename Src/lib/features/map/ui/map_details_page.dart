@@ -443,10 +443,7 @@ class _DetailsBarState extends State<_DetailsBar> with TickerProviderStateMixin 
         return;
       }
 
-      setState(() {
-        final diff = DateTime.now().difference(widget.viewModel.startTime);
-        _timeDisplay = _getRideDurationDisplay(diff.inMilliseconds);
-      });
+      setState(() => _timeDisplay = widget.viewModel.getDurationDisplay());
     });
   }
 
@@ -559,17 +556,6 @@ class _DetailsBarState extends State<_DetailsBar> with TickerProviderStateMixin 
         ],
       ),
     );
-
-  String _getRideDurationDisplay(int milliseconds) {
-    var seconds = (milliseconds / 1000).truncate();
-    var minutes = (seconds / 60).truncate();
-    var hours = (minutes / 60).truncate();
-
-    var ss = (seconds % 60).toStringAsFixed(0).padLeft(2, "0");
-    var mm = (minutes % 60).toStringAsFixed(0).padLeft(2, "0");
-    var hh = hours.toStringAsFixed(0).padLeft(2, "0");
-    return "$hh:$mm:$ss";
-  }
 
   @override
   void dispose() {
