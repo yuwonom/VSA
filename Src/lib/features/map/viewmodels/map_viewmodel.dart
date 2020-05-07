@@ -11,8 +11,9 @@ import 'package:vsa/features/settings/state.dart';
 class MapViewModel {
   static const LatLng BRISBANE_LATLNG = const LatLng(-27.4698, 153.0251);
   
-  static const int USER_VEHICLE_ZINDEX = 6;
-  static const int OTHER_VEHICLE_ZINDEX = 5;
+  static const int USER_VEHICLE_ZINDEX = 7;
+  static const int OTHER_VEHICLE_ZINDEX = 6;
+  static const int SECURITY_LINE_ZINDEX = 5;
   static const int USER_ACCURACY_ZINDEX = 4;
   static const int OTHER_ACCURACY_ZINDEX = 3;
   static const int TRAFFIC_ZINDEX = 2;
@@ -39,6 +40,10 @@ class MapViewModel {
   BuiltMap<String, VehicleDto> get otherVehicles => _mapState.otherVehicles;
   
   bool get hasOtherVehicles => otherVehicles.isNotEmpty;
+
+  String get closestOtherVehicleId => _mapState.closestOtherVehicleId;
+
+  LatLng get closestOtherVehiclePoint => otherVehicles[closestOtherVehicleId].point.toLatLng();
 
   BuiltList<IntersectionDto> get intersections => _mapState.intersections;
   

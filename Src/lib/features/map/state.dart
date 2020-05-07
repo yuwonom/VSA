@@ -35,6 +35,8 @@ abstract class MapState implements Built<MapState, MapStateBuilder> {
   BuiltList<IntersectionDto> get intersections;
 
   @nullable
+  String get closestOtherVehicleId;
+  @nullable
   String get currentIntersectionId;
 
   bool get isBusy;

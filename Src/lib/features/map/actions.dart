@@ -157,11 +157,21 @@ class LoadIntersectionsFailed {
 }
 
 @immutable
-class SetCurrentIntersectionId {
-  SetCurrentIntersectionId(this.id);
+class UpdateClosestOtherVehicleId {
+  UpdateClosestOtherVehicleId(this.id);
 
   final String id;
 
   @override
-  String toString() => "SetCurrentIntersectionId $id";
+  String toString() => "UpdateClosestOtherVehicleId $id";
+}
+
+@immutable
+class UpdateCurrentIntersectionId {
+  UpdateCurrentIntersectionId(this.id);
+
+  final String id;
+
+  @override
+  String toString() => "UpdateCurrentIntersectionId $id";
 }

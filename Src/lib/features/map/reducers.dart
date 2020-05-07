@@ -20,7 +20,8 @@ final Reducer<MapState> mapStateReducer = combineReducers([
     TypedReducer<MapState, UpdateOtherVehiclesProperties>(_updateOtherVehiclesPropertiesReducer),
     TypedReducer<MapState, LoadIntersectionsSuccessful>(_loadIntersectionsSuccessfulReducer),
     TypedReducer<MapState, LoadIntersectionsFailed>(_loadIntersectionsFailedReducer),
-    TypedReducer<MapState, SetCurrentIntersectionId>(_setCurrentIntersectionIdReducer),
+    TypedReducer<MapState, UpdateClosestOtherVehicleId>(_updateClosestOtherVehicleIdReducer),
+    TypedReducer<MapState, UpdateCurrentIntersectionId>(_updateCurrentIntersectionIdReducer),
     TypedReducer<MapState, UpdateVehicleId>(_updateVehicleIdReducer),
     TypedReducer<MapState, UpdateVehicleName>(_updateVehicleNameReducer),
     TypedReducer<MapState, UpdateVehicleType>(_updateVehicleTypeReducer),
@@ -104,7 +105,10 @@ MapState _loadIntersectionsSuccessfulReducer(MapState state, LoadIntersectionsSu
 MapState _loadIntersectionsFailedReducer(MapState state, LoadIntersectionsFailed action) => state.rebuild((b) => b
   ..exception = action.exception);
 
-MapState _setCurrentIntersectionIdReducer(MapState state, SetCurrentIntersectionId action) => state.rebuild((b) => b
+MapState _updateClosestOtherVehicleIdReducer(MapState state, UpdateClosestOtherVehicleId action) => state.rebuild((b) => b
+  ..closestOtherVehicleId = action.id);
+
+MapState _updateCurrentIntersectionIdReducer(MapState state, UpdateCurrentIntersectionId action) => state.rebuild((b) => b
   ..currentIntersectionId = action.id);
 
 MapState _updateVehicleIdReducer(MapState state, UpdateVehicleId action) => state.rebuild((b) => b

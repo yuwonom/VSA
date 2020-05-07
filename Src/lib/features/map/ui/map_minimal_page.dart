@@ -261,6 +261,7 @@ class _CarPageState extends State<_CarPage> {
 
   Widget _buildMap(Store<AppState> store, MapViewModel viewModel) {
     final markers = Set<Marker>();
+    final polylines = Set<Polyline>();
 
     if (viewModel.hasUserPoint) {
       _buildVehicleMarker(viewModel.userVehicle, true)
@@ -272,6 +273,11 @@ class _CarPageState extends State<_CarPage> {
         _buildVehicleMarker(other, false)
           ..then((Marker marker) => setState(() => markers.add(marker)));
       });
+    }
+
+    if (viewModel.connectionState == MqttConnectionState.connected &&
+      viewModel.hasOtherVehicles && viewModel.securityLevel > SecurityLevelDto.controlled) {
+        polylines.add(_buildSecurityLine(viewModel));
     }
     
     final map = GoogleMap(
@@ -319,6 +325,7 @@ class _CarPageState extends State<_CarPage> {
       },
       mapType: MapType.normal,
       markers: markers,
+      polylines: polylines,
       compassEnabled: false,
       myLocationEnabled: false,
       myLocationButtonEnabled: false,
@@ -350,6 +357,27 @@ class _CarPageState extends State<_CarPage> {
     );
 
     return marker;
+  }
+
+  Polyline _buildSecurityLine(MapViewModel viewModel) {
+    final userPoint = viewModel.userPoint;
+    final otherPoint = viewModel.closestOtherVehiclePoint;
+
+    final polyline = Polyline(
+      polylineId: PolylineId(viewModel.closestOtherVehicleId),
+      color: AppColors.red.withAlpha(100),
+      patterns: <PatternItem>[
+        PatternItem.dash(50.0),
+        PatternItem.gap(20.0),
+      ],
+      points: <LatLng>[
+        userPoint,
+        otherPoint,
+      ],
+      zIndex: MapViewModel.SECURITY_LINE_ZINDEX,
+    );
+
+    return polyline;
   }
 
   void _stickMap(GpsPointDto point) {

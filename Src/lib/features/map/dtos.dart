@@ -129,7 +129,7 @@ class VehicleTypeDto extends EnumClass {
   static VehicleTypeDto valueOf(String name) => _$vehicleTypeDtoValueOf(name);
 }
 
-class SecurityLevelDto extends EnumClass {
+class SecurityLevelDto extends EnumClass implements Comparable<SecurityLevelDto> {
   static const SecurityLevelDto unknown = _$unknown;
   static const SecurityLevelDto secured = _$secured;
   static const SecurityLevelDto controlled = _$controlled;
@@ -160,6 +160,32 @@ class SecurityLevelDto extends EnumClass {
         return _$unknown;
     }
   }
+
+  int get level {
+    switch (this) {
+      case unknown:
+        return 0;
+      case secured:
+        return 1;
+      case controlled:
+        return 2;
+      case cautious:
+        return 3;
+      case dangerous:
+        return 4;
+      case critical:
+        return 5;
+      default:
+        throw Error();
+    }
+  }
+
+  @override
+  int compareTo(SecurityLevelDto other) => level.compareTo(other.level);
+
+  bool operator <(SecurityLevelDto other) => compareTo(other) < 0;
+
+  bool operator >(SecurityLevelDto other) => compareTo(other) > 0;
 }
 
 abstract class IntersectionDto implements Built<IntersectionDto, IntersectionDtoBuilder> {

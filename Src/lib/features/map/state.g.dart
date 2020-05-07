@@ -22,6 +22,8 @@ class _$MapState extends MapState {
   @override
   final BuiltList<IntersectionDto> intersections;
   @override
+  final String closestOtherVehicleId;
+  @override
   final String currentIntersectionId;
   @override
   final bool isBusy;
@@ -39,6 +41,7 @@ class _$MapState extends MapState {
       this.recordedPoints,
       this.otherVehicles,
       this.intersections,
+      this.closestOtherVehicleId,
       this.currentIntersectionId,
       this.isBusy,
       this.exception})
@@ -84,6 +87,7 @@ class _$MapState extends MapState {
         recordedPoints == other.recordedPoints &&
         otherVehicles == other.otherVehicles &&
         intersections == other.intersections &&
+        closestOtherVehicleId == other.closestOtherVehicleId &&
         currentIntersectionId == other.currentIntersectionId &&
         isBusy == other.isBusy &&
         exception == other.exception;
@@ -99,13 +103,15 @@ class _$MapState extends MapState {
                         $jc(
                             $jc(
                                 $jc(
-                                    $jc($jc(0, userVehicle.hashCode),
-                                        connectionState.hashCode),
-                                    securityLevel.hashCode),
-                                startTime.hashCode),
-                            recordedPoints.hashCode),
-                        otherVehicles.hashCode),
-                    intersections.hashCode),
+                                    $jc(
+                                        $jc($jc(0, userVehicle.hashCode),
+                                            connectionState.hashCode),
+                                        securityLevel.hashCode),
+                                    startTime.hashCode),
+                                recordedPoints.hashCode),
+                            otherVehicles.hashCode),
+                        intersections.hashCode),
+                    closestOtherVehicleId.hashCode),
                 currentIntersectionId.hashCode),
             isBusy.hashCode),
         exception.hashCode));
@@ -121,6 +127,7 @@ class _$MapState extends MapState {
           ..add('recordedPoints', recordedPoints)
           ..add('otherVehicles', otherVehicles)
           ..add('intersections', intersections)
+          ..add('closestOtherVehicleId', closestOtherVehicleId)
           ..add('currentIntersectionId', currentIntersectionId)
           ..add('isBusy', isBusy)
           ..add('exception', exception))
@@ -169,6 +176,11 @@ class MapStateBuilder implements Builder<MapState, MapStateBuilder> {
   set intersections(ListBuilder<IntersectionDto> intersections) =>
       _$this._intersections = intersections;
 
+  String _closestOtherVehicleId;
+  String get closestOtherVehicleId => _$this._closestOtherVehicleId;
+  set closestOtherVehicleId(String closestOtherVehicleId) =>
+      _$this._closestOtherVehicleId = closestOtherVehicleId;
+
   String _currentIntersectionId;
   String get currentIntersectionId => _$this._currentIntersectionId;
   set currentIntersectionId(String currentIntersectionId) =>
@@ -193,6 +205,7 @@ class MapStateBuilder implements Builder<MapState, MapStateBuilder> {
       _recordedPoints = _$v.recordedPoints?.toBuilder();
       _otherVehicles = _$v.otherVehicles?.toBuilder();
       _intersections = _$v.intersections?.toBuilder();
+      _closestOtherVehicleId = _$v.closestOtherVehicleId;
       _currentIntersectionId = _$v.currentIntersectionId;
       _isBusy = _$v.isBusy;
       _exception = _$v.exception;
@@ -227,6 +240,7 @@ class MapStateBuilder implements Builder<MapState, MapStateBuilder> {
               recordedPoints: recordedPoints.build(),
               otherVehicles: otherVehicles.build(),
               intersections: intersections.build(),
+              closestOtherVehicleId: closestOtherVehicleId,
               currentIntersectionId: currentIntersectionId,
               isBusy: isBusy,
               exception: exception);

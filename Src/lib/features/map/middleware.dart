@@ -54,7 +54,7 @@ class MqttIntegration {
         TypedMiddleware<AppState, PublishMessageToMqttBroker>(_handlePublishMessageToMqttBroker),
         TypedMiddleware<AppState, ListenToMqttBroker>(_listenToMqttBroker),
         TypedMiddleware<AppState, RecordUserGpsPoint>(_handleRecordUserGpsPoint),
-        TypedMiddleware<AppState, SetCurrentIntersectionId>(_handleSetCurrentIntersectionId),
+        TypedMiddleware<AppState, UpdateCurrentIntersectionId>(_handleSetCurrentIntersectionId),
       ];
 
   StreamSubscription<MqttMessage> _mqttListener;
@@ -251,7 +251,7 @@ class MqttIntegration {
     next(action);
   }
 
-  void _handleSetCurrentIntersectionId(Store<AppState> store, SetCurrentIntersectionId action, NextDispatcher next) {
+  void _handleSetCurrentIntersectionId(Store<AppState> store, UpdateCurrentIntersectionId action, NextDispatcher next) {
     void _syncIntersectionSubscription(String topic, String oldId, String newId) {
       if (oldId != null && oldId != newId) {
         api.unsubscribe(["$topic/$oldId"]);
@@ -303,26 +303,28 @@ class CollisionCheck {
     final userVehicle = store.state.map.userVehicle;
     final userPoint = userVehicle.point;
     
-    final closestNode = store.state.map.otherVehicles.values
+    final closestOtherVehicle = store.state.map.otherVehicles.values
       .reduce((VehicleDto node, VehicleDto next) => 
         GpsHelper.distance(node.point, userPoint) <= GpsHelper.distance(next.point, userPoint) ? node : next);
-    final distance = GpsHelper.distance(closestNode.point, userPoint);
+    final distance = GpsHelper.distance(closestOtherVehicle.point, userPoint);
 
     const SAFE_DISTANCE = 10.0;
     var securityLevel = SecurityLevelDto.unknown;
-    if (distance <= userVehicle.dimension.average + closestNode.dimension.average) {
+    if (distance <= userVehicle.dimension.average + closestOtherVehicle.dimension.average) {
       securityLevel = SecurityLevelDto.withLevel(5);
-    } else if (distance <= userVehicle.dimension.average + closestNode.point.accuracy) {
+    } else if (distance <= userVehicle.dimension.average + closestOtherVehicle.point.accuracy) {
       securityLevel = SecurityLevelDto.withLevel(4);
-    } else if (distance <= userPoint.accuracy + closestNode.point.accuracy) {
+    } else if (distance <= userPoint.accuracy + closestOtherVehicle.point.accuracy) {
       securityLevel = SecurityLevelDto.withLevel(3);
-    } else if (distance <= userPoint.accuracy + closestNode.point.accuracy + SAFE_DISTANCE) {
+    } else if (distance <= userPoint.accuracy + closestOtherVehicle.point.accuracy + SAFE_DISTANCE) {
       securityLevel = SecurityLevelDto.withLevel(2);
     } else {
       securityLevel = SecurityLevelDto.withLevel(1);
     }
 
-    store.dispatch(UpdateSecurityLevel(securityLevel));
+    store
+      ..dispatch(UpdateSecurityLevel(securityLevel))
+      ..dispatch(UpdateClosestOtherVehicleId(closestOtherVehicle.id));
   }
 
   void _handleCheckIntersectionsCollision(Store<AppState> store, UpdateUserGpsPoint action, NextDispatcher next) {
@@ -338,7 +340,7 @@ class CollisionCheck {
     final id = collidedIntersections.length > 0 
       ? collidedIntersections.first.id : null;
 
-    store.dispatch(SetCurrentIntersectionId(id));
+    store.dispatch(UpdateCurrentIntersectionId(id));
     next(action);
   }
 }
