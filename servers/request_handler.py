@@ -262,9 +262,9 @@ client.loop_start()
 while not client.connected_flag:
 	time.sleep(1)
 
-#subscribing vsa/#
-client.subscribe("vsa/#")
-print("Subscribing to every topic under " + "vsa/#")
+#subscribing VSA/#
+client.subscribe("VSA/#")
+print("Subscribing to every topic under " + "VSA/#")
 
 #register threads
 level_a_req_thread = Thread(target=topic_level_a_req_callback)
