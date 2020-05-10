@@ -19,6 +19,8 @@ TOPIC_VEHSIM_REQ = "VSA/request/vehSim/reqs"
 TOPIC_VEHSIM_RETURN = "VSA/request/vehSim/return"
 TOPIC_VEHPROP_REQ = "VSA/request/vehProp/reqs"
 TOPIC_VEHPROP_RETURN = "VSA/request/vehProp/return"
+TOPIC_INTERSECTIONS_REQ = "VSA/request/intersections/reqs"
+TOPIC_INTERSECTIONS_RETURN = "VSA/request/intersections/return"
 
 
 class VehicleType(Enum):
@@ -140,6 +142,17 @@ class Feature(object):
 		
 		if (json["properties"]["information"] is not None):
 			self.information = json["properties"]["information"]
+
+
+class Intersection(object):
+	id = ""
+	coordinate = Geolocation(0,0)
+	radius = 0.0
+
+	def __init__(self, id, latitude, longitude, radius):
+		self.id = id
+		self.coordinate = Geolocation(latitude, longitude)
+		self.radius = radius
 
 
 def serialize(obj):

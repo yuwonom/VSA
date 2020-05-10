@@ -28,7 +28,6 @@ class _MapPageState extends State<MapPage> {
 
   @override
   Widget build(BuildContext context) => StoreConnector<AppState, MapViewModel>(
-      onInit: (Store<AppState> store) => store.dispatch(LoadIntersections()),
       converter: (Store<AppState> store) => MapViewModel(store.state.map, store.state.settings),
       builder: (BuildContext context, MapViewModel viewModel) => _buildPage(context, StoreProvider.of(context), viewModel),
     );

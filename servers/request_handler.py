@@ -52,7 +52,6 @@ def topic_level_a_vehsim_callback(mqttc, obj, msg):
 		pass
 
 	vehicles[uid].update_status(latitude, longitude, velocity, accuracy, direction, intersection_id)
-	intersections.add(intersection_id)
 	
 def topic_level_a_vehprop_callback(mqttc, obj, msg):
 	payload = str(msg.payload.decode("utf-8"))
@@ -81,7 +80,7 @@ def topic_level_a_req_callback():
 		for intersection in intersections:
 			vehsim_list = []
 
-			detected_vehicles = [veh for veh in list(vehicles.values()) if veh.intersection_id == intersection]
+			detected_vehicles = [veh for veh in list(vehicles.values()) if veh.intersection_id == intersection.id]
 			for vehicle in detected_vehicles:
 				data_id = map_to_string("id", vehicle.uid)
 				data_lng = map_to_string("lng", vehicle.coordinate.longitude)
@@ -94,7 +93,7 @@ def topic_level_a_req_callback():
 				vehsim_list.append("{" + combined + "}")
 
 			vehsim_json = "[" + ",".join(vehsim_list) + "]"
-			client.publish(vsa.TOPIC_LEVEL_A_REQ + "/" + intersection, vehsim_json)
+			client.publish(vsa.TOPIC_LEVEL_A_REQ + "/" + intersection.id, vehsim_json)
 
 	while client.connected_flag:
 		publish_messages()
@@ -230,14 +229,22 @@ def topic_vehprop_req_callback(mqttc, obj, msg):
 	vehprop_json = "[" + ",".join(vehprop_list) + "]"
 	client.publish(vsa.TOPIC_VEHPROP_RETURN + "/" + veh_id, vehprop_json)
 
+def topic_intersections_req_callback(mqttc, obj, msg):
+	user_id = msg.topic.split('/')[-1]
+	client.publish(vsa.TOPIC_INTERSECTIONS_RETURN + "/" + user_id, json.dumps(intersections, default = vsa.serialize))
+
 # ------------------------------------------------------------------------ #	
 	
 print("===== " + NAME + " v" + VERSION + " =====")
 
 #global variables
 vehicles = {}
-intersections = set()
 features = []
+intersections = [
+	vsa.Intersection("1",-27.471962,153.027476,15),
+	vsa.Intersection("2",-27.473975,153.026548,50),
+	vsa.Intersection("3",-27.479467,153.006698,100)
+]
 
 #new client
 client = mqtt.Client()
@@ -253,6 +260,7 @@ client.message_callback_add(vsa.TOPIC_VEHSIM + "/#", topic_vehsim_callback)
 client.message_callback_add(vsa.TOPIC_VEHPROP + "/#", topic_vehprop_callback)
 client.message_callback_add(vsa.TOPIC_VEHSIM_REQ + "/#", topic_vehsim_req_callback)
 client.message_callback_add(vsa.TOPIC_VEHPROP_REQ + "/#", topic_vehprop_req_callback)
+client.message_callback_add(vsa.TOPIC_INTERSECTIONS_REQ + "/#", topic_intersections_req_callback)
 
 #connecting to broker
 print("Connecting to broker...")

@@ -191,11 +191,10 @@ class SecurityLevelDto extends EnumClass implements Comparable<SecurityLevelDto>
 abstract class IntersectionDto implements Built<IntersectionDto, IntersectionDtoBuilder> {
   factory IntersectionDto([void updates(IntersectionDtoBuilder b)]) = _$IntersectionDto;
 
-  factory IntersectionDto.fromLine(String line) {
-    final args = line.split(',');
-    final id = args[0];
-    final latLng = LatLng(double.parse(args[1]), double.parse(args[2]));
-    final radius = double.parse(args[3]);
+  factory IntersectionDto.fromJson(Map<String, dynamic> json) {
+    final id = json["id"];
+    final latLng = LatLng(json["coordinate"]["latitude"], json["coordinate"]["longitude"]);
+    final radius = json["radius"].toDouble();
     return _$IntersectionDto._(
       id: id,
       latLng: latLng,

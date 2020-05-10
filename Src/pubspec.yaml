@@ -36,7 +36,6 @@ flutter:
   uses-material-design: true
   assets:
     # files
-    - assets/files/intersections.csv
     - assets/files/simple_map_style.txt
       
     # images

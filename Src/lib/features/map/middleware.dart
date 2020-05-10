@@ -4,7 +4,6 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:built_collection/built_collection.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:redux/redux.dart';
@@ -21,7 +20,6 @@ List<Middleware<AppState>> getMiddleware(Geolocator geolocator, MqttApi mqttApi)
       LocalGpsIntegration(geolocator).getMiddlewareBindings(),
       MqttIntegration(mqttApi).getMiddlewareBindings(),
       CollisionCheck().getMiddlewareBindings(),
-      IntersectionsFileLoad().getMiddlewareBindings(),
     ].expand((x) => x).toList();
 
 @immutable
@@ -82,16 +80,22 @@ class MqttIntegration {
 
   void _handleConnectToMqttBrokerSuccessful(Store<AppState> store, ConnectToMqttBrokerSuccessful action, NextDispatcher next) {
     void _publishProperties(SettingsState settings, VehicleDto user) {
+      // Basic messages
       if (settings.isActiveBasicVehicle) {
         final topic = "${settings.propertiesPublishTopic}/${user.id}";
         final message = MqttApi.propertiesMessage(user.id, user.name, user.type, user.dimension);
         store.dispatch(PublishMessageToMqttBroker(topic, message));
       }
+
+      // Level A messages
       if (settings.isActiveLevelA && user.type == VehicleTypeDto.cycle) {
         final topic = "${settings.levelAPropertiesPublishTopic}";
         final message = MqttApi.propertiesMessage(user.id, user.name, user.type, user.dimension);
         store.dispatch(PublishMessageToMqttBroker(topic, message));
       }
+      
+      // Intersection messages
+      store.dispatch(PublishMessageToMqttBroker("${settings.intersectionsRequestPublishTopic}/${user.id}", ""));
       
       store.dispatch(RecordUserGpsPoint(user.point));
     }
@@ -101,12 +105,18 @@ class MqttIntegration {
         "${settings.propertiesRequestSubscribeTopic}/${user.id}",
       ];
       
+      // Basic messages
       if (settings.isActiveBasicVehicle) {
         topics.add("${settings.statusRequestSubscribeTopic}/${user.id}");
       }
+
+      // Level A messages
       if (settings.isActiveBasicTraffic) {
         topics.add("${settings.trafficRequestSubscribeTopic}/${user.id}");
       }
+
+      // Intersection messages
+      topics.add("${settings.intersectionsRequestSubscribeTopic}/${user.id}");
 
       if (topics.isNotEmpty) {
         api.subscribe(topics);
@@ -131,8 +141,8 @@ class MqttIntegration {
     final settingsState = store.state.settings;
     const requestInterval = const Duration(milliseconds: 100);
 
-    _publishProperties(settingsState, user);
     _subscribeTopics(settingsState, user);
+    _publishProperties(settingsState, user);
     _startPeriodicRequests(settingsState, _nearbyRequestTimer, requestInterval, user);
     
     store.dispatch(ListenToMqttBroker());
@@ -205,6 +215,14 @@ class MqttIntegration {
       _handleStatusRequestCallback(data);
     }
 
+    void _handleIntersectionsRequestCallback(String data) {
+      final intersectionsJson = jsonDecode(data) as List;
+      final intersections = intersectionsJson
+        .map((json) => IntersectionDto.fromJson(json))
+        .toList();
+      store.dispatch(LoadIntersections(intersections.build()));
+    }
+
     void _handleRequestCallback(MqttMessage message) {
       final publishMessage = message as MqttPublishMessage;
       if (message == null) {
@@ -223,6 +241,8 @@ class MqttIntegration {
         _handleTrafficRequestCallback(data);
       } else if (topic.startsWith(settingsState.levelAIntersectionSubscribeTopic)) {
         _handleLevelAIntersectionCallback(data);
+      } else if (topic.startsWith(settingsState.intersectionsRequestSubscribeTopic)) {
+        _handleIntersectionsRequestCallback(data);
       }
     }
 
@@ -341,37 +361,6 @@ class CollisionCheck {
       ? collidedIntersections.first.id : null;
 
     store.dispatch(UpdateCurrentIntersectionId(id));
-    next(action);
-  }
-}
-
-@immutable
-class IntersectionsFileLoad {
-  const IntersectionsFileLoad();
-
-  List<Middleware<AppState>> getMiddlewareBindings() => [
-        TypedMiddleware<AppState, LoadIntersections>(_handleLoadIntersections),
-      ];
-
-  void _handleLoadIntersections(Store<AppState> store, LoadIntersections action, NextDispatcher next) {
-    BuiltList<IntersectionDto> _processData(String data) {
-      final lines = data.split('\n')
-          ..removeAt(0);
-      final intersections = lines.map((String line) => IntersectionDto.fromLine(line));
-      return BuiltList<IntersectionDto>(intersections);
-    }
-    
-    void _loadIntersections(Store<AppState> store, LoadIntersections action) async {
-      try {
-        final data = await rootBundle.loadString("assets/files/intersections.csv");
-        final intersections = _processData(data);
-        store.dispatch(LoadIntersectionsSuccessful(intersections));
-      } on Exception catch (exception) {
-        store.dispatch(LoadIntersectionsFailed(ActionException(exception, action)));
-      }
-    }
-    
-    _loadIntersections(store, action);
     next(action);
   }
 }

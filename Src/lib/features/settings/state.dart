@@ -33,6 +33,8 @@ abstract class SettingsState implements Built<SettingsState, SettingsStateBuilde
     statusRequestSubscribeTopic: "VSA/request/vehSim/return",
     trafficRequestPublishTopic: "VSA/traffic/nearby/reqs",
     trafficRequestSubscribeTopic: "VSA/traffic/nearby/return",
+    intersectionsRequestPublishTopic: "VSA/request/intersections/reqs",
+    intersectionsRequestSubscribeTopic: "VSA/request/intersections/return",
     isBusy: false,
   );
 
@@ -59,6 +61,9 @@ abstract class SettingsState implements Built<SettingsState, SettingsStateBuilde
   String get statusRequestSubscribeTopic;
   String get trafficRequestPublishTopic;
   String get trafficRequestSubscribeTopic;
+
+  String get intersectionsRequestPublishTopic;
+  String get intersectionsRequestSubscribeTopic;
 
   bool get isBusy;
   @nullable

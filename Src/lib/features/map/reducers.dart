@@ -18,8 +18,7 @@ final Reducer<MapState> mapStateReducer = combineReducers([
     TypedReducer<MapState, UpdateSecurityLevel>(_updateSecurityLevelReducer),
     TypedReducer<MapState, UpdateOtherVehiclesStatus>(_updateOtherVehiclesStatusReducer),
     TypedReducer<MapState, UpdateOtherVehiclesProperties>(_updateOtherVehiclesPropertiesReducer),
-    TypedReducer<MapState, LoadIntersectionsSuccessful>(_loadIntersectionsSuccessfulReducer),
-    TypedReducer<MapState, LoadIntersectionsFailed>(_loadIntersectionsFailedReducer),
+    TypedReducer<MapState, LoadIntersections>(_loadIntersectionsReducer),
     TypedReducer<MapState, UpdateClosestOtherVehicleId>(_updateClosestOtherVehicleIdReducer),
     TypedReducer<MapState, UpdateCurrentIntersectionId>(_updateCurrentIntersectionIdReducer),
     TypedReducer<MapState, UpdateVehicleId>(_updateVehicleIdReducer),
@@ -53,7 +52,8 @@ MapState _disconnectFromMqttBrokerReducer(MapState state, DisconnectFromMqttBrok
   ..connectionState = MqttConnectionState.disconnected
   ..startTime = null
   ..recordedPoints.clear()
-  ..otherVehicles.clear());
+  ..otherVehicles.clear()
+  ..intersections.clear());
 
 MapState _updateSecurityLevelReducer(MapState state, UpdateSecurityLevel action) => state.rebuild((b) => b
   ..securityLevel = action.level);
@@ -99,11 +99,8 @@ MapState _updateOtherVehiclesPropertiesReducer(MapState state, UpdateOtherVehicl
   return state.rebuild((b) => b..otherVehicles.replace(newOtherVehiclesBuiltMap));
 }
 
-MapState _loadIntersectionsSuccessfulReducer(MapState state, LoadIntersectionsSuccessful action) => state.rebuild((b) => b
+MapState _loadIntersectionsReducer(MapState state, LoadIntersections action) => state.rebuild((b) => b
   ..intersections.replace(action.intersections));
-
-MapState _loadIntersectionsFailedReducer(MapState state, LoadIntersectionsFailed action) => state.rebuild((b) => b
-  ..exception = action.exception);
 
 MapState _updateClosestOtherVehicleIdReducer(MapState state, UpdateClosestOtherVehicleId action) => state.rebuild((b) => b
   ..closestOtherVehicleId = action.id);
