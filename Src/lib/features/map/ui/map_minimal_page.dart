@@ -12,12 +12,12 @@ import 'package:mqtt_client/mqtt_client.dart';
 import 'package:redux/redux.dart';
 import 'package:vsa/features/map/actions.dart';
 import 'package:vsa/features/map/dtos.dart';
-import 'package:vsa/features/map/geolocator.dart';
 import 'package:vsa/features/map/ui/user_identifier_dialog.dart';
 import 'package:vsa/features/map/viewmodels/details_viewmodel.dart';
 import 'package:vsa/features/map/viewmodels/map_viewmodel.dart';
 import 'package:vsa/state.dart';
 import 'package:vsa/themes/theme.dart';
+import 'package:vsa/utility/geolocator.dart';
 
 class MapMinimalPage extends StatelessWidget {
   @override
@@ -108,11 +108,11 @@ class _CarPageState extends State<_CarPage> {
       switch (viewModel.securityLevel) {
         case (SecurityLevelDto.secured):
           barColor = AppColors.green;
-          text = "Connected to broker service.\nPlease drive safely";
+          text = "Connected to broker service.\nPlease drive safely.";
           break;
         case (SecurityLevelDto.controlled):
           barColor = AppColors.lightGreen;
-          text = "Connected to broker service.\nPlease drive safely";
+          text = "Connected to broker service.\nPlease drive safely.";
           break;
         case (SecurityLevelDto.cautious):
           barColor = AppColors.yellow;

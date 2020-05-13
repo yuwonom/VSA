@@ -1,17 +1,19 @@
 /// Authored by `@yuwonom (Michael Yuwono)`
 
+import 'package:flutter/material.dart';
+import 'package:flutter_redux/flutter_redux.dart';
+import 'package:redux/redux.dart';
 import 'package:vsa/features/main_page.dart';
-import 'package:vsa/features/map/geolocator.dart';
-import 'package:vsa/features/map/mqtt_api.dart';
 import 'package:vsa/globals.dart';
 import 'package:vsa/middleware.dart';
 import 'package:vsa/reducers.dart';
 import 'package:vsa/state.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_redux/flutter_redux.dart';
-import 'package:redux/redux.dart';
+import 'package:vsa/utility/geolocator.dart';
+import 'package:vsa/utility/mqtt_api.dart';
+import 'package:vsa/utility/text_to_speech.dart';
 
-ApplicationInformation createApplicationInformation(Geolocator geolocator, MqttApi mqttApi) {
+ApplicationInformation createApplicationInformation(
+    Geolocator geolocator, MqttApi mqttApi, TextToSpeech tts) {
   final appKey = GlobalKey(debugLabel: "app");
   final navigatorKey = GlobalKey<NavigatorState>(debugLabel: "navigator");
   final navigatorObserver = CompositeNavigatorObserver();
@@ -24,7 +26,7 @@ ApplicationInformation createApplicationInformation(Geolocator geolocator, MqttA
     navigatorObservers: [navigatorObserver],
   );
 
-  final middleware = getMiddleware(geolocator, mqttApi, navigatorKey);
+  final middleware = getMiddleware(geolocator, mqttApi, tts, navigatorKey);
 
   final store = Store<AppState>(
     appStateReducer,

@@ -5,7 +5,6 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:redux/redux.dart';
-import 'package:vsa/features/map/actions.dart';
 import 'package:vsa/features/map/ui/map_details_page.dart';
 import 'package:vsa/features/map/ui/map_minimal_page.dart';
 import 'package:vsa/features/map/viewmodels/map_viewmodel.dart';

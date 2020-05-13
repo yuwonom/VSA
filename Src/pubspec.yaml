@@ -24,6 +24,8 @@ dependencies:
   location: ^3.0.2
   flutter_compass: ^0.4.1
 
+  flutter_tts: ^1.2.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

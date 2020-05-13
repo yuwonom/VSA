@@ -9,17 +9,19 @@ import 'package:mqtt_client/mqtt_client.dart';
 import 'package:redux/redux.dart';
 import 'package:vsa/features/map/actions.dart';
 import 'package:vsa/features/map/dtos.dart';
-import 'package:vsa/features/map/geolocator.dart';
-import 'package:vsa/features/map/mqtt_api.dart';
 import 'package:vsa/features/settings/state.dart';
 import 'package:vsa/state.dart';
 import 'package:vsa/utility/action_exception.dart';
+import 'package:vsa/utility/geolocator.dart';
 import 'package:vsa/utility/gps_helper.dart';
+import 'package:vsa/utility/mqtt_api.dart';
+import 'package:vsa/utility/text_to_speech.dart';
 
-List<Middleware<AppState>> getMiddleware(Geolocator geolocator, MqttApi mqttApi) => [
+List<Middleware<AppState>> getMiddleware(Geolocator geolocator, MqttApi mqttApi, TextToSpeech tts) => [
       LocalGpsIntegration(geolocator).getMiddlewareBindings(),
       MqttIntegration(mqttApi).getMiddlewareBindings(),
       CollisionCheck().getMiddlewareBindings(),
+      VoiceWarning(tts).getMiddlewareBindings(),
     ].expand((x) => x).toList();
 
 @immutable
@@ -362,5 +364,34 @@ class CollisionCheck {
 
     store.dispatch(UpdateCurrentIntersectionId(id));
     next(action);
+  }
+}
+
+@immutable
+class VoiceWarning {
+  const VoiceWarning(this.tts) : assert(tts != null);
+
+  final TextToSpeech tts;
+
+  List<Middleware<AppState>> getMiddlewareBindings() => [
+        TypedMiddleware<AppState, ConnectToMqttBroker>(_handleConnectionStateChange),
+        TypedMiddleware<AppState, ConnectToMqttBrokerSuccessful>(_handleConnectionStateChange),
+        TypedMiddleware<AppState, ConnectToMqttBrokerFailed>(_handleConnectionStateChange),
+        TypedMiddleware<AppState, DisconnectFromMqttBroker>(_handleConnectionStateChange),
+      ];
+  
+  void _handleConnectionStateChange(Store<AppState> store, dynamic action, NextDispatcher next) async { 
+    next(action);
+
+    switch (store.state.map.connectionState) {
+      case MqttConnectionState.connected:
+        return tts.speak("Connected");
+      case MqttConnectionState.disconnected:
+        return tts.speak("Disconnected");
+      case MqttConnectionState.faulted:
+        return tts.speak("Failed to connect");
+      default:
+        return;
+    }
   }
 }
