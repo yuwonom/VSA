@@ -378,6 +378,7 @@ class VoiceWarning {
         TypedMiddleware<AppState, ConnectToMqttBrokerSuccessful>(_handleConnectionStateChange),
         TypedMiddleware<AppState, ConnectToMqttBrokerFailed>(_handleConnectionStateChange),
         TypedMiddleware<AppState, DisconnectFromMqttBroker>(_handleConnectionStateChange),
+        TypedMiddleware<AppState, UpdateSecurityLevel>(_handleUpdateSecurityLevel),
       ];
   
   void _handleConnectionStateChange(Store<AppState> store, dynamic action, NextDispatcher next) async { 
@@ -393,5 +394,18 @@ class VoiceWarning {
       default:
         return;
     }
+  }
+
+  void _handleUpdateSecurityLevel(Store<AppState> store, UpdateSecurityLevel action, NextDispatcher next) {
+    final currentLevel = store.state.map.securityLevel;
+    if (currentLevel == action.level) {
+      return;
+    }
+
+    if (currentLevel < SecurityLevelDto.dangerous && action.level > SecurityLevelDto.controlled) {
+      tts.speak("Warning! Possible collision detected");
+    }
+
+    next(action);
   }
 }
