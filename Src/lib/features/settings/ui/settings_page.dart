@@ -7,6 +7,7 @@ import 'package:redux/redux.dart';
 import 'package:vsa/features/map/dtos.dart';
 import 'package:vsa/features/settings/actions.dart';
 import 'package:vsa/features/settings/ui/settings_dialog.dart';
+import 'package:vsa/features/settings/ui/settings_dropdown_dialog.dart';
 import 'package:vsa/features/settings/viewmodels/settings_viewmodel.dart';
 import 'package:vsa/state.dart';
 import 'package:vsa/themes/theme.dart';
@@ -24,7 +25,7 @@ class SettingsPage extends StatelessWidget {
     final profileTileGroup = _buildTileGroup("Profile", <Widget>[
       _buildTile(context, "Identifier", viewModel.vehicleId, UpdateVehicleId, validity: (String value) => value.isNotEmpty),
       _buildTile(context, "Name", viewModel.vehicleName, UpdateVehicleName),
-      _buildTileDropdown("Vehicle Type", viewModel.vehicleType.name, (String value) => store.dispatch(UpdateSettings(UpdateVehicleType, value))),
+      _buildDropdownTile(context, "Vehicle Type", viewModel.vehicleType.name, VehicleTypeDto.values.map<String>((VehicleTypeDto type) => type.name).toList(), (String value) => store.dispatch(UpdateSettings(UpdateVehicleType, value))),
       _buildTile(context, "Dimension", viewModel.dimensionString, UpdateDimension, validity: (String value) {
         final values = value.split(',');
         if (values.length != 4) {
@@ -160,23 +161,28 @@ class SettingsPage extends StatelessWidget {
       ),
     );
   
-  Widget _buildTileDropdown(String title, String value, Function onChanged) => ListTile(
+  Widget _buildDropdownTile(BuildContext context, String title, String value, List<String> values, Function onChanged) => ListTile(
       title: Text(
         title,
         style: AppTextStyles.body1.copyWith(color: AppColors.black),
         overflow: TextOverflow.ellipsis,
         softWrap: true,
       ),
-      trailing: DropdownButton<String>(
-        elevation: 2,
+      subtitle: Text(
+        value,
         style: AppTextStyles.body1.copyWith(color: AppColors.darkGray),
-        value: value,
-        items: VehicleTypeDto.values
-          .map((VehicleTypeDto type) => DropdownMenuItem<String>(
-            value: type.name,
-            child: Text(type.name, style: AppTextStyles.body1.copyWith(color: AppColors.darkGray)),
-          )).toList(),
-        onChanged: onChanged,
+        overflow: TextOverflow.ellipsis,
+        softWrap: true,
+        maxLines: 2,
+      ),
+      onTap: () => showDialog(
+        context: context,
+        builder: (_) => SettingsDropdownDialog(
+          title: title,
+          value: value,
+          values: values,
+          onChanged: onChanged,
+        ),
       ),
     );
 
