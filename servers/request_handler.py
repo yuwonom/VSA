@@ -230,8 +230,16 @@ def topic_vehprop_req_callback(mqttc, obj, msg):
 	client.publish(vsa.TOPIC_VEHPROP_RETURN + "/" + veh_id, vehprop_json)
 
 def topic_intersections_req_callback(mqttc, obj, msg):
-	user_id = msg.topic.split('/')[-1]
-	client.publish(vsa.TOPIC_INTERSECTIONS_RETURN + "/" + user_id, json.dumps(intersections, default = vsa.serialize))
+	veh_id = msg.topic.split('/')[-1]
+	client.publish(vsa.TOPIC_INTERSECTIONS_RETURN + "/" + veh_id, json.dumps(intersections, default = vsa.serialize))
+
+def topic_disconnect_callback(mqttc, obj, msg):
+	veh_id = str(msg.payload.decode("utf-8"))
+	
+	global vehicles
+
+	if veh_id in vehicles:
+		del vehicles[veh_id]
 
 # ------------------------------------------------------------------------ #	
 	
@@ -261,6 +269,7 @@ client.message_callback_add(vsa.TOPIC_VEHPROP + "/#", topic_vehprop_callback)
 client.message_callback_add(vsa.TOPIC_VEHSIM_REQ + "/#", topic_vehsim_req_callback)
 client.message_callback_add(vsa.TOPIC_VEHPROP_REQ + "/#", topic_vehprop_req_callback)
 client.message_callback_add(vsa.TOPIC_INTERSECTIONS_REQ + "/#", topic_intersections_req_callback)
+client.message_callback_add(vsa.TOPIC_DISCONNECT + "/#", topic_disconnect_callback)
 
 #connecting to broker
 print("Connecting to broker...")

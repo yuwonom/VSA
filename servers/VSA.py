@@ -21,6 +21,7 @@ TOPIC_VEHPROP_REQ = "VSA/request/vehProp/reqs"
 TOPIC_VEHPROP_RETURN = "VSA/request/vehProp/return"
 TOPIC_INTERSECTIONS_REQ = "VSA/request/intersections/reqs"
 TOPIC_INTERSECTIONS_RETURN = "VSA/request/intersections/return"
+TOPIC_DISCONNECT = "VSA/disconnect"
 
 
 class VehicleType(Enum):

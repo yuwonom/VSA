@@ -35,6 +35,7 @@ abstract class SettingsState implements Built<SettingsState, SettingsStateBuilde
     trafficRequestSubscribeTopic: "VSA/traffic/nearby/return",
     intersectionsRequestPublishTopic: "VSA/request/intersections/reqs",
     intersectionsRequestSubscribeTopic: "VSA/request/intersections/return",
+    disconnectTopic: "VSA/disconnect",
     isBusy: false,
   );
 
@@ -64,6 +65,8 @@ abstract class SettingsState implements Built<SettingsState, SettingsStateBuilde
 
   String get intersectionsRequestPublishTopic;
   String get intersectionsRequestSubscribeTopic;
+
+  String get disconnectTopic;
 
   bool get isBusy;
   @nullable

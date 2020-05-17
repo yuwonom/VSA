@@ -48,6 +48,8 @@ class _$SettingsState extends SettingsState {
   @override
   final String intersectionsRequestSubscribeTopic;
   @override
+  final String disconnectTopic;
+  @override
   final bool isBusy;
   @override
   final ActionException exception;
@@ -76,6 +78,7 @@ class _$SettingsState extends SettingsState {
       this.trafficRequestSubscribeTopic,
       this.intersectionsRequestPublishTopic,
       this.intersectionsRequestSubscribeTopic,
+      this.disconnectTopic,
       this.isBusy,
       this.exception})
       : super._() {
@@ -153,6 +156,9 @@ class _$SettingsState extends SettingsState {
       throw new BuiltValueNullFieldError(
           'SettingsState', 'intersectionsRequestSubscribeTopic');
     }
+    if (disconnectTopic == null) {
+      throw new BuiltValueNullFieldError('SettingsState', 'disconnectTopic');
+    }
     if (isBusy == null) {
       throw new BuiltValueNullFieldError('SettingsState', 'isBusy');
     }
@@ -193,6 +199,7 @@ class _$SettingsState extends SettingsState {
             other.intersectionsRequestPublishTopic &&
         intersectionsRequestSubscribeTopic ==
             other.intersectionsRequestSubscribeTopic &&
+        disconnectTopic == other.disconnectTopic &&
         isBusy == other.isBusy &&
         exception == other.exception;
   }
@@ -217,24 +224,24 @@ class _$SettingsState extends SettingsState {
                                                                 $jc(
                                                                     $jc(
                                                                         $jc(
-                                                                            $jc($jc($jc($jc(0, broker.hashCode), isActiveLevelA.hashCode), isActiveLevelB.hashCode),
-                                                                                isActiveLevelC.hashCode),
-                                                                            isActiveLevelD.hashCode),
-                                                                        isActiveBasicVehicle.hashCode),
-                                                                    isActiveBasicTraffic.hashCode),
-                                                                levelAPropertiesPublishTopic.hashCode),
-                                                            levelAStatusPublishTopic.hashCode),
-                                                        levelAIntersectionSubscribeTopic.hashCode),
-                                                    propertiesPublishTopic.hashCode),
-                                                statusPublishTopic.hashCode),
-                                            propertiesRequestPublishTopic.hashCode),
-                                        propertiesRequestSubscribeTopic.hashCode),
-                                    statusRequestPublishTopic.hashCode),
-                                statusRequestSubscribeTopic.hashCode),
-                            trafficRequestPublishTopic.hashCode),
-                        trafficRequestSubscribeTopic.hashCode),
-                    intersectionsRequestPublishTopic.hashCode),
-                intersectionsRequestSubscribeTopic.hashCode),
+                                                                            $jc($jc($jc($jc($jc(0, broker.hashCode), isActiveLevelA.hashCode), isActiveLevelB.hashCode), isActiveLevelC.hashCode),
+                                                                                isActiveLevelD.hashCode),
+                                                                            isActiveBasicVehicle.hashCode),
+                                                                        isActiveBasicTraffic.hashCode),
+                                                                    levelAPropertiesPublishTopic.hashCode),
+                                                                levelAStatusPublishTopic.hashCode),
+                                                            levelAIntersectionSubscribeTopic.hashCode),
+                                                        propertiesPublishTopic.hashCode),
+                                                    statusPublishTopic.hashCode),
+                                                propertiesRequestPublishTopic.hashCode),
+                                            propertiesRequestSubscribeTopic.hashCode),
+                                        statusRequestPublishTopic.hashCode),
+                                    statusRequestSubscribeTopic.hashCode),
+                                trafficRequestPublishTopic.hashCode),
+                            trafficRequestSubscribeTopic.hashCode),
+                        intersectionsRequestPublishTopic.hashCode),
+                    intersectionsRequestSubscribeTopic.hashCode),
+                disconnectTopic.hashCode),
             isBusy.hashCode),
         exception.hashCode));
   }
@@ -266,6 +273,7 @@ class _$SettingsState extends SettingsState {
               intersectionsRequestPublishTopic)
           ..add('intersectionsRequestSubscribeTopic',
               intersectionsRequestSubscribeTopic)
+          ..add('disconnectTopic', disconnectTopic)
           ..add('isBusy', isBusy)
           ..add('exception', exception))
         .toString();
@@ -388,6 +396,11 @@ class SettingsStateBuilder
       _$this._intersectionsRequestSubscribeTopic =
           intersectionsRequestSubscribeTopic;
 
+  String _disconnectTopic;
+  String get disconnectTopic => _$this._disconnectTopic;
+  set disconnectTopic(String disconnectTopic) =>
+      _$this._disconnectTopic = disconnectTopic;
+
   bool _isBusy;
   bool get isBusy => _$this._isBusy;
   set isBusy(bool isBusy) => _$this._isBusy = isBusy;
@@ -421,6 +434,7 @@ class SettingsStateBuilder
       _intersectionsRequestPublishTopic = _$v.intersectionsRequestPublishTopic;
       _intersectionsRequestSubscribeTopic =
           _$v.intersectionsRequestSubscribeTopic;
+      _disconnectTopic = _$v.disconnectTopic;
       _isBusy = _$v.isBusy;
       _exception = _$v.exception;
       _$v = null;
@@ -470,6 +484,7 @@ class SettingsStateBuilder
                   intersectionsRequestPublishTopic,
               intersectionsRequestSubscribeTopic:
                   intersectionsRequestSubscribeTopic,
+              disconnectTopic: disconnectTopic,
               isBusy: isBusy,
               exception: exception);
     } catch (_) {

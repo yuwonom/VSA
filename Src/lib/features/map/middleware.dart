@@ -152,9 +152,12 @@ class MqttIntegration {
   }
 
   void _handleDisconnectFromMqttBroker(Store<AppState> store, DisconnectFromMqttBroker action, NextDispatcher next) {
+    final topic = "${store.state.settings.disconnectTopic}/${store.state.map.userVehicle.id}";
+    store.dispatch(PublishMessageToMqttBroker(topic, store.state.map.userVehicle.id));
+    
     _mqttListener?.cancel();
     _nearbyRequestTimer?.cancel();
-    
+
     api.disconnect();
     next(action);
   }
