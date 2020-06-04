@@ -12,7 +12,14 @@ import 'package:vsa/features/settings/viewmodels/settings_viewmodel.dart';
 import 'package:vsa/state.dart';
 import 'package:vsa/themes/theme.dart';
 
-class SettingsPage extends StatelessWidget {
+class SettingsPage extends StatefulWidget {
+  @override
+  State<SettingsPage> createState() => _SettingsPageState();
+}
+
+class _SettingsPageState extends State<SettingsPage> {
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) => StoreConnector<AppState, SettingsViewModel>(
       converter: (Store<AppState> store) => SettingsViewModel(store.state.settings, store.state.map.userVehicle),
@@ -20,8 +27,6 @@ class SettingsPage extends StatelessWidget {
     );
 
   Widget _buildPage(BuildContext context, Store<AppState> store, SettingsViewModel viewModel) {
-    final scaffoldKey = GlobalKey<ScaffoldState>();
-    
     final profileTileGroup = _buildTileGroup("Profile", <Widget>[
       _buildTile(context, "Identifier", viewModel.vehicleId, UpdateVehicleId, validity: (String value) => value.isNotEmpty),
       _buildTile(context, "Name", viewModel.vehicleName, UpdateVehicleName),
@@ -50,15 +55,15 @@ class SettingsPage extends StatelessWidget {
       content: Text("Level is not yet available"),
       action: SnackBarAction(
         label: "OKAY",
-        onPressed: () => scaffoldKey.currentState.hideCurrentSnackBar(),
+        onPressed: () => _scaffoldKey.currentState.hideCurrentSnackBar(),
       ),
     );
 
     final topicStructureTileGroup = _buildTileGroup("Show Topics", <Widget>[
       _buildTileCheckbox("Level A", viewModel.isActiveLevelA, (bool checked) => store.dispatch(UpdateSettings(SwitchLevelA, checked))),
-      _buildTileCheckbox("Level B", viewModel.isActiveLevelB, (bool checked) => scaffoldKey.currentState.showSnackBar(notAvailableSnackBar)),
-      _buildTileCheckbox("Level C", viewModel.isActiveLevelC, (bool checked) => scaffoldKey.currentState.showSnackBar(notAvailableSnackBar)),
-      _buildTileCheckbox("Level D", viewModel.isActiveLevelD, (bool checked) => scaffoldKey.currentState.showSnackBar(notAvailableSnackBar)),
+      _buildTileCheckbox("Level B", viewModel.isActiveLevelB, (bool checked) => _scaffoldKey.currentState.showSnackBar(notAvailableSnackBar)),
+      _buildTileCheckbox("Level C", viewModel.isActiveLevelC, (bool checked) => _scaffoldKey.currentState.showSnackBar(notAvailableSnackBar)),
+      _buildTileCheckbox("Level D", viewModel.isActiveLevelD, (bool checked) => _scaffoldKey.currentState.showSnackBar(notAvailableSnackBar)),
       // Hide vehicle & traffic for now
       // _buildTileCheckbox("Basic Vehicle", viewModel.isActiveBasicVehicle, (bool checked) => store.dispatch(UpdateSettings(SwitchBasicVehicle, checked))),
       // _buildTileCheckbox("Basic Traffic", viewModel.isActiveBasicTraffic, (bool checked) => store.dispatch(UpdateSettings(SwitchBasicTraffic, checked))),
@@ -113,7 +118,7 @@ class SettingsPage extends StatelessWidget {
     );
 
     final scaffold = Scaffold(
-      key: scaffoldKey,
+      key: _scaffoldKey,
       appBar: appBar,
       body: body,
     );
