@@ -6,13 +6,14 @@ Authored by @yuwonom (Michael Yuwono)
 import datetime, math
 from enum import Enum
 
+VERSION = "2.2.0"
+
 #list of topics
 TOPIC_LEVEL_A_VEHSIM = "VSA/basicData/VRU/cycle"
 TOPIC_LEVEL_A_VEHPROP = "VSA/vehProp/cycle"
 TOPIC_LEVEL_A_REQ = "VSA/requests/all/cycle"
-TOPIC_TRAFFIC = "VSA/traffic/all"
-TOPIC_TRAFFIC_NEARBY_REQ = "VSA/traffic/nearby/reqs"
-TOPIC_TRAFFIC_NEARBY_RETURN = "VSA/traffic/nearby/return"
+TOPIC_EVENTS_NEARBY_REQ = "VSA/events/nearby/reqs"
+TOPIC_EVENTS_NEARBY_RETURN = "VSA/events/nearby/return"
 TOPIC_VEHSIM = "VSA/vehSim"
 TOPIC_VEHPROP = "VSA/vehProp"
 TOPIC_VEHSIM_REQ = "VSA/request/vehSim/reqs"
@@ -75,7 +76,7 @@ class Vehicle(object):
 		self.dimensions = dimensions
 
 
-class Feature(object):
+class Event(object):
 	id = 0
 	geometries = []
 	source_name = ""
@@ -174,10 +175,10 @@ def distance(g1, g2):
 	'''
 	R = 6378.137 #radius of earth in KM
 	
-	latitude_diff = (g1.Latitude * math.pi / 180.0) - (g2.Latitude * math.pi / 180.0)
-	longitude_diff = (g1.Longitude * math.pi / 180.0) - (g2.Longitude * math.pi / 180.0)
+	latitude_diff = (g1.latitude * math.pi / 180.0) - (g2.latitude * math.pi / 180.0)
+	longitude_diff = (g1.longitude * math.pi / 180.0) - (g2.longitude * math.pi / 180.0)
 	
-	a = math.pow(math.sin(latitude_diff / 2), 2) + math.cos(g1.Latitude * math.pi / 180) * math.cos(g2.Latitude * math.pi / 180) * math.pow(math.sin(longitude_diff / 2), 2)
+	a = math.pow(math.sin(latitude_diff / 2), 2) + math.cos(g1.latitude * math.pi / 180) * math.cos(g2.latitude * math.pi / 180) * math.pow(math.sin(longitude_diff / 2), 2)
 	c = 2 * math.atan2(math.sqrt(a), math.sqrt(1-a))
 	d = R * c
 	return d * 1000 #convert to meters

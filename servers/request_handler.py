@@ -6,11 +6,11 @@ Authored by @yuwonom (Michael Yuwono)
 from threading import Thread
 import sys, time, math, json
 import paho.mqtt.client as mqtt
-import vsa, broker
+import vsa, broker, traffic_listener
 
 #properties
 NAME = "VSA Request Handler"
-VERSION = "2.1.1"
+VERSION = vsa.VERSION
 
 # ------------------------------------------------------------------------ #
 
@@ -99,20 +99,24 @@ def topic_level_a_req_callback():
 		publish_messages()
 		time.sleep(0.1)
 	
-def topic_traffic_callback(mqttc, obj, msg):
-	payload = str(msg.payload.decode("utf-8"))
-	json_features = json.loads(payload)
+def topic_events_callback():
+	def update_events():
+		json_events = traffic_listener.TrafficListener.request_events()
 
-	global features
-	features = []
+		global events
+		events = []
+
+		for data in json_events:
+			event = vsa.Event(data)
+			events.append(event)
+		
+		print("Features updated.")
+
+	while client.connected_flag:
+		update_events()
+		time.sleep(60)
 	
-	for data in json_features:
-		feature = vsa.Feature(data)
-		features.append(feature)
-	
-	print("Features updated.")
-	
-def topic_traffic_nearby_req_callback(mqttc, obj, msg):
+def topic_events_nearby_req_callback(mqttc, obj, msg):
 	payload = str(msg.payload.decode("utf-8"))
 	items = payload.split(',')
 	veh_id = items[0]
@@ -120,15 +124,15 @@ def topic_traffic_nearby_req_callback(mqttc, obj, msg):
 	longitude = float(items[2])
 	radius = float(items[3])
 	
-	global features
+	global events
 	
 	user_geolocation = vsa.Geolocation(latitude, longitude)
-	features_res = []
-	features_tmp = features
+	events_res = []
+	events_tmp = events
 
-	for feature in features_tmp:
+	for event in events_tmp:
 		include = False
-		for geometry in feature.geometries:
+		for geometry in event.geometries:
 			for coordinate in geometry.coordinates:
 				if (vsa.distance(user_geolocation, coordinate) <= radius):
 					include = True
@@ -136,10 +140,10 @@ def topic_traffic_nearby_req_callback(mqttc, obj, msg):
 			if (include):
 				break
 		if (include):
-			features_res.append(feature)
+			events_res.append(event)
 	
-	print(str(len(features_res)) + " events found.")
-	client.publish(vsa.TOPIC_TRAFFIC_NEARBY_RETURN + "/" + veh_id, json.dumps(features_res, default = vsa.serialize))
+	print(str(len(events_res)) + " events found.")
+	client.publish(vsa.TOPIC_EVENTS_NEARBY_RETURN + "/" + veh_id, json.dumps(events_res, default = vsa.serialize))
 	
 def topic_vehsim_callback(mqttc, obj, msg):
 	payload = str(msg.payload.decode("utf-8"))
@@ -241,56 +245,63 @@ def topic_disconnect_callback(mqttc, obj, msg):
 	if veh_id in vehicles:
 		del vehicles[veh_id]
 
-# ------------------------------------------------------------------------ #	
-	
-print("===== " + NAME + " v" + VERSION + " =====")
+# ------------------------------------------------------------------------ #
 
 #global variables
 vehicles = {}
-features = []
+events = []
 intersections = [
 	vsa.Intersection("1",-27.471962,153.027476,15),
 	vsa.Intersection("2",-27.473975,153.026548,50),
 	vsa.Intersection("3",-27.479467,153.006698,100)
 ]
-
-#new client
 client = mqtt.Client()
-client.connected_flag = False
-client.on_connect = on_connect
-client.on_disconnect = on_disconnect
-#client.on_message = on_message
-client.message_callback_add(vsa.TOPIC_LEVEL_A_VEHSIM + "/#", topic_level_a_vehsim_callback)
-client.message_callback_add(vsa.TOPIC_LEVEL_A_VEHPROP + "/#", topic_level_a_vehprop_callback)
-client.message_callback_add(vsa.TOPIC_TRAFFIC + "/#", topic_traffic_callback)
-client.message_callback_add(vsa.TOPIC_TRAFFIC_NEARBY_REQ + "/#", topic_traffic_nearby_req_callback)
-client.message_callback_add(vsa.TOPIC_VEHSIM + "/#", topic_vehsim_callback)
-client.message_callback_add(vsa.TOPIC_VEHPROP + "/#", topic_vehprop_callback)
-client.message_callback_add(vsa.TOPIC_VEHSIM_REQ + "/#", topic_vehsim_req_callback)
-client.message_callback_add(vsa.TOPIC_VEHPROP_REQ + "/#", topic_vehprop_req_callback)
-client.message_callback_add(vsa.TOPIC_INTERSECTIONS_REQ + "/#", topic_intersections_req_callback)
-client.message_callback_add(vsa.TOPIC_DISCONNECT + "/#", topic_disconnect_callback)
 
-#connecting to broker
-print("Connecting to broker...")
-client.username_pw_set(broker.USERNAME, broker.PASSWORD)
-client.connect(broker.ADDRESS, broker.PORT)
-client.loop_start()
-while not client.connected_flag:
-	time.sleep(1)
+# ------------------------------------------------------------------------ #
 
-#subscribing VSA/#
-client.subscribe("VSA/#")
-print("Subscribing to every topic under " + "VSA/#")
+def main():
+	print("===== " + NAME + " v" + VERSION + " =====")
 
-#register threads
-level_a_req_thread = Thread(target=topic_level_a_req_callback)
-level_a_req_thread.start()
+	#setup mqtt client
+	client.connected_flag = False
+	client.on_connect = on_connect
+	client.on_disconnect = on_disconnect
+	# client.on_message = on_message
+	client.message_callback_add(vsa.TOPIC_LEVEL_A_VEHSIM + "/#", topic_level_a_vehsim_callback)
+	client.message_callback_add(vsa.TOPIC_LEVEL_A_VEHPROP + "/#", topic_level_a_vehprop_callback)
+	client.message_callback_add(vsa.TOPIC_EVENTS_NEARBY_REQ + "/#", topic_events_nearby_req_callback)
+	client.message_callback_add(vsa.TOPIC_VEHSIM + "/#", topic_vehsim_callback)
+	client.message_callback_add(vsa.TOPIC_VEHPROP + "/#", topic_vehprop_callback)
+	client.message_callback_add(vsa.TOPIC_VEHSIM_REQ + "/#", topic_vehsim_req_callback)
+	client.message_callback_add(vsa.TOPIC_VEHPROP_REQ + "/#", topic_vehprop_req_callback)
+	client.message_callback_add(vsa.TOPIC_INTERSECTIONS_REQ + "/#", topic_intersections_req_callback)
+	client.message_callback_add(vsa.TOPIC_DISCONNECT + "/#", topic_disconnect_callback)
 
-try:
-	while client.connected_flag:
+	#connecting to broker
+	print("Connecting to broker...")
+	client.username_pw_set(broker.USERNAME, broker.PASSWORD)
+	client.connect(broker.ADDRESS, broker.PORT)
+	client.loop_start()
+	while not client.connected_flag:
 		time.sleep(1)
-	client.disconnect()
-	
-except KeyboardInterrupt:
-	client.disconnect()
+
+	#subscribing VSA/#
+	client.subscribe("VSA/#")
+	print("Subscribing to every topic under " + "VSA/#")
+
+	#register threads
+	level_a_req_thread = Thread(target=topic_level_a_req_callback)
+	events_thread = Thread(target=topic_events_callback)
+	level_a_req_thread.start()
+	events_thread.start()
+
+	try:
+		while client.connected_flag:
+			time.sleep(1)
+		client.disconnect()
+		
+	except KeyboardInterrupt:
+		client.disconnect()
+
+if __name__ == '__main__':
+    main()
