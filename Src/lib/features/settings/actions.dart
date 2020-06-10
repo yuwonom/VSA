@@ -1,6 +1,7 @@
 /// Authored by `@yuwonom (Michael Yuwono)`
 
 import 'package:flutter/material.dart';
+import 'package:vsa/features/settings/dtos.dart';
 
 @immutable
 class LoadSettings {
@@ -109,43 +110,13 @@ class UpdateBrokerPassword {
 }
 
 @immutable
-class SwitchLevelA {
-  SwitchLevelA(this.value) : assert (value != null);
+class UpdateTopicLevel {
+  UpdateTopicLevel(this.dto) : assert (dto != null);
 
-  final bool value;
+  final TopicLevelDto dto;
   
   @override
-  String toString() => "SwitchLevelA $value";
-}
-
-@immutable
-class SwitchLevelB {
-  SwitchLevelB(this.value) : assert (value != null);
-
-  final bool value;
-  
-  @override
-  String toString() => "SwitchLevelB $value";
-}
-
-@immutable
-class SwitchLevelC {
-  SwitchLevelC(this.value) : assert (value != null);
-
-  final bool value;
-  
-  @override
-  String toString() => "SwitchLevelC $value";
-}
-
-@immutable
-class SwitchLevelD {
-  SwitchLevelD(this.value) : assert (value != null);
-
-  final bool value;
-  
-  @override
-  String toString() => "SwitchLevelD $value";
+  String toString() => "UpdateTopicLevel $dto";
 }
 
 class SwitchBasicVehicle {

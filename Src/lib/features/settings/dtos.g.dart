@@ -6,7 +6,33 @@ part of 'dtos.dart';
 // BuiltValueGenerator
 // **************************************************************************
 
+const TopicLevelDto _$levelA = const TopicLevelDto._('levelA');
+const TopicLevelDto _$levelB = const TopicLevelDto._('levelB');
+const TopicLevelDto _$levelC = const TopicLevelDto._('levelC');
+
+TopicLevelDto _$topicLevelDtoValueOf(String name) {
+  switch (name) {
+    case 'levelA':
+      return _$levelA;
+    case 'levelB':
+      return _$levelB;
+    case 'levelC':
+      return _$levelC;
+    default:
+      throw new ArgumentError(name);
+  }
+}
+
+final BuiltSet<TopicLevelDto> _$topicLevelDtoValues =
+    new BuiltSet<TopicLevelDto>(const <TopicLevelDto>[
+  _$levelA,
+  _$levelB,
+  _$levelC,
+]);
+
 Serializer<BrokerDto> _$brokerDtoSerializer = new _$BrokerDtoSerializer();
+Serializer<TopicLevelDto> _$topicLevelDtoSerializer =
+    new _$TopicLevelDtoSerializer();
 
 class _$BrokerDtoSerializer implements StructuredSerializer<BrokerDto> {
   @override
@@ -66,6 +92,23 @@ class _$BrokerDtoSerializer implements StructuredSerializer<BrokerDto> {
 
     return result.build();
   }
+}
+
+class _$TopicLevelDtoSerializer implements PrimitiveSerializer<TopicLevelDto> {
+  @override
+  final Iterable<Type> types = const <Type>[TopicLevelDto];
+  @override
+  final String wireName = 'TopicLevelDto';
+
+  @override
+  Object serialize(Serializers serializers, TopicLevelDto object,
+          {FullType specifiedType = FullType.unspecified}) =>
+      object.name;
+
+  @override
+  TopicLevelDto deserialize(Serializers serializers, Object serialized,
+          {FullType specifiedType = FullType.unspecified}) =>
+      TopicLevelDto.valueOf(serialized as String);
 }
 
 class _$BrokerDto extends BrokerDto {

@@ -1,10 +1,12 @@
 /// Authored by `@yuwonom (Michael Yuwono)`
 
+import 'package:built_value/built_value.dart';
 import 'package:flutter/material.dart';
 import 'package:redux/redux.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vsa/features/map/ui/map_page.dart';
 import 'package:vsa/features/settings/actions.dart';
+import 'package:vsa/features/settings/dtos.dart';
 import 'package:vsa/state.dart';
 
 List<Middleware<AppState>> getMiddleware(GlobalKey<NavigatorState> navigatorKey) => [
@@ -32,10 +34,7 @@ class LocalSettings {
         UpdateBrokerPort,
         UpdateBrokerUsername,
         UpdateBrokerPassword,
-        SwitchLevelA,
-        SwitchLevelB,
-        SwitchLevelC,
-        SwitchLevelD,
+        UpdateTopicLevel,
         SwitchBasicVehicle,
         SwitchBasicEvents,
         UpdateLevelAPropertiesPublishTopic,
@@ -76,23 +75,27 @@ class LocalSettings {
 
       try {
         final key = _getKeyFromActionType(action.actionType);
+        Object value;
 
         switch (action.value.runtimeType) {
           case bool:
-            await sharedPreferences.setBool(key, action.value);
+            await sharedPreferences.setBool(key, value = action.value);
             break;
           case double:
-            await sharedPreferences.setDouble(key, action.value);
+            await sharedPreferences.setDouble(key, value = action.value);
             break;
           case int:
-            await sharedPreferences.setInt(key, action.value);
+            await sharedPreferences.setInt(key, value = action.value);
             break;
           case String:
-            await sharedPreferences.setString(key, action.value);
+            await sharedPreferences.setString(key, value = action.value);
+            break;
+          default:
+            await sharedPreferences.setString(key, value = action.value.toString());
             break;
         }
 
-        final updateAction = _getActionFromActionType(action.actionType, action.value);
+        final updateAction = _getActionFromActionType(action.actionType, value);
         store.dispatch(updateAction);
       } on Exception catch (exception) {
         print(exception);
@@ -121,14 +124,8 @@ class LocalSettings {
         return "brokerUsername";
       case UpdateBrokerPassword:
         return "brokerPassword";
-      case SwitchLevelA:
-        return "levelA";
-      case SwitchLevelB:
-        return "levelB";
-      case SwitchLevelC:
-        return "levelC";
-      case SwitchLevelD:
-        return "levelD";
+      case UpdateTopicLevel:
+        return "topicLevel";
       case SwitchBasicVehicle:
         return "switchBasicVehicle";
       case SwitchBasicEvents:
@@ -178,14 +175,8 @@ class LocalSettings {
         return UpdateBrokerUsername(value);
       case UpdateBrokerPassword:
         return UpdateBrokerPassword(value);
-      case SwitchLevelA:
-        return SwitchLevelA(value);
-      case SwitchLevelB:
-        return SwitchLevelB(value);
-      case SwitchLevelC:
-        return SwitchLevelC(value);
-      case SwitchLevelD:
-        return SwitchLevelD(value);
+      case UpdateTopicLevel:
+        return UpdateTopicLevel(TopicLevelDto.valueOf(value));
       case SwitchBasicVehicle:
         return SwitchBasicVehicle(value);
       case SwitchBasicEvents:

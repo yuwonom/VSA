@@ -23,10 +23,11 @@ class SettingsViewModel {
   String get username => broker.username;
   String get password => broker.password;
 
-  bool get isActiveLevelA => _state.isActiveLevelA;
-  bool get isActiveLevelB => _state.isActiveLevelB;
-  bool get isActiveLevelC => _state.isActiveLevelC;
-  bool get isActiveLevelD => _state.isActiveLevelD;
+  TopicLevelDto get topicLevel => _state.topicLevel;
+  bool get isActiveLevelA => topicLevel == TopicLevelDto.levelA;
+  bool get isActiveLevelB => topicLevel == TopicLevelDto.levelB;
+  bool get isActiveLevelC => topicLevel == TopicLevelDto.levelC;
+
   bool get isActiveBasicVehicle => _state.isActiveBasicVehicle;
   bool get isActiveBasicEvents => _state.isActiveBasicEvents;
 

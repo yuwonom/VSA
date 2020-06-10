@@ -9,6 +9,7 @@ import 'package:mqtt_client/mqtt_client.dart';
 import 'package:redux/redux.dart';
 import 'package:vsa/features/map/actions.dart';
 import 'package:vsa/features/map/dtos.dart';
+import 'package:vsa/features/settings/dtos.dart';
 import 'package:vsa/features/settings/state.dart';
 import 'package:vsa/state.dart';
 import 'package:vsa/utility/action_exception.dart';
@@ -98,7 +99,7 @@ class MqttIntegration {
       }
 
       // Level A messages
-      if (settings.isActiveLevelA && user.type == VehicleTypeDto.cycle) {
+      if (settings.topicLevel == TopicLevelDto.levelA && user.type == VehicleTypeDto.cycle) {
         final topic = "${settings.levelAPropertiesPublishTopic}";
         final message = MqttApi.propertiesMessage(user.id, user.name, user.type, user.dimension);
         store.dispatch(PublishMessageToMqttBroker(topic, message));
@@ -276,7 +277,7 @@ class MqttIntegration {
       topic = "${settingsState.statusPublishTopic}/${user.id}";
       store.dispatch(PublishMessageToMqttBroker(topic, message));
     }
-    if (settingsState.isActiveLevelA && user.type == VehicleTypeDto.cycle && intersectionId != null) {
+    if (settingsState.topicLevel == TopicLevelDto.levelA && user.type == VehicleTypeDto.cycle && intersectionId != null) {
       topic = "${settingsState.levelAStatusPublishTopic}/$intersectionId";
       store.dispatch(PublishMessageToMqttBroker(topic, message));
     }
@@ -302,7 +303,7 @@ class MqttIntegration {
       return;
     }
 
-    if (settingsState.isActiveLevelA && mapState.userVehicle.type == VehicleTypeDto.car) {
+    if (settingsState.topicLevel == TopicLevelDto.levelA && mapState.userVehicle.type == VehicleTypeDto.car) {
       _syncIntersectionSubscription(
         settingsState.levelAIntersectionSubscribeTopic,
         mapState.currentIntersectionId,

@@ -6,6 +6,7 @@ import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
 import 'package:vsa/features/map/dtos.dart';
 import 'package:vsa/features/settings/actions.dart';
+import 'package:vsa/features/settings/dtos.dart';
 import 'package:vsa/features/settings/ui/settings_dialog.dart';
 import 'package:vsa/features/settings/ui/settings_dropdown_dialog.dart';
 import 'package:vsa/features/settings/viewmodels/settings_viewmodel.dart';
@@ -60,10 +61,9 @@ class _SettingsPageState extends State<SettingsPage> {
     );
 
     final topicStructureTileGroup = _buildTileGroup("Show Topics", <Widget>[
-      _buildTileCheckbox("Level A", viewModel.isActiveLevelA, (bool checked) => store.dispatch(UpdateSettings(SwitchLevelA, checked))),
-      _buildTileCheckbox("Level B", viewModel.isActiveLevelB, (bool checked) => _scaffoldKey.currentState.showSnackBar(notAvailableSnackBar)),
+      _buildTileCheckbox("Level A", viewModel.isActiveLevelA, (bool checked) => store.dispatch(UpdateSettings(UpdateTopicLevel, TopicLevelDto.levelA))),
+      _buildTileCheckbox("Level B", viewModel.isActiveLevelB, (bool checked) => store.dispatch(UpdateSettings(UpdateTopicLevel, TopicLevelDto.levelB))),
       _buildTileCheckbox("Level C", viewModel.isActiveLevelC, (bool checked) => _scaffoldKey.currentState.showSnackBar(notAvailableSnackBar)),
-      _buildTileCheckbox("Level D", viewModel.isActiveLevelD, (bool checked) => _scaffoldKey.currentState.showSnackBar(notAvailableSnackBar)),
       // Hide vehicle & events for now
       // _buildTileCheckbox("Basic Vehicle", viewModel.isActiveBasicVehicle, (bool checked) => store.dispatch(UpdateSettings(SwitchBasicVehicle, checked))),
       // _buildTileCheckbox("Basic Events", viewModel.isActiveBasicEvents, (bool checked) => store.dispatch(UpdateSettings(SwitchBasicEvents, checked))),
@@ -152,17 +152,20 @@ class _SettingsPageState extends State<SettingsPage> {
       ),
     );
 
-   Widget _buildTileCheckbox(String title, bool value, Function onChanged) => ListTile(
+   Widget _buildTileCheckbox(String title, bool value, ValueChanged<bool> onChanged) => ListTile(
       leading: Checkbox(
         activeColor: AppColors.blue,
         value: value,
         onChanged: onChanged,
       ),
-      title: Text(
-        title,
-        style: AppTextStyles.body1.copyWith(color: AppColors.black),
-        overflow: TextOverflow.ellipsis,
-        softWrap: true,
+      title: GestureDetector(
+        onTap: () => onChanged(true),
+        child: Text(
+          title,
+          style: AppTextStyles.body1.copyWith(color: AppColors.black),
+          overflow: TextOverflow.ellipsis,
+          softWrap: true,
+        ),
       ),
     );
   

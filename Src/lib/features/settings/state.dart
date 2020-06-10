@@ -16,10 +16,7 @@ abstract class SettingsState implements Built<SettingsState, SettingsStateBuilde
         ..username = "qut"
         ..password = "qut")
       .build(),
-    isActiveLevelA: true,
-    isActiveLevelB: false,
-    isActiveLevelC: false,
-    isActiveLevelD: false,
+    topicLevel: TopicLevelDto.levelA,
     isActiveBasicVehicle: false,
     isActiveBasicEvents: false,
     levelAPropertiesPublishTopic: "VSA/vehProp/cycle",
@@ -43,10 +40,7 @@ abstract class SettingsState implements Built<SettingsState, SettingsStateBuilde
 
   BrokerDto get broker;
 
-  bool get isActiveLevelA;
-  bool get isActiveLevelB;
-  bool get isActiveLevelC;
-  bool get isActiveLevelD;
+  TopicLevelDto get topicLevel;
   bool get isActiveBasicVehicle;
   bool get isActiveBasicEvents;
 

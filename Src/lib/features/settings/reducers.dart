@@ -9,10 +9,7 @@ final Reducer<SettingsState> settingsStateReducer = combineReducers([
     TypedReducer<SettingsState, UpdateBrokerPort>(_updateBrokerPortReducer),
     TypedReducer<SettingsState, UpdateBrokerUsername>(_updateBrokerUsernameReducer),
     TypedReducer<SettingsState, UpdateBrokerPassword>(_updateBrokerPasswordReducer),
-    TypedReducer<SettingsState, SwitchLevelA>(_switchLevelAReducer),
-    TypedReducer<SettingsState, SwitchLevelB>(_switchLevelBReducer),
-    TypedReducer<SettingsState, SwitchLevelC>(_switchLevelCReducer),
-    TypedReducer<SettingsState, SwitchLevelD>(_switchLevelDReducer),
+    TypedReducer<SettingsState, UpdateTopicLevel>(_setTopicLevelReducer),
     TypedReducer<SettingsState, SwitchBasicVehicle>(_switchBasicVehicleReducer),
     TypedReducer<SettingsState, SwitchBasicEvents>(_switchBasicEventsReducer),
     TypedReducer<SettingsState, UpdateLevelAPropertiesPublishTopic>(_updateLevelAPropertiesPublishTopicReducer),
@@ -40,17 +37,8 @@ SettingsState _updateBrokerUsernameReducer(SettingsState state, UpdateBrokerUser
 SettingsState _updateBrokerPasswordReducer(SettingsState state, UpdateBrokerPassword action) => state.rebuild((b) => b
   ..broker.password = action.value);
 
-SettingsState _switchLevelAReducer(SettingsState state, SwitchLevelA action) => state.rebuild((b) => b
-  ..isActiveLevelA = action.value);
-
-SettingsState _switchLevelBReducer(SettingsState state, SwitchLevelB action) => state.rebuild((b) => b
-  ..isActiveLevelB = action.value);
-
-SettingsState _switchLevelCReducer(SettingsState state, SwitchLevelC action) => state.rebuild((b) => b
-  ..isActiveLevelC = action.value);
-
-SettingsState _switchLevelDReducer(SettingsState state, SwitchLevelD action) => state.rebuild((b) => b
-  ..isActiveLevelD = action.value);
+SettingsState _setTopicLevelReducer(SettingsState state, UpdateTopicLevel action) => state.rebuild((b) => b
+  ..topicLevel = action.dto);
 
 SettingsState _switchBasicVehicleReducer(SettingsState state, SwitchBasicVehicle action) => state.rebuild((b) => b
   ..isActiveBasicVehicle = action.value);
