@@ -14,7 +14,7 @@ final Reducer<SettingsState> settingsStateReducer = combineReducers([
     TypedReducer<SettingsState, SwitchLevelC>(_switchLevelCReducer),
     TypedReducer<SettingsState, SwitchLevelD>(_switchLevelDReducer),
     TypedReducer<SettingsState, SwitchBasicVehicle>(_switchBasicVehicleReducer),
-    TypedReducer<SettingsState, SwitchBasicTraffic>(_switchBasicTrafficReducer),
+    TypedReducer<SettingsState, SwitchBasicEvents>(_switchBasicEventsReducer),
     TypedReducer<SettingsState, UpdateLevelAPropertiesPublishTopic>(_updateLevelAPropertiesPublishTopicReducer),
     TypedReducer<SettingsState, UpdateLevelAStatusPublishTopic>(_updateLevelAStatusPublishTopicReducer),
     TypedReducer<SettingsState, UpdateLevelAIntersectionSubscribeTopic>(_updateLevelAIntersectionSubscribeTopicReducer),
@@ -24,8 +24,8 @@ final Reducer<SettingsState> settingsStateReducer = combineReducers([
     TypedReducer<SettingsState, UpdatePropertiesRequestSubscribeTopic>(_updatePropertiesRequestSubscribeTopicReducer),
     TypedReducer<SettingsState, UpdateStatusRequestPublishTopic>(_updateStatusRequestPublishTopicReducer),
     TypedReducer<SettingsState, UpdateStatusRequestSubscribeTopic>(_updateStatusRequestSubscribeTopicReducer),
-    TypedReducer<SettingsState, UpdateTrafficRequestPublishTopic>(_updateTrafficRequestPublishTopicReducer),
-    TypedReducer<SettingsState, UpdateTrafficRequestSubscribeTopic>(_updateTrafficRequestSubscribeTopicReducer),
+    TypedReducer<SettingsState, UpdateEventsRequestPublishTopic>(_updateEventsRequestPublishTopicReducer),
+    TypedReducer<SettingsState, UpdateEventsRequestSubscribeTopic>(_updateEventsRequestSubscribeTopicReducer),
   ]);
 
 SettingsState _updateBrokerAddressReducer(SettingsState state, UpdateBrokerAddress action) => state.rebuild((b) => b
@@ -55,8 +55,8 @@ SettingsState _switchLevelDReducer(SettingsState state, SwitchLevelD action) => 
 SettingsState _switchBasicVehicleReducer(SettingsState state, SwitchBasicVehicle action) => state.rebuild((b) => b
   ..isActiveBasicVehicle = action.value);
 
-SettingsState _switchBasicTrafficReducer(SettingsState state, SwitchBasicTraffic action) => state.rebuild((b) => b
-  ..isActiveBasicTraffic = action.value);
+SettingsState _switchBasicEventsReducer(SettingsState state, SwitchBasicEvents action) => state.rebuild((b) => b
+  ..isActiveBasicEvents = action.value);
 
 SettingsState _updateLevelAPropertiesPublishTopicReducer(SettingsState state, UpdateLevelAPropertiesPublishTopic action) => state.rebuild((b) => b
   ..levelAPropertiesPublishTopic = action.value);
@@ -85,8 +85,8 @@ SettingsState _updateStatusRequestPublishTopicReducer(SettingsState state, Updat
 SettingsState _updateStatusRequestSubscribeTopicReducer(SettingsState state, UpdateStatusRequestSubscribeTopic action) => state.rebuild((b) => b
   ..statusRequestSubscribeTopic = action.value);
 
-SettingsState _updateTrafficRequestPublishTopicReducer(SettingsState state, UpdateTrafficRequestPublishTopic action) => state.rebuild((b) => b
-  ..trafficRequestPublishTopic = action.value);
+SettingsState _updateEventsRequestPublishTopicReducer(SettingsState state, UpdateEventsRequestPublishTopic action) => state.rebuild((b) => b
+  ..eventsRequestPublishTopic = action.value);
 
-SettingsState _updateTrafficRequestSubscribeTopicReducer(SettingsState state, UpdateTrafficRequestSubscribeTopic action) => state.rebuild((b) => b
-  ..trafficRequestSubscribeTopic = action.value);
+SettingsState _updateEventsRequestSubscribeTopicReducer(SettingsState state, UpdateEventsRequestSubscribeTopic action) => state.rebuild((b) => b
+  ..eventsRequestSubscribeTopic = action.value);

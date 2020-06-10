@@ -20,7 +20,7 @@ class _$SettingsState extends SettingsState {
   @override
   final bool isActiveBasicVehicle;
   @override
-  final bool isActiveBasicTraffic;
+  final bool isActiveBasicEvents;
   @override
   final String levelAPropertiesPublishTopic;
   @override
@@ -40,9 +40,9 @@ class _$SettingsState extends SettingsState {
   @override
   final String statusRequestSubscribeTopic;
   @override
-  final String trafficRequestPublishTopic;
+  final String eventsRequestPublishTopic;
   @override
-  final String trafficRequestSubscribeTopic;
+  final String eventsRequestSubscribeTopic;
   @override
   final String intersectionsRequestPublishTopic;
   @override
@@ -64,7 +64,7 @@ class _$SettingsState extends SettingsState {
       this.isActiveLevelC,
       this.isActiveLevelD,
       this.isActiveBasicVehicle,
-      this.isActiveBasicTraffic,
+      this.isActiveBasicEvents,
       this.levelAPropertiesPublishTopic,
       this.levelAStatusPublishTopic,
       this.levelAIntersectionSubscribeTopic,
@@ -74,8 +74,8 @@ class _$SettingsState extends SettingsState {
       this.propertiesRequestSubscribeTopic,
       this.statusRequestPublishTopic,
       this.statusRequestSubscribeTopic,
-      this.trafficRequestPublishTopic,
-      this.trafficRequestSubscribeTopic,
+      this.eventsRequestPublishTopic,
+      this.eventsRequestSubscribeTopic,
       this.intersectionsRequestPublishTopic,
       this.intersectionsRequestSubscribeTopic,
       this.disconnectTopic,
@@ -101,9 +101,9 @@ class _$SettingsState extends SettingsState {
       throw new BuiltValueNullFieldError(
           'SettingsState', 'isActiveBasicVehicle');
     }
-    if (isActiveBasicTraffic == null) {
+    if (isActiveBasicEvents == null) {
       throw new BuiltValueNullFieldError(
-          'SettingsState', 'isActiveBasicTraffic');
+          'SettingsState', 'isActiveBasicEvents');
     }
     if (levelAPropertiesPublishTopic == null) {
       throw new BuiltValueNullFieldError(
@@ -140,13 +140,13 @@ class _$SettingsState extends SettingsState {
       throw new BuiltValueNullFieldError(
           'SettingsState', 'statusRequestSubscribeTopic');
     }
-    if (trafficRequestPublishTopic == null) {
+    if (eventsRequestPublishTopic == null) {
       throw new BuiltValueNullFieldError(
-          'SettingsState', 'trafficRequestPublishTopic');
+          'SettingsState', 'eventsRequestPublishTopic');
     }
-    if (trafficRequestSubscribeTopic == null) {
+    if (eventsRequestSubscribeTopic == null) {
       throw new BuiltValueNullFieldError(
-          'SettingsState', 'trafficRequestSubscribeTopic');
+          'SettingsState', 'eventsRequestSubscribeTopic');
     }
     if (intersectionsRequestPublishTopic == null) {
       throw new BuiltValueNullFieldError(
@@ -181,7 +181,7 @@ class _$SettingsState extends SettingsState {
         isActiveLevelC == other.isActiveLevelC &&
         isActiveLevelD == other.isActiveLevelD &&
         isActiveBasicVehicle == other.isActiveBasicVehicle &&
-        isActiveBasicTraffic == other.isActiveBasicTraffic &&
+        isActiveBasicEvents == other.isActiveBasicEvents &&
         levelAPropertiesPublishTopic == other.levelAPropertiesPublishTopic &&
         levelAStatusPublishTopic == other.levelAStatusPublishTopic &&
         levelAIntersectionSubscribeTopic ==
@@ -193,8 +193,8 @@ class _$SettingsState extends SettingsState {
             other.propertiesRequestSubscribeTopic &&
         statusRequestPublishTopic == other.statusRequestPublishTopic &&
         statusRequestSubscribeTopic == other.statusRequestSubscribeTopic &&
-        trafficRequestPublishTopic == other.trafficRequestPublishTopic &&
-        trafficRequestSubscribeTopic == other.trafficRequestSubscribeTopic &&
+        eventsRequestPublishTopic == other.eventsRequestPublishTopic &&
+        eventsRequestSubscribeTopic == other.eventsRequestSubscribeTopic &&
         intersectionsRequestPublishTopic ==
             other.intersectionsRequestPublishTopic &&
         intersectionsRequestSubscribeTopic ==
@@ -227,7 +227,7 @@ class _$SettingsState extends SettingsState {
                                                                             $jc($jc($jc($jc($jc(0, broker.hashCode), isActiveLevelA.hashCode), isActiveLevelB.hashCode), isActiveLevelC.hashCode),
                                                                                 isActiveLevelD.hashCode),
                                                                             isActiveBasicVehicle.hashCode),
-                                                                        isActiveBasicTraffic.hashCode),
+                                                                        isActiveBasicEvents.hashCode),
                                                                     levelAPropertiesPublishTopic.hashCode),
                                                                 levelAStatusPublishTopic.hashCode),
                                                             levelAIntersectionSubscribeTopic.hashCode),
@@ -237,8 +237,8 @@ class _$SettingsState extends SettingsState {
                                             propertiesRequestSubscribeTopic.hashCode),
                                         statusRequestPublishTopic.hashCode),
                                     statusRequestSubscribeTopic.hashCode),
-                                trafficRequestPublishTopic.hashCode),
-                            trafficRequestSubscribeTopic.hashCode),
+                                eventsRequestPublishTopic.hashCode),
+                            eventsRequestSubscribeTopic.hashCode),
                         intersectionsRequestPublishTopic.hashCode),
                     intersectionsRequestSubscribeTopic.hashCode),
                 disconnectTopic.hashCode),
@@ -255,7 +255,7 @@ class _$SettingsState extends SettingsState {
           ..add('isActiveLevelC', isActiveLevelC)
           ..add('isActiveLevelD', isActiveLevelD)
           ..add('isActiveBasicVehicle', isActiveBasicVehicle)
-          ..add('isActiveBasicTraffic', isActiveBasicTraffic)
+          ..add('isActiveBasicEvents', isActiveBasicEvents)
           ..add('levelAPropertiesPublishTopic', levelAPropertiesPublishTopic)
           ..add('levelAStatusPublishTopic', levelAStatusPublishTopic)
           ..add('levelAIntersectionSubscribeTopic',
@@ -267,8 +267,8 @@ class _$SettingsState extends SettingsState {
               propertiesRequestSubscribeTopic)
           ..add('statusRequestPublishTopic', statusRequestPublishTopic)
           ..add('statusRequestSubscribeTopic', statusRequestSubscribeTopic)
-          ..add('trafficRequestPublishTopic', trafficRequestPublishTopic)
-          ..add('trafficRequestSubscribeTopic', trafficRequestSubscribeTopic)
+          ..add('eventsRequestPublishTopic', eventsRequestPublishTopic)
+          ..add('eventsRequestSubscribeTopic', eventsRequestSubscribeTopic)
           ..add('intersectionsRequestPublishTopic',
               intersectionsRequestPublishTopic)
           ..add('intersectionsRequestSubscribeTopic',
@@ -313,10 +313,10 @@ class SettingsStateBuilder
   set isActiveBasicVehicle(bool isActiveBasicVehicle) =>
       _$this._isActiveBasicVehicle = isActiveBasicVehicle;
 
-  bool _isActiveBasicTraffic;
-  bool get isActiveBasicTraffic => _$this._isActiveBasicTraffic;
-  set isActiveBasicTraffic(bool isActiveBasicTraffic) =>
-      _$this._isActiveBasicTraffic = isActiveBasicTraffic;
+  bool _isActiveBasicEvents;
+  bool get isActiveBasicEvents => _$this._isActiveBasicEvents;
+  set isActiveBasicEvents(bool isActiveBasicEvents) =>
+      _$this._isActiveBasicEvents = isActiveBasicEvents;
 
   String _levelAPropertiesPublishTopic;
   String get levelAPropertiesPublishTopic =>
@@ -369,16 +369,15 @@ class SettingsStateBuilder
   set statusRequestSubscribeTopic(String statusRequestSubscribeTopic) =>
       _$this._statusRequestSubscribeTopic = statusRequestSubscribeTopic;
 
-  String _trafficRequestPublishTopic;
-  String get trafficRequestPublishTopic => _$this._trafficRequestPublishTopic;
-  set trafficRequestPublishTopic(String trafficRequestPublishTopic) =>
-      _$this._trafficRequestPublishTopic = trafficRequestPublishTopic;
+  String _eventsRequestPublishTopic;
+  String get eventsRequestPublishTopic => _$this._eventsRequestPublishTopic;
+  set eventsRequestPublishTopic(String eventsRequestPublishTopic) =>
+      _$this._eventsRequestPublishTopic = eventsRequestPublishTopic;
 
-  String _trafficRequestSubscribeTopic;
-  String get trafficRequestSubscribeTopic =>
-      _$this._trafficRequestSubscribeTopic;
-  set trafficRequestSubscribeTopic(String trafficRequestSubscribeTopic) =>
-      _$this._trafficRequestSubscribeTopic = trafficRequestSubscribeTopic;
+  String _eventsRequestSubscribeTopic;
+  String get eventsRequestSubscribeTopic => _$this._eventsRequestSubscribeTopic;
+  set eventsRequestSubscribeTopic(String eventsRequestSubscribeTopic) =>
+      _$this._eventsRequestSubscribeTopic = eventsRequestSubscribeTopic;
 
   String _intersectionsRequestPublishTopic;
   String get intersectionsRequestPublishTopic =>
@@ -419,7 +418,7 @@ class SettingsStateBuilder
       _isActiveLevelC = _$v.isActiveLevelC;
       _isActiveLevelD = _$v.isActiveLevelD;
       _isActiveBasicVehicle = _$v.isActiveBasicVehicle;
-      _isActiveBasicTraffic = _$v.isActiveBasicTraffic;
+      _isActiveBasicEvents = _$v.isActiveBasicEvents;
       _levelAPropertiesPublishTopic = _$v.levelAPropertiesPublishTopic;
       _levelAStatusPublishTopic = _$v.levelAStatusPublishTopic;
       _levelAIntersectionSubscribeTopic = _$v.levelAIntersectionSubscribeTopic;
@@ -429,8 +428,8 @@ class SettingsStateBuilder
       _propertiesRequestSubscribeTopic = _$v.propertiesRequestSubscribeTopic;
       _statusRequestPublishTopic = _$v.statusRequestPublishTopic;
       _statusRequestSubscribeTopic = _$v.statusRequestSubscribeTopic;
-      _trafficRequestPublishTopic = _$v.trafficRequestPublishTopic;
-      _trafficRequestSubscribeTopic = _$v.trafficRequestSubscribeTopic;
+      _eventsRequestPublishTopic = _$v.eventsRequestPublishTopic;
+      _eventsRequestSubscribeTopic = _$v.eventsRequestSubscribeTopic;
       _intersectionsRequestPublishTopic = _$v.intersectionsRequestPublishTopic;
       _intersectionsRequestSubscribeTopic =
           _$v.intersectionsRequestSubscribeTopic;
@@ -467,7 +466,7 @@ class SettingsStateBuilder
               isActiveLevelC: isActiveLevelC,
               isActiveLevelD: isActiveLevelD,
               isActiveBasicVehicle: isActiveBasicVehicle,
-              isActiveBasicTraffic: isActiveBasicTraffic,
+              isActiveBasicEvents: isActiveBasicEvents,
               levelAPropertiesPublishTopic: levelAPropertiesPublishTopic,
               levelAStatusPublishTopic: levelAStatusPublishTopic,
               levelAIntersectionSubscribeTopic:
@@ -478,8 +477,8 @@ class SettingsStateBuilder
               propertiesRequestSubscribeTopic: propertiesRequestSubscribeTopic,
               statusRequestPublishTopic: statusRequestPublishTopic,
               statusRequestSubscribeTopic: statusRequestSubscribeTopic,
-              trafficRequestPublishTopic: trafficRequestPublishTopic,
-              trafficRequestSubscribeTopic: trafficRequestSubscribeTopic,
+              eventsRequestPublishTopic: eventsRequestPublishTopic,
+              eventsRequestSubscribeTopic: eventsRequestSubscribeTopic,
               intersectionsRequestPublishTopic:
                   intersectionsRequestPublishTopic,
               intersectionsRequestSubscribeTopic:

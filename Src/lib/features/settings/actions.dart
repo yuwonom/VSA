@@ -158,13 +158,13 @@ class SwitchBasicVehicle {
 }
 
 @immutable
-class SwitchBasicTraffic {
-  SwitchBasicTraffic(this.value) : assert (value != null);
+class SwitchBasicEvents {
+  SwitchBasicEvents(this.value) : assert (value != null);
 
   final bool value;
   
   @override
-  String toString() => "SwitchBasicTraffic $value";
+  String toString() => "SwitchBasicEvents $value";
 }
 
 @immutable
@@ -258,21 +258,21 @@ class UpdateStatusRequestSubscribeTopic {
 }
 
 @immutable
-class UpdateTrafficRequestPublishTopic {
-  UpdateTrafficRequestPublishTopic(this.value) : assert (value != null);
+class UpdateEventsRequestPublishTopic {
+  UpdateEventsRequestPublishTopic(this.value) : assert (value != null);
 
   final String value;
   
   @override
-  String toString() => "UpdateTrafficRequestPublishTopic $value";
+  String toString() => "UpdateEventsRequestPublishTopic $value";
 }
 
 @immutable
-class UpdateTrafficRequestSubscribeTopic {
-  UpdateTrafficRequestSubscribeTopic(this.value) : assert (value != null);
+class UpdateEventsRequestSubscribeTopic {
+  UpdateEventsRequestSubscribeTopic(this.value) : assert (value != null);
 
   final String value;
   
   @override
-  String toString() => "UpdateTrafficRequestSubscribeTopic $value";
+  String toString() => "UpdateEventsRequestSubscribeTopic $value";
 }

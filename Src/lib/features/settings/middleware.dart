@@ -37,7 +37,7 @@ class LocalSettings {
         SwitchLevelC,
         SwitchLevelD,
         SwitchBasicVehicle,
-        SwitchBasicTraffic,
+        SwitchBasicEvents,
         UpdateLevelAPropertiesPublishTopic,
         UpdateLevelAStatusPublishTopic,
         UpdateLevelAIntersectionSubscribeTopic,
@@ -47,8 +47,8 @@ class LocalSettings {
         UpdatePropertiesRequestSubscribeTopic,
         UpdateStatusRequestPublishTopic,
         UpdateStatusRequestSubscribeTopic,
-        UpdateTrafficRequestPublishTopic,
-        UpdateTrafficRequestSubscribeTopic,
+        UpdateEventsRequestPublishTopic,
+        UpdateEventsRequestSubscribeTopic,
       ];
 
       listToLoad.forEach((Type actionType) {
@@ -131,8 +131,8 @@ class LocalSettings {
         return "levelD";
       case SwitchBasicVehicle:
         return "switchBasicVehicle";
-      case SwitchBasicTraffic:
-        return "switchBasicTraffic";
+      case SwitchBasicEvents:
+        return "switchBasicEvents";
       case UpdateLevelAPropertiesPublishTopic:
         return "levelAPropertiesPublishTopic";
       case UpdateLevelAStatusPublishTopic:
@@ -151,10 +151,10 @@ class LocalSettings {
         return "statusRequestPublishTopic";
       case UpdateStatusRequestSubscribeTopic:
         return "statusRequestSubscribeTopic";
-      case UpdateTrafficRequestPublishTopic:
-        return "trafficRequestPublishTopic";
-      case UpdateTrafficRequestSubscribeTopic:
-        return "trafficRequestSubscribeTopic";
+      case UpdateEventsRequestPublishTopic:
+        return "eventsRequestPublishTopic";
+      case UpdateEventsRequestSubscribeTopic:
+        return "eventsRequestSubscribeTopic";
     }
 
     return null;
@@ -188,8 +188,8 @@ class LocalSettings {
         return SwitchLevelD(value);
       case SwitchBasicVehicle:
         return SwitchBasicVehicle(value);
-      case SwitchBasicTraffic:
-        return SwitchBasicTraffic(value);
+      case SwitchBasicEvents:
+        return SwitchBasicEvents(value);
       case UpdateLevelAPropertiesPublishTopic:
         return UpdateLevelAPropertiesPublishTopic(value);
       case UpdateLevelAStatusPublishTopic:
@@ -208,10 +208,10 @@ class LocalSettings {
         return UpdateStatusRequestPublishTopic(value);
       case UpdateStatusRequestSubscribeTopic:
         return UpdateStatusRequestSubscribeTopic(value);
-      case UpdateTrafficRequestPublishTopic:
-        return UpdateTrafficRequestPublishTopic(value);
-      case UpdateTrafficRequestSubscribeTopic:
-        return UpdateTrafficRequestSubscribeTopic(value);
+      case UpdateEventsRequestPublishTopic:
+        return UpdateEventsRequestPublishTopic(value);
+      case UpdateEventsRequestSubscribeTopic:
+        return UpdateEventsRequestSubscribeTopic(value);
     }
 
     assert(false);

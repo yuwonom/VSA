@@ -28,7 +28,7 @@ class SettingsViewModel {
   bool get isActiveLevelC => _state.isActiveLevelC;
   bool get isActiveLevelD => _state.isActiveLevelD;
   bool get isActiveBasicVehicle => _state.isActiveBasicVehicle;
-  bool get isActiveBasicTraffic => _state.isActiveBasicTraffic;
+  bool get isActiveBasicEvents => _state.isActiveBasicEvents;
 
   String get levelAPropertiesPublishTopic => _state.levelAPropertiesPublishTopic;
   String get levelAStatusPublishTopic => _state.levelAStatusPublishTopic;
@@ -41,6 +41,6 @@ class SettingsViewModel {
   String get statusRequestPublishTopic => _state.statusRequestPublishTopic;
   String get statusRequestSubscribeTopic => _state.statusRequestSubscribeTopic;
 
-  String get trafficRequestPublishTopic => _state.trafficRequestPublishTopic;
-  String get trafficRequestSubscribeTopic => _state.trafficRequestSubscribeTopic;
+  String get eventsRequestPublishTopic => _state.eventsRequestPublishTopic;
+  String get eventsRequestSubscribeTopic => _state.eventsRequestSubscribeTopic;
 }

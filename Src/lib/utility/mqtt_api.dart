@@ -79,4 +79,6 @@ class MqttApi {
   static String propertiesRequestMessage(List<String> ids) => ids.join(",");
 
   static String statusRequestMessage(String id, int radius) => "$id,$radius";
+
+  static String eventsRequestMessage(String id, GpsPointDto point, int radius) => "$id,${point.latitude},${point.longitude},$radius";
 }

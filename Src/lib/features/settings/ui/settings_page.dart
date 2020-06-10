@@ -64,9 +64,9 @@ class _SettingsPageState extends State<SettingsPage> {
       _buildTileCheckbox("Level B", viewModel.isActiveLevelB, (bool checked) => _scaffoldKey.currentState.showSnackBar(notAvailableSnackBar)),
       _buildTileCheckbox("Level C", viewModel.isActiveLevelC, (bool checked) => _scaffoldKey.currentState.showSnackBar(notAvailableSnackBar)),
       _buildTileCheckbox("Level D", viewModel.isActiveLevelD, (bool checked) => _scaffoldKey.currentState.showSnackBar(notAvailableSnackBar)),
-      // Hide vehicle & traffic for now
+      // Hide vehicle & events for now
       // _buildTileCheckbox("Basic Vehicle", viewModel.isActiveBasicVehicle, (bool checked) => store.dispatch(UpdateSettings(SwitchBasicVehicle, checked))),
-      // _buildTileCheckbox("Basic Traffic", viewModel.isActiveBasicTraffic, (bool checked) => store.dispatch(UpdateSettings(SwitchBasicTraffic, checked))),
+      // _buildTileCheckbox("Basic Events", viewModel.isActiveBasicEvents, (bool checked) => store.dispatch(UpdateSettings(SwitchBasicEvents, checked))),
     ]);
 
     var listItems = <Widget>[
@@ -96,12 +96,12 @@ class _SettingsPageState extends State<SettingsPage> {
       listItems.add(vehicleTopicsTileGroup);
     }
 
-    if (viewModel.isActiveBasicTraffic) {
-      final trafficTopicsTileGroup = _buildTileGroup("Traffic Topics", <Widget>[
-        _buildTile(context, "Request traffic", viewModel.trafficRequestPublishTopic, UpdateTrafficRequestPublishTopic, validity: (String value) => value.isNotEmpty),
-        _buildTile(context, "Get traffic", viewModel.trafficRequestSubscribeTopic, UpdateTrafficRequestSubscribeTopic, validity: (String value) => value.isNotEmpty),
+    if (viewModel.isActiveBasicEvents) {
+      final eventsTopicsTileGroup = _buildTileGroup("Events Topics", <Widget>[
+        _buildTile(context, "Request events", viewModel.eventsRequestPublishTopic, UpdateEventsRequestPublishTopic, validity: (String value) => value.isNotEmpty),
+        _buildTile(context, "Get events", viewModel.eventsRequestSubscribeTopic, UpdateEventsRequestSubscribeTopic, validity: (String value) => value.isNotEmpty),
       ]);
-      listItems.add(trafficTopicsTileGroup);
+      listItems.add(eventsTopicsTileGroup);
     }
 
     final body = ListView(

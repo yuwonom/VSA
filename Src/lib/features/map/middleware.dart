@@ -81,11 +81,19 @@ class MqttIntegration {
   }
 
   void _handleConnectToMqttBrokerSuccessful(Store<AppState> store, ConnectToMqttBrokerSuccessful action, NextDispatcher next) {
-    void _publishProperties(SettingsState settings, VehicleDto user) {
-      // Basic messages
+    void _publishTopics(SettingsState settings, VehicleDto user) {
+      // Basic vehicle messages
       if (settings.isActiveBasicVehicle) {
         final topic = "${settings.propertiesPublishTopic}/${user.id}";
         final message = MqttApi.propertiesMessage(user.id, user.name, user.type, user.dimension);
+        store.dispatch(PublishMessageToMqttBroker(topic, message));
+      }
+
+      // Basic events messages
+      if (settings.isActiveBasicEvents) {
+        final topic = "${settings.eventsRequestPublishTopic}/${user.id}";
+        const radius = 5000; // 5km
+        final message = MqttApi.eventsRequestMessage(user.id, user.point, radius);
         store.dispatch(PublishMessageToMqttBroker(topic, message));
       }
 
@@ -107,14 +115,14 @@ class MqttIntegration {
         "${settings.propertiesRequestSubscribeTopic}/${user.id}",
       ];
       
-      // Basic messages
+      // Basic vehicle messages
       if (settings.isActiveBasicVehicle) {
         topics.add("${settings.statusRequestSubscribeTopic}/${user.id}");
       }
 
-      // Level A messages
-      if (settings.isActiveBasicTraffic) {
-        topics.add("${settings.trafficRequestSubscribeTopic}/${user.id}");
+      // Basic events messages
+      if (settings.isActiveBasicEvents) {
+        topics.add("${settings.eventsRequestSubscribeTopic}/${user.id}");
       }
 
       // Intersection messages
@@ -144,7 +152,7 @@ class MqttIntegration {
     const requestInterval = const Duration(milliseconds: 100);
 
     _subscribeTopics(settingsState, user);
-    _publishProperties(settingsState, user);
+    _publishTopics(settingsState, user);
     _startPeriodicRequests(settingsState, _nearbyRequestTimer, requestInterval, user);
     
     store.dispatch(ListenToMqttBroker());
@@ -212,8 +220,8 @@ class MqttIntegration {
       }
     }
 
-    void _handleTrafficRequestCallback(String data) {
-      // TODO: Handle traffic request callback
+    void _handleEventsRequestCallback(String data) {
+      // TODO: Handle events request callback
     }
 
     void _handleLevelAIntersectionCallback(String data) {
@@ -242,8 +250,8 @@ class MqttIntegration {
         _handlePropertiesRequestCallback(data);
       } else if (topic.startsWith(settingsState.statusRequestSubscribeTopic)) {
         _handleStatusRequestCallback(data);
-      } else if (topic.startsWith(settingsState.trafficRequestSubscribeTopic)) {
-        _handleTrafficRequestCallback(data);
+      } else if (topic.startsWith(settingsState.eventsRequestSubscribeTopic)) {
+        _handleEventsRequestCallback(data);
       } else if (topic.startsWith(settingsState.levelAIntersectionSubscribeTopic)) {
         _handleLevelAIntersectionCallback(data);
       } else if (topic.startsWith(settingsState.intersectionsRequestSubscribeTopic)) {

@@ -21,7 +21,7 @@ abstract class SettingsState implements Built<SettingsState, SettingsStateBuilde
     isActiveLevelC: false,
     isActiveLevelD: false,
     isActiveBasicVehicle: false,
-    isActiveBasicTraffic: false,
+    isActiveBasicEvents: false,
     levelAPropertiesPublishTopic: "VSA/vehProp/cycle",
     levelAStatusPublishTopic: "VSA/basicData/VRU/cycle",
     levelAIntersectionSubscribeTopic: "VSA/requests/all/cycle",
@@ -31,8 +31,8 @@ abstract class SettingsState implements Built<SettingsState, SettingsStateBuilde
     propertiesRequestSubscribeTopic: "VSA/request/vehProp/return",
     statusRequestPublishTopic: "VSA/request/vehSim/reqs",
     statusRequestSubscribeTopic: "VSA/request/vehSim/return",
-    trafficRequestPublishTopic: "VSA/traffic/nearby/reqs",
-    trafficRequestSubscribeTopic: "VSA/traffic/nearby/return",
+    eventsRequestPublishTopic: "VSA/events/nearby/reqs",
+    eventsRequestSubscribeTopic: "VSA/events/nearby/return",
     intersectionsRequestPublishTopic: "VSA/request/intersections/reqs",
     intersectionsRequestSubscribeTopic: "VSA/request/intersections/return",
     disconnectTopic: "VSA/disconnect",
@@ -48,7 +48,7 @@ abstract class SettingsState implements Built<SettingsState, SettingsStateBuilde
   bool get isActiveLevelC;
   bool get isActiveLevelD;
   bool get isActiveBasicVehicle;
-  bool get isActiveBasicTraffic;
+  bool get isActiveBasicEvents;
 
   String get levelAPropertiesPublishTopic;
   String get levelAStatusPublishTopic;
@@ -60,8 +60,8 @@ abstract class SettingsState implements Built<SettingsState, SettingsStateBuilde
   String get propertiesRequestSubscribeTopic;
   String get statusRequestPublishTopic;
   String get statusRequestSubscribeTopic;
-  String get trafficRequestPublishTopic;
-  String get trafficRequestSubscribeTopic;
+  String get eventsRequestPublishTopic;
+  String get eventsRequestSubscribeTopic;
 
   String get intersectionsRequestPublishTopic;
   String get intersectionsRequestSubscribeTopic;
