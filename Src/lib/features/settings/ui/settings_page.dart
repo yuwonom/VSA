@@ -84,6 +84,16 @@ class _SettingsPageState extends State<SettingsPage> {
       listItems.add(levelATileGroup);
     }
 
+    if (viewModel.isActiveLevelB) {
+      final levelBTileGroup = _buildTileGroup("Level B Topics", <Widget>[
+        _buildTile(context, "Publish current properties", viewModel.levelBPropertiesPublishTopic, UpdateLevelBPropertiesPublishTopic, validity: (String value) => value.isNotEmpty),
+        _buildTile(context, "Publish current status", viewModel.levelBStatusPublishTopic, UpdateLevelBStatusPublishTopic, validity: (String value) => value.isNotEmpty),
+        _buildTile(context, "Subscribe intersection", viewModel.levelBIntersectionSubscribeTopic, UpdateLevelBIntersectionSubscribeTopic, validity: (String value) => value.isNotEmpty),
+        _buildTile(context, "Subscribe events", viewModel.levelBEventsSubscribeTopic, UpdateLevelBEventsSubscribeTopic, validity: (String value) => value.isNotEmpty),
+      ]);
+      listItems.add(levelBTileGroup);
+    }
+
     if (viewModel.isActiveBasicVehicle) {
       final vehicleTopicsTileGroup = _buildTileGroup("Vehicle Topics", <Widget>[
         _buildTile(context, "Publish current properties", viewModel.propertiesPublishTopic, UpdatePropertiesPublishTopic, validity: (String value) => value.isNotEmpty),

@@ -1,6 +1,5 @@
 /// Authored by `@yuwonom (Michael Yuwono)`
 
-import 'package:built_value/built_value.dart';
 import 'package:flutter/material.dart';
 import 'package:redux/redux.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -40,6 +39,10 @@ class LocalSettings {
         UpdateLevelAPropertiesPublishTopic,
         UpdateLevelAStatusPublishTopic,
         UpdateLevelAIntersectionSubscribeTopic,
+        UpdateLevelBPropertiesPublishTopic,
+        UpdateLevelBStatusPublishTopic,
+        UpdateLevelBIntersectionSubscribeTopic,
+        UpdateLevelBEventsSubscribeTopic,
         UpdatePropertiesPublishTopic,
         UpdateStatusPublishTopic,
         UpdatePropertiesRequestPublishTopic,
@@ -136,6 +139,14 @@ class LocalSettings {
         return "levelAStatusPublishTopic";
       case UpdateLevelAIntersectionSubscribeTopic:
         return "levelAIntersectionSubscribeTopic";
+      case UpdateLevelBPropertiesPublishTopic:
+        return "levelBPropertiesPublishTopic";
+      case UpdateLevelBStatusPublishTopic:
+        return "levelBStatusPublishTopic";
+      case UpdateLevelBIntersectionSubscribeTopic:
+        return "levelBIntersectionSubscribeTopic";
+      case UpdateLevelBEventsSubscribeTopic:
+        return "levelBEventsSubscribeTopic";
       case UpdatePropertiesPublishTopic:
         return "propertiesPublishTopic";
       case UpdateStatusPublishTopic:
@@ -187,6 +198,14 @@ class LocalSettings {
         return UpdateLevelAStatusPublishTopic(value);
       case UpdateLevelAIntersectionSubscribeTopic:
         return UpdateLevelAIntersectionSubscribeTopic(value);
+      case UpdateLevelBPropertiesPublishTopic:
+        return UpdateLevelBPropertiesPublishTopic(value);
+      case UpdateLevelBStatusPublishTopic:
+        return UpdateLevelBStatusPublishTopic(value);
+      case UpdateLevelBIntersectionSubscribeTopic:
+        return UpdateLevelBIntersectionSubscribeTopic(value);
+      case UpdateLevelBEventsSubscribeTopic:
+        return UpdateLevelBEventsSubscribeTopic(value);
       case UpdatePropertiesPublishTopic:
         return UpdatePropertiesPublishTopic(value);
       case UpdateStatusPublishTopic:

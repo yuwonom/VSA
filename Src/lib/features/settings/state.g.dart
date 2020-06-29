@@ -22,6 +22,14 @@ class _$SettingsState extends SettingsState {
   @override
   final String levelAIntersectionSubscribeTopic;
   @override
+  final String levelBPropertiesPublishTopic;
+  @override
+  final String levelBStatusPublishTopic;
+  @override
+  final String levelBIntersectionSubscribeTopic;
+  @override
+  final String levelBEventsSubscribeTopic;
+  @override
   final String propertiesPublishTopic;
   @override
   final String statusPublishTopic;
@@ -59,6 +67,10 @@ class _$SettingsState extends SettingsState {
       this.levelAPropertiesPublishTopic,
       this.levelAStatusPublishTopic,
       this.levelAIntersectionSubscribeTopic,
+      this.levelBPropertiesPublishTopic,
+      this.levelBStatusPublishTopic,
+      this.levelBIntersectionSubscribeTopic,
+      this.levelBEventsSubscribeTopic,
       this.propertiesPublishTopic,
       this.statusPublishTopic,
       this.propertiesRequestPublishTopic,
@@ -98,6 +110,22 @@ class _$SettingsState extends SettingsState {
     if (levelAIntersectionSubscribeTopic == null) {
       throw new BuiltValueNullFieldError(
           'SettingsState', 'levelAIntersectionSubscribeTopic');
+    }
+    if (levelBPropertiesPublishTopic == null) {
+      throw new BuiltValueNullFieldError(
+          'SettingsState', 'levelBPropertiesPublishTopic');
+    }
+    if (levelBStatusPublishTopic == null) {
+      throw new BuiltValueNullFieldError(
+          'SettingsState', 'levelBStatusPublishTopic');
+    }
+    if (levelBIntersectionSubscribeTopic == null) {
+      throw new BuiltValueNullFieldError(
+          'SettingsState', 'levelBIntersectionSubscribeTopic');
+    }
+    if (levelBEventsSubscribeTopic == null) {
+      throw new BuiltValueNullFieldError(
+          'SettingsState', 'levelBEventsSubscribeTopic');
     }
     if (propertiesPublishTopic == null) {
       throw new BuiltValueNullFieldError(
@@ -165,6 +193,11 @@ class _$SettingsState extends SettingsState {
         levelAStatusPublishTopic == other.levelAStatusPublishTopic &&
         levelAIntersectionSubscribeTopic ==
             other.levelAIntersectionSubscribeTopic &&
+        levelBPropertiesPublishTopic == other.levelBPropertiesPublishTopic &&
+        levelBStatusPublishTopic == other.levelBStatusPublishTopic &&
+        levelBIntersectionSubscribeTopic ==
+            other.levelBIntersectionSubscribeTopic &&
+        levelBEventsSubscribeTopic == other.levelBEventsSubscribeTopic &&
         propertiesPublishTopic == other.propertiesPublishTopic &&
         statusPublishTopic == other.statusPublishTopic &&
         propertiesRequestPublishTopic == other.propertiesRequestPublishTopic &&
@@ -203,31 +236,17 @@ class _$SettingsState extends SettingsState {
                                                                 $jc(
                                                                     $jc(
                                                                         $jc(
-                                                                            $jc(
-                                                                                $jc(
-                                                                                    0,
-                                                                                    broker
-                                                                                        .hashCode),
-                                                                                topicLevel
-                                                                                    .hashCode),
-                                                                            isActiveBasicVehicle
-                                                                                .hashCode),
-                                                                        isActiveBasicEvents
-                                                                            .hashCode),
-                                                                    levelAPropertiesPublishTopic
-                                                                        .hashCode),
-                                                                levelAStatusPublishTopic
-                                                                    .hashCode),
-                                                            levelAIntersectionSubscribeTopic
-                                                                .hashCode),
-                                                        propertiesPublishTopic
-                                                            .hashCode),
-                                                    statusPublishTopic
-                                                        .hashCode),
-                                                propertiesRequestPublishTopic
-                                                    .hashCode),
-                                            propertiesRequestSubscribeTopic
-                                                .hashCode),
+                                                                            $jc($jc($jc($jc($jc($jc(0, broker.hashCode), topicLevel.hashCode), isActiveBasicVehicle.hashCode), isActiveBasicEvents.hashCode), levelAPropertiesPublishTopic.hashCode),
+                                                                                levelAStatusPublishTopic.hashCode),
+                                                                            levelAIntersectionSubscribeTopic.hashCode),
+                                                                        levelBPropertiesPublishTopic.hashCode),
+                                                                    levelBStatusPublishTopic.hashCode),
+                                                                levelBIntersectionSubscribeTopic.hashCode),
+                                                            levelBEventsSubscribeTopic.hashCode),
+                                                        propertiesPublishTopic.hashCode),
+                                                    statusPublishTopic.hashCode),
+                                                propertiesRequestPublishTopic.hashCode),
+                                            propertiesRequestSubscribeTopic.hashCode),
                                         statusRequestPublishTopic.hashCode),
                                     statusRequestSubscribeTopic.hashCode),
                                 eventsRequestPublishTopic.hashCode),
@@ -250,6 +269,11 @@ class _$SettingsState extends SettingsState {
           ..add('levelAStatusPublishTopic', levelAStatusPublishTopic)
           ..add('levelAIntersectionSubscribeTopic',
               levelAIntersectionSubscribeTopic)
+          ..add('levelBPropertiesPublishTopic', levelBPropertiesPublishTopic)
+          ..add('levelBStatusPublishTopic', levelBStatusPublishTopic)
+          ..add('levelBIntersectionSubscribeTopic',
+              levelBIntersectionSubscribeTopic)
+          ..add('levelBEventsSubscribeTopic', levelBEventsSubscribeTopic)
           ..add('propertiesPublishTopic', propertiesPublishTopic)
           ..add('statusPublishTopic', statusPublishTopic)
           ..add('propertiesRequestPublishTopic', propertiesRequestPublishTopic)
@@ -310,6 +334,30 @@ class SettingsStateBuilder
           String levelAIntersectionSubscribeTopic) =>
       _$this._levelAIntersectionSubscribeTopic =
           levelAIntersectionSubscribeTopic;
+
+  String _levelBPropertiesPublishTopic;
+  String get levelBPropertiesPublishTopic =>
+      _$this._levelBPropertiesPublishTopic;
+  set levelBPropertiesPublishTopic(String levelBPropertiesPublishTopic) =>
+      _$this._levelBPropertiesPublishTopic = levelBPropertiesPublishTopic;
+
+  String _levelBStatusPublishTopic;
+  String get levelBStatusPublishTopic => _$this._levelBStatusPublishTopic;
+  set levelBStatusPublishTopic(String levelBStatusPublishTopic) =>
+      _$this._levelBStatusPublishTopic = levelBStatusPublishTopic;
+
+  String _levelBIntersectionSubscribeTopic;
+  String get levelBIntersectionSubscribeTopic =>
+      _$this._levelBIntersectionSubscribeTopic;
+  set levelBIntersectionSubscribeTopic(
+          String levelBIntersectionSubscribeTopic) =>
+      _$this._levelBIntersectionSubscribeTopic =
+          levelBIntersectionSubscribeTopic;
+
+  String _levelBEventsSubscribeTopic;
+  String get levelBEventsSubscribeTopic => _$this._levelBEventsSubscribeTopic;
+  set levelBEventsSubscribeTopic(String levelBEventsSubscribeTopic) =>
+      _$this._levelBEventsSubscribeTopic = levelBEventsSubscribeTopic;
 
   String _propertiesPublishTopic;
   String get propertiesPublishTopic => _$this._propertiesPublishTopic;
@@ -393,6 +441,10 @@ class SettingsStateBuilder
       _levelAPropertiesPublishTopic = _$v.levelAPropertiesPublishTopic;
       _levelAStatusPublishTopic = _$v.levelAStatusPublishTopic;
       _levelAIntersectionSubscribeTopic = _$v.levelAIntersectionSubscribeTopic;
+      _levelBPropertiesPublishTopic = _$v.levelBPropertiesPublishTopic;
+      _levelBStatusPublishTopic = _$v.levelBStatusPublishTopic;
+      _levelBIntersectionSubscribeTopic = _$v.levelBIntersectionSubscribeTopic;
+      _levelBEventsSubscribeTopic = _$v.levelBEventsSubscribeTopic;
       _propertiesPublishTopic = _$v.propertiesPublishTopic;
       _statusPublishTopic = _$v.statusPublishTopic;
       _propertiesRequestPublishTopic = _$v.propertiesRequestPublishTopic;
@@ -439,6 +491,11 @@ class SettingsStateBuilder
               levelAStatusPublishTopic: levelAStatusPublishTopic,
               levelAIntersectionSubscribeTopic:
                   levelAIntersectionSubscribeTopic,
+              levelBPropertiesPublishTopic: levelBPropertiesPublishTopic,
+              levelBStatusPublishTopic: levelBStatusPublishTopic,
+              levelBIntersectionSubscribeTopic:
+                  levelBIntersectionSubscribeTopic,
+              levelBEventsSubscribeTopic: levelBEventsSubscribeTopic,
               propertiesPublishTopic: propertiesPublishTopic,
               statusPublishTopic: statusPublishTopic,
               propertiesRequestPublishTopic: propertiesRequestPublishTopic,

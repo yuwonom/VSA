@@ -15,6 +15,10 @@ final Reducer<SettingsState> settingsStateReducer = combineReducers([
     TypedReducer<SettingsState, UpdateLevelAPropertiesPublishTopic>(_updateLevelAPropertiesPublishTopicReducer),
     TypedReducer<SettingsState, UpdateLevelAStatusPublishTopic>(_updateLevelAStatusPublishTopicReducer),
     TypedReducer<SettingsState, UpdateLevelAIntersectionSubscribeTopic>(_updateLevelAIntersectionSubscribeTopicReducer),
+    TypedReducer<SettingsState, UpdateLevelBPropertiesPublishTopic>(_updateLevelBPropertiesPublishTopicReducer),
+    TypedReducer<SettingsState, UpdateLevelBStatusPublishTopic>(_updateLevelBStatusPublishTopicReducer),
+    TypedReducer<SettingsState, UpdateLevelBIntersectionSubscribeTopic>(_updateLevelBIntersectionSubscribeTopicReducer),
+    TypedReducer<SettingsState, UpdateLevelBEventsSubscribeTopic>(_updateLevelBEventsSubscribeTopicReducer),
     TypedReducer<SettingsState, UpdatePropertiesPublishTopic>(_updatePropertiesPublishTopicReducer),
     TypedReducer<SettingsState, UpdateStatusPublishTopic>(_updateStatusPublishTopicReducer),
     TypedReducer<SettingsState, UpdatePropertiesRequestPublishTopic>(_updatePropertiesRequestPublishTopicReducer),
@@ -54,6 +58,18 @@ SettingsState _updateLevelAStatusPublishTopicReducer(SettingsState state, Update
 
 SettingsState _updateLevelAIntersectionSubscribeTopicReducer(SettingsState state, UpdateLevelAIntersectionSubscribeTopic action) => state.rebuild((b) => b
   ..levelAIntersectionSubscribeTopic = action.value);
+
+SettingsState _updateLevelBPropertiesPublishTopicReducer(SettingsState state, UpdateLevelBPropertiesPublishTopic action) => state.rebuild((b) => b
+  ..levelBPropertiesPublishTopic = action.value);
+
+SettingsState _updateLevelBStatusPublishTopicReducer(SettingsState state, UpdateLevelBStatusPublishTopic action) => state.rebuild((b) => b
+  ..levelBStatusPublishTopic = action.value);
+
+SettingsState _updateLevelBIntersectionSubscribeTopicReducer(SettingsState state, UpdateLevelBIntersectionSubscribeTopic action) => state.rebuild((b) => b
+  ..levelBIntersectionSubscribeTopic = action.value);
+
+SettingsState _updateLevelBEventsSubscribeTopicReducer(SettingsState state, UpdateLevelBEventsSubscribeTopic action) => state.rebuild((b) => b
+  ..levelBEventsSubscribeTopic = action.value);
 
 SettingsState _updatePropertiesPublishTopicReducer(SettingsState state, UpdatePropertiesPublishTopic action) => state.rebuild((b) => b
   ..propertiesPublishTopic = action.value);

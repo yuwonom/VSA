@@ -169,6 +169,46 @@ class UpdateLevelAIntersectionSubscribeTopic {
 }
 
 @immutable
+class UpdateLevelBPropertiesPublishTopic {
+  UpdateLevelBPropertiesPublishTopic(this.value) : assert (value != null);
+
+  final String value;
+  
+  @override
+  String toString() => "UpdateLevelBPropertiesPublishTopic $value";
+}
+
+@immutable
+class UpdateLevelBStatusPublishTopic {
+  UpdateLevelBStatusPublishTopic(this.value) : assert (value != null);
+
+  final String value;
+  
+  @override
+  String toString() => "UpdateLevelBStatusPublishTopic $value";
+}
+
+@immutable
+class UpdateLevelBIntersectionSubscribeTopic {
+  UpdateLevelBIntersectionSubscribeTopic(this.value) : assert (value != null);
+
+  final String value;
+  
+  @override
+  String toString() => "UpdateLevelBIntersectionSubscribeTopic $value";
+}
+
+@immutable
+class UpdateLevelBEventsSubscribeTopic {
+  UpdateLevelBEventsSubscribeTopic(this.value) : assert (value != null);
+
+  final String value;
+  
+  @override
+  String toString() => "UpdateLevelBEventsSubscribeTopic $value";
+}
+
+@immutable
 class UpdatePropertiesPublishTopic {
   UpdatePropertiesPublishTopic(this.value) : assert (value != null);
 

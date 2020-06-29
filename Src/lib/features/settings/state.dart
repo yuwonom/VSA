@@ -22,6 +22,10 @@ abstract class SettingsState implements Built<SettingsState, SettingsStateBuilde
     levelAPropertiesPublishTopic: "VSA/vehProp/cycle",
     levelAStatusPublishTopic: "VSA/basicData/VRU/cycle",
     levelAIntersectionSubscribeTopic: "VSA/requests/all/cycle",
+    levelBPropertiesPublishTopic: "VSA/vehProp/cycle",
+    levelBStatusPublishTopic: "VSA/basicData/VRU/cycle",
+    levelBIntersectionSubscribeTopic: "VSA/requests/all/cycle",
+    levelBEventsSubscribeTopic: "VSA/requests/roadData",
     propertiesPublishTopic: "VSA/vehProp",
     statusPublishTopic: "VSA/vehSim",
     propertiesRequestPublishTopic: "VSA/request/vehProp/reqs",
@@ -47,6 +51,11 @@ abstract class SettingsState implements Built<SettingsState, SettingsStateBuilde
   String get levelAPropertiesPublishTopic;
   String get levelAStatusPublishTopic;
   String get levelAIntersectionSubscribeTopic;
+
+  String get levelBPropertiesPublishTopic;
+  String get levelBStatusPublishTopic;
+  String get levelBIntersectionSubscribeTopic;
+  String get levelBEventsSubscribeTopic;
 
   String get propertiesPublishTopic;
   String get statusPublishTopic;

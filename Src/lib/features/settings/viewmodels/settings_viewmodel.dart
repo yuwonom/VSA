@@ -35,6 +35,11 @@ class SettingsViewModel {
   String get levelAStatusPublishTopic => _state.levelAStatusPublishTopic;
   String get levelAIntersectionSubscribeTopic => _state.levelAIntersectionSubscribeTopic;
 
+  String get levelBPropertiesPublishTopic => _state.levelBPropertiesPublishTopic;
+  String get levelBStatusPublishTopic => _state.levelBStatusPublishTopic;
+  String get levelBIntersectionSubscribeTopic => _state.levelBIntersectionSubscribeTopic;
+  String get levelBEventsSubscribeTopic => _state.levelBEventsSubscribeTopic;
+
   String get propertiesPublishTopic => _state.propertiesPublishTopic;
   String get statusPublishTopic => _state.statusPublishTopic;
   String get propertiesRequestPublishTopic => _state.propertiesRequestPublishTopic;

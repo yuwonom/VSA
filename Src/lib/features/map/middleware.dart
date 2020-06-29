@@ -104,6 +104,13 @@ class MqttIntegration {
         final message = MqttApi.propertiesMessage(user.id, user.name, user.type, user.dimension);
         store.dispatch(PublishMessageToMqttBroker(topic, message));
       }
+
+      // Level B messages
+      if (settings.topicLevel == TopicLevelDto.levelB && user.type == VehicleTypeDto.cycle) {
+        final topic = "${settings.levelBPropertiesPublishTopic}";
+        final message = MqttApi.propertiesMessage(user.id, user.name, user.type, user.dimension);
+        store.dispatch(PublishMessageToMqttBroker(topic, message));
+      }
       
       // Intersection messages
       store.dispatch(PublishMessageToMqttBroker("${settings.intersectionsRequestPublishTopic}/${user.id}", ""));
@@ -124,6 +131,11 @@ class MqttIntegration {
       // Basic events messages
       if (settings.isActiveBasicEvents) {
         topics.add("${settings.eventsRequestSubscribeTopic}/${user.id}");
+      }
+
+      // Level B messages
+      if (settings.topicLevel == TopicLevelDto.levelB && user.type == VehicleTypeDto.cycle) {
+        topics.add("${settings.levelBEventsSubscribeTopic}/${user.id}");
       }
 
       // Intersection messages
@@ -303,7 +315,16 @@ class MqttIntegration {
       return;
     }
 
+    // Level A messages
     if (settingsState.topicLevel == TopicLevelDto.levelA && mapState.userVehicle.type == VehicleTypeDto.car) {
+      _syncIntersectionSubscription(
+        settingsState.levelAIntersectionSubscribeTopic,
+        mapState.currentIntersectionId,
+        action.id);
+    }
+
+    // Level B messages
+    if (settingsState.topicLevel == TopicLevelDto.levelB) {
       _syncIntersectionSubscription(
         settingsState.levelAIntersectionSubscribeTopic,
         mapState.currentIntersectionId,
