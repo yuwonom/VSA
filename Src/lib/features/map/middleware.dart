@@ -37,7 +37,7 @@ class LocalGpsIntegration {
 
   void _handleUpdateUserGpsPoint(Store<AppState> store, UpdateUserGpsPoint action, NextDispatcher next) {
     if (store.state.map.connectionState == MqttConnectionState.connected) {
-      store.dispatch(RecordUserGpsPoint(action.point));
+      // store.dispatch(RecordUserGpsPoint(action.point));
     }
     next(action);
   }
@@ -60,6 +60,7 @@ class MqttIntegration {
 
   StreamSubscription<MqttMessage> _mqttListener;
   Timer _nearbyRequestTimer;
+  Timer _publishGeolocationTimer;
 
   void _handleConnectToMqttBroker(Store<AppState> store, ConnectToMqttBroker action, NextDispatcher next) {
     Future<Null> _connectToMqttBroker(Store<AppState> store, ConnectToMqttBroker action) async {
@@ -115,7 +116,7 @@ class MqttIntegration {
       // Intersection messages
       store.dispatch(PublishMessageToMqttBroker("${settings.intersectionsRequestPublishTopic}/${user.id}", ""));
       
-      store.dispatch(RecordUserGpsPoint(user.point));
+      // store.dispatch(RecordUserGpsPoint(user.point));
     }
     
     void _subscribeTopics(SettingsState settings, VehicleDto user) {
@@ -146,7 +147,7 @@ class MqttIntegration {
       }
     }
 
-    void _startPeriodicRequests(SettingsState settings, Timer timer, Duration interval, VehicleDto user) {
+    void _startPeriodicRequests(SettingsState settings, Duration interval, VehicleDto user) {
       _nearbyRequestTimer = Timer.periodic(interval, (_) {
         String topic;
         String message;
@@ -157,6 +158,10 @@ class MqttIntegration {
           store.dispatch(PublishMessageToMqttBroker(topic, message));
         }
       });
+
+      _publishGeolocationTimer = Timer.periodic(interval, (_) {
+        store.dispatch(RecordUserGpsPoint(user.point));
+      });
     }
     
     final mapState = store.state.map;
@@ -166,7 +171,7 @@ class MqttIntegration {
 
     _subscribeTopics(settingsState, user);
     _publishTopics(settingsState, user);
-    _startPeriodicRequests(settingsState, _nearbyRequestTimer, requestInterval, user);
+    _startPeriodicRequests(settingsState, requestInterval, user);
     
     store.dispatch(ListenToMqttBroker());
     next(action);
@@ -178,6 +183,7 @@ class MqttIntegration {
     
     _mqttListener?.cancel();
     _nearbyRequestTimer?.cancel();
+    _publishGeolocationTimer?.cancel();
 
     api.disconnect();
     next(action);
