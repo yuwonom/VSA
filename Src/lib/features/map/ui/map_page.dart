@@ -7,6 +7,7 @@ import 'package:mqtt_client/mqtt_client.dart';
 import 'package:redux/redux.dart';
 import 'package:vsa/features/map/ui/map_details_page.dart';
 import 'package:vsa/features/map/ui/map_minimal_page.dart';
+import 'package:vsa/features/map/ui/map_normal_page.dart';
 import 'package:vsa/features/map/viewmodels/map_viewmodel.dart';
 import 'package:vsa/features/settings/ui/settings_page.dart';
 import 'package:vsa/state.dart';
@@ -20,6 +21,7 @@ class MapPage extends StatefulWidget {
 class _MapPageState extends State<MapPage> {
   final _pages = [
     MapMinimalPage(),
+    MapNormalPage(),
     MapDetailsPage(),
   ];
 
@@ -38,7 +40,8 @@ class _MapPageState extends State<MapPage> {
       iconSize: 20.0,
       tooltip: "Switch page",
       onPressed: viewModel.connectionState == MqttConnectionState.disconnected || viewModel.connectionState == MqttConnectionState.faulted
-        ? () => setState(() => _pageIndex = (_pageIndex + 1) % _pages.length)
+        ? () => showDialog(context: context, builder: (_) => SwitchMapDialog(_pageIndex,
+            onChanged: (int index) => setState(() => _pageIndex = index)))
         : null,
     );
 
@@ -69,5 +72,76 @@ class _MapPageState extends State<MapPage> {
     );
 
     return scaffold;
+  }
+}
+
+class SwitchMapDialog extends StatefulWidget {
+  const SwitchMapDialog(this.currentIndex, {this.onChanged})
+    : assert(currentIndex != null);
+
+  final int currentIndex;
+  final ValueChanged<int> onChanged;
+
+  @override
+  _SwitchMapDialogState createState() => _SwitchMapDialogState();
+}
+
+class _SwitchMapDialogState extends State<SwitchMapDialog> {
+  final _pagesName = <String>[
+    "Minimal",
+    "Normal",
+    "Details",
+  ];
+  
+  int _selectedIndex;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedIndex = widget.currentIndex;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final tiles = Column(
+      children: _pagesName.map((String value) => Material(
+        color: value == _pagesName[_selectedIndex]
+          ? AppColors.gray : AppColors.white,
+        child: ListTile(
+          contentPadding: AppEdges.smallHorizontal,
+          title: Text(value, style: AppTextStyles.body1.copyWith(color: AppColors.black)),
+          trailing: value == _pagesName[_selectedIndex]
+            ? Icon(Icons.check, color: AppColors.green) : null,
+          onTap: () {
+            final selectedIndex = _pagesName.indexOf(value);
+            setState(() => _selectedIndex = selectedIndex);
+            if (widget.onChanged != null) {
+              widget.onChanged(_selectedIndex);
+            }
+            Navigator.pop(context);
+          },
+        ),
+      )).toList(),  
+    );
+
+    final container = Card(
+      color: AppColors.white,
+      elevation: 3.0,
+      shape: AppBorders.bezel,
+      margin: AppEdges.mediumHorizontal,
+      clipBehavior: Clip.antiAlias,
+      child: tiles,
+    );
+
+    return Scaffold(
+      backgroundColor: Colors.transparent,
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          container,
+        ],
+      ),
+    );
   }
 }

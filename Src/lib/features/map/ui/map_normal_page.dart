@@ -19,21 +19,12 @@ import 'package:vsa/state.dart';
 import 'package:vsa/themes/theme.dart';
 import 'package:vsa/utility/geolocator.dart';
 
-class MapMinimalPage extends StatelessWidget {
+class MapNormalPage extends StatefulWidget {
   @override
-  Widget build(BuildContext context) => StoreConnector<AppState, MapViewModel>(
-      converter: (Store<AppState> store) => MapViewModel(store.state.map, store.state.settings),
-      builder: (BuildContext context, MapViewModel viewModel) => viewModel.userVehicle.type == VehicleTypeDto.car
-        ? _CarPage() : _CyclePage(),
-    );
+  _MapNormalPageState createState() => _MapNormalPageState();
 }
 
-class _CarPage extends StatefulWidget {
-  @override
-  _CarPageState createState() => _CarPageState();
-}
-
-class _CarPageState extends State<_CarPage> {
+class _MapNormalPageState extends State<MapNormalPage> {
   final double _defaultZoom = 20;
   final double _defaultBearing = 0;
   final double _defaultTilt = 0;
@@ -427,8 +418,7 @@ class _CyclePageState extends State<_CyclePage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) => StoreConnector<AppState, MapViewModel>(
-      onInit: (Store<AppState> store) => Future.delayed(const Duration(seconds: 1))
-          .then((_) => _startGpsListeners(store)),
+      onInit: (Store<AppState> store) => _startGpsListeners(store),
       converter: (Store<AppState> store) => MapViewModel(store.state.map, store.state.settings),
       builder: (BuildContext context, MapViewModel viewModel) => _buildPage(context, StoreProvider.of(context), viewModel),
     );
