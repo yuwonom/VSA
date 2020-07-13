@@ -3,11 +3,9 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_compass/flutter_compass.dart';
 import 'package:flutter_redux/flutter_redux.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:redux/redux.dart';
 import 'package:vsa/features/map/actions.dart';
@@ -17,37 +15,25 @@ import 'package:vsa/features/map/viewmodels/details_viewmodel.dart';
 import 'package:vsa/features/map/viewmodels/map_viewmodel.dart';
 import 'package:vsa/state.dart';
 import 'package:vsa/themes/theme.dart';
+import 'package:vsa/themes/vsa_map.dart';
 import 'package:vsa/utility/geolocator.dart';
 
-class MapMinimalPage extends StatelessWidget {
+class MapMinimalPage extends StatefulWidget {
   @override
-  Widget build(BuildContext context) => StoreConnector<AppState, MapViewModel>(
-      converter: (Store<AppState> store) => MapViewModel(store.state.map, store.state.settings),
-      builder: (BuildContext context, MapViewModel viewModel) => viewModel.userVehicle.type == VehicleTypeDto.car
-        ? _CarPage() : _CyclePage(),
-    );
+  _MapMinimalPageState createState() => _MapMinimalPageState();
 }
 
-class _CarPage extends StatefulWidget {
-  @override
-  _CarPageState createState() => _CarPageState();
-}
-
-class _CarPageState extends State<_CarPage> {
-  final double _defaultZoom = 20;
-  final double _defaultBearing = 0;
-  final double _defaultTilt = 0;
-
-  GoogleMapController _mapController;
+class _MapMinimalPageState extends State<MapMinimalPage> {
   StreamSubscription<double> _directionStream;
   StreamSubscription<GpsPointDto> _gpsPointStream;
-
-  double _direction;
+  StreamSubscription _timerStream;
 
   @override
   void initState() {
     super.initState();
-    _direction = _defaultBearing;
+    // Rebuild page every second
+    _timerStream = Stream.periodic(Duration(seconds: 1))
+      .listen((_) => setState((){}));
   }
 
   @override
@@ -56,18 +42,66 @@ class _CarPageState extends State<_CarPage> {
     Geolocator.instance.resetController();
     _directionStream?.cancel();
     _gpsPointStream?.cancel();
+    _timerStream?.cancel();
   }
 
   @override
   Widget build(BuildContext context) => StoreConnector<AppState, MapViewModel>(
+      onInit: (Store<AppState> store) => Future.delayed(const Duration(seconds: 1))
+          .then((_) => _startGpsListeners(store)),
       converter: (Store<AppState> store) => MapViewModel(store.state.map, store.state.settings),
-      builder: (BuildContext context, MapViewModel viewModel) => _buildPage(context, StoreProvider.of(context), viewModel),
+      builder: (BuildContext context, MapViewModel viewModel) => viewModel.userVehicle.type == VehicleTypeDto.car
+        ? _CarPage(context, viewModel) : _CyclePage(context, viewModel),
     );
-    
-  Widget _buildPage(BuildContext context, Store<AppState> store, MapViewModel viewModel) {
-    final map = AbsorbPointer(
-      absorbing: true,
-      child: _buildMap(store, viewModel),
+  
+
+  void _startGpsListeners(Store<AppState> store) {
+    _directionStream = FlutterCompass.events
+      .listen((double direction) {
+          final userVehicle = store.state.map.userVehicle;
+
+          if (userVehicle.point == null) {
+            return;
+          }
+
+          final point = userVehicle.point
+            .rebuild((b) => b
+              ..heading = direction
+              ..dateTime = DateTime.now().toUtc());
+          store.dispatch(UpdateUserGpsPoint(point));
+        },
+        cancelOnError: true,
+      );
+
+    _gpsPointStream = Geolocator.instance
+      .getEvents()
+      .listen((GpsPointDto point) {
+          store.dispatch(UpdateUserGpsPoint(point));
+        },
+        cancelOnError: true,
+      );
+  }
+}
+
+class _CarPage extends StatelessWidget {
+  _CarPage(this.context, this.viewModel);
+
+  final BuildContext context;
+  final MapViewModel viewModel;
+
+  Store<AppState> get store => StoreProvider.of(context);
+
+  @override
+  Widget build(BuildContext context) {
+    final canvasHeight = MediaQuery.of(context).size.height - 80;
+    final customMap = OverflowBox(
+      alignment: Alignment.bottomCenter,
+      maxHeight: canvasHeight,
+      minHeight: canvasHeight,
+      child: CustomPaint(
+        painter: VSAMapIntersections(),
+        child: Container(),
+      ),
     );
 
     final topView = Align(
@@ -83,16 +117,19 @@ class _CarPageState extends State<_CarPage> {
         children: [
           _buildSpeedIndicator(viewModel),
           _buildBottomBar(store, viewModel),
-        ]
+        ],
       ),
     );
 
-    final page = Stack(
-      children: <Widget>[
-        map,
-        topView,
-        bottomView,
-      ],
+    final page = Container(
+      color: AppColors.white,
+      child: Stack(
+        children: <Widget>[
+          customMap,
+          topView,
+          bottomView,
+        ],
+      ),
     );
 
     return page;
@@ -258,182 +295,18 @@ class _CarPageState extends State<_CarPage> {
 
     return card;
   }
-
-  Widget _buildMap(Store<AppState> store, MapViewModel viewModel) {
-    final markers = Set<Marker>();
-    final polylines = Set<Polyline>();
-
-    if (viewModel.hasUserPoint) {
-      _buildVehicleMarker(viewModel.userVehicle, true)
-        ..then((Marker marker) => setState(() => markers.add(marker)));
-    }
-
-    if (viewModel.hasOtherVehicles) {
-      viewModel.otherVehicles.values.forEach((VehicleDto other) {
-        _buildVehicleMarker(other, false)
-          ..then((Marker marker) => setState(() => markers.add(marker)));
-      });
-    }
-
-    if (viewModel.connectionState == MqttConnectionState.connected &&
-      viewModel.hasOtherVehicles && viewModel.securityLevel > SecurityLevelDto.controlled) {
-        polylines.add(_buildSecurityLine(viewModel));
-    }
-    
-    final map = GoogleMap(
-      initialCameraPosition: CameraPosition(
-        target: viewModel.userPoint,
-        zoom: _defaultZoom,
-        bearing: _defaultBearing,
-        tilt: _defaultTilt,
-      ),
-      onMapCreated: (GoogleMapController controller) {
-        _mapController = controller;
-        rootBundle
-          .loadString("assets/files/simple_map_style.txt")
-          .then((String style) => _mapController.setMapStyle(style));
-
-        _directionStream = FlutterCompass.events
-          .listen((double direction) {
-              setState(() => _direction = direction);
-
-              final userVehicle = store.state.map.userVehicle;
-
-              if (userVehicle.point == null) {
-                return;
-              }
-
-              final point = userVehicle.point
-                .rebuild((b) => b
-                  ..heading = _direction
-                  ..dateTime = DateTime.now().toUtc());
-              store.dispatch(UpdateUserGpsPoint(point));
-              
-              _stickMap(point);
-            },
-            cancelOnError: true,
-          );
-
-        _gpsPointStream = Geolocator.instance
-          .getEvents()
-          .listen((GpsPointDto point) {
-              store.dispatch(UpdateUserGpsPoint(point));
-              _stickMap(point);
-            },
-            cancelOnError: true,
-          );
-      },
-      mapType: MapType.normal,
-      markers: markers,
-      polylines: polylines,
-      compassEnabled: false,
-      myLocationEnabled: false,
-      myLocationButtonEnabled: false,
-      tiltGesturesEnabled: false,
-    );
-
-    return map;
-  }
-
-  Future<Marker> _buildVehicleMarker(VehicleDto vehicle, bool isUser) async {
-    final iconPath = "assets/images/vehicles/";
-    final iconType = vehicle.type.toString();
-    final iconFor = isUser ? "self" : "other";
-    final icon = BitmapDescriptor.fromAssetImage(
-      const ImageConfiguration(),
-      "$iconPath${iconType}_$iconFor.png",
-    );
-
-    final marker = Marker(
-      markerId: MarkerId(vehicle.id),
-      flat: true,
-      rotation: isUser ? _direction : vehicle.point.heading,
-      position: vehicle.point.toLatLng(),
-      icon: await icon,
-      anchor: const Offset(0.5, 0.5),
-      zIndex: isUser
-        ? MapViewModel.USER_ACCURACY_ZINDEX.toDouble()
-        : MapViewModel.OTHER_ACCURACY_ZINDEX.toDouble(),
-    );
-
-    return marker;
-  }
-
-  Polyline _buildSecurityLine(MapViewModel viewModel) {
-    final userPoint = viewModel.userPoint;
-    final otherPoint = viewModel.closestOtherVehiclePoint;
-
-    final polyline = Polyline(
-      polylineId: PolylineId(viewModel.closestOtherVehicleId),
-      color: AppColors.red.withAlpha(100),
-      patterns: <PatternItem>[
-        PatternItem.dash(50.0),
-        PatternItem.gap(20.0),
-      ],
-      points: <LatLng>[
-        userPoint,
-        otherPoint,
-      ],
-      zIndex: MapViewModel.SECURITY_LINE_ZINDEX,
-    );
-
-    return polyline;
-  }
-
-  void _stickMap(GpsPointDto point) {
-    if (point == null || _mapController == null) {
-      return;
-    }
-
-    _mapController.moveCamera(
-      CameraUpdate.newCameraPosition(
-        CameraPosition(
-          target: point.toLatLng(),
-          zoom: _defaultZoom,
-          bearing: _direction,
-          tilt: _defaultTilt,
-        ),
-      ),
-    );
-  }
 }
 
-class _CyclePage extends StatefulWidget {
-  @override
-  _CyclePageState createState() => _CyclePageState();
-}
+class _CyclePage extends StatelessWidget {
+  _CyclePage(this.context, this.viewModel);
 
-class _CyclePageState extends State<_CyclePage> with TickerProviderStateMixin {
-  StreamSubscription<double> _directionStream;
-  StreamSubscription<GpsPointDto> _gpsPointStream;
-  StreamSubscription _timerStream;
+  final BuildContext context;
+  final MapViewModel viewModel;
+
+  Store<AppState> get store => StoreProvider.of(context);
 
   @override
-  void initState() {
-    super.initState();
-    // Rebuild page every second
-    _timerStream = Stream.periodic(Duration(seconds: 1))
-      .listen((_) => setState((){}));
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    Geolocator.instance.resetController();
-    _directionStream?.cancel();
-    _gpsPointStream?.cancel();
-    _timerStream?.cancel();
-  }
-
-  @override
-  Widget build(BuildContext context) => StoreConnector<AppState, MapViewModel>(
-      onInit: (Store<AppState> store) => Future.delayed(const Duration(seconds: 1))
-          .then((_) => _startGpsListeners(store)),
-      converter: (Store<AppState> store) => MapViewModel(store.state.map, store.state.settings),
-      builder: (BuildContext context, MapViewModel viewModel) => _buildPage(context, StoreProvider.of(context), viewModel),
-    );
-
-  Widget _buildPage(BuildContext context, Store<AppState> store, MapViewModel viewModel) {
+  Widget build(BuildContext context) {
     final body = Column(
       children: [
         Expanded(
@@ -539,33 +412,6 @@ class _CyclePageState extends State<_CyclePage> with TickerProviderStateMixin {
     );
 
     return bottomBar;
-  }
-
-  void _startGpsListeners(Store<AppState> store) {
-    _directionStream = FlutterCompass.events
-      .listen((double direction) {
-          final userVehicle = store.state.map.userVehicle;
-
-          if (userVehicle.point == null) {
-            return;
-          }
-
-          final point = userVehicle.point
-            .rebuild((b) => b
-              ..heading = direction
-              ..dateTime = DateTime.now().toUtc());
-          store.dispatch(UpdateUserGpsPoint(point));
-        },
-        cancelOnError: true,
-      );
-
-    _gpsPointStream = Geolocator.instance
-      .getEvents()
-      .listen((GpsPointDto point) {
-          store.dispatch(UpdateUserGpsPoint(point));
-        },
-        cancelOnError: true,
-      );
   }
 }
 

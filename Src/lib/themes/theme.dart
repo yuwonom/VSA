@@ -27,6 +27,7 @@ class AppColors {
   static Color get gray => const Color(0xFFE9E9E9);
   static Color get lightGray => const Color(0xFFBDBDBD);
   static Color get darkGray => const Color(0xFF6E6E6E);
+  static Color get roadGray => const Color(0xFFF5F5F5);
 }
 
 class AppTextStyles {
