@@ -7,6 +7,7 @@ import 'package:vsa/features/map/dtos.dart';
 import 'package:vsa/features/map/state.dart';
 import 'package:vsa/features/settings/dtos.dart';
 import 'package:vsa/features/settings/state.dart';
+import 'package:vsa/utility/gps_helper.dart';
 
 class MapViewModel {
   static const LatLng BRISBANE_LATLNG = const LatLng(-27.4698, 153.0251);
@@ -46,10 +47,19 @@ class MapViewModel {
   LatLng get closestOtherVehiclePoint => otherVehicles[closestOtherVehicleId].point.toLatLng();
 
   BuiltList<IntersectionDto> get intersections => _mapState.intersections;
-  
+
   bool get hasIntersections => intersections.isNotEmpty;
 
   String get currentIntersectionId => _mapState.currentIntersectionId;
+
+  double get distanceFromIntersection => currentIntersectionId == null ? double.infinity
+    : GpsHelper.distance(
+        _mapState.userVehicle.point,
+        GpsPointDto.fromLatLng(intersections
+          .firstWhere((intersection) => intersection.id == currentIntersectionId)
+          .latLng));
+  
+  double get distanceFromIntersectionPixels => meterToPixels(distanceFromIntersection);
 
   BrokerDto get broker => _settingsState.broker;
 
@@ -57,4 +67,6 @@ class MapViewModel {
   String get port => broker.port;
   String get username => broker.username;
   String get password => broker.password;
+
+  double meterToPixels(double meters) => meters * 10;
 }

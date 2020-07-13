@@ -54,7 +54,8 @@ MapState _disconnectFromMqttBrokerReducer(MapState state, DisconnectFromMqttBrok
   ..startTime = null
   ..recordedPoints.clear()
   ..otherVehicles.clear()
-  ..intersections.clear());
+  ..intersections.clear()
+  ..currentIntersectionId = null);
 
 MapState _updateSecurityLevelReducer(MapState state, UpdateSecurityLevel action) => state.rebuild((b) => b
   ..securityLevel = action.level);

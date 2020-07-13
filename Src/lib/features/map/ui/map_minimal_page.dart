@@ -1,6 +1,7 @@
 /// Authored by `@yuwonom (Michael Yuwono)`
 
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -53,7 +54,6 @@ class _MapMinimalPageState extends State<MapMinimalPage> {
       builder: (BuildContext context, MapViewModel viewModel) => viewModel.userVehicle.type == VehicleTypeDto.car
         ? _CarPage(context, viewModel) : _CyclePage(context, viewModel),
     );
-  
 
   void _startGpsListeners(Store<AppState> store) {
     _directionStream = FlutterCompass.events
@@ -93,16 +93,32 @@ class _CarPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final canvasHeight = MediaQuery.of(context).size.height - 80;
-    final customMap = OverflowBox(
-      alignment: Alignment.bottomCenter,
+    final canvasHeight = MediaQuery.of(context).size.height * 5;
+    final canvasWidth = MediaQuery.of(context).size.width * 5;
+    final distance = min(500.0, viewModel.distanceFromIntersectionPixels);
+
+    final map = OverflowBox(
+      alignment: Alignment.center,
       maxHeight: canvasHeight,
       minHeight: canvasHeight,
+      maxWidth: canvasWidth,
+      minWidth: canvasWidth,
       child: CustomPaint(
         painter: VSAMapIntersections(),
         child: Container(),
       ),
     );
+
+    final transformedMap = viewModel.hasUserPoint
+      ? Transform.translate(
+          offset: Offset(0, 100.0 - distance),
+          child: Transform.rotate(
+            angle: viewModel.userVehicle.point.heading / 180 * pi,
+            origin: Offset(0, distance),
+            child: map,
+          ),
+        )
+      : Container();
 
     final topView = Align(
       alignment: Alignment.topCenter,
@@ -121,13 +137,21 @@ class _CarPage extends StatelessWidget {
       ),
     );
 
+    final userVehicleMarker = Positioned(
+      left: 0,
+      right: 0,
+      bottom: 180,
+      child: _buildUserVehicleMarker(viewModel),
+    );
+
     final page = Container(
       color: AppColors.white,
       child: Stack(
         children: <Widget>[
-          customMap,
+          transformedMap,
           topView,
           bottomView,
+          userVehicleMarker,
         ],
       ),
     );
@@ -294,6 +318,12 @@ class _CarPage extends StatelessWidget {
     );
 
     return card;
+  }
+
+  Widget _buildUserVehicleMarker(MapViewModel viewModel) {
+    final iconPath = "assets/images/vehicles/";
+    final iconType = viewModel.userVehicle.type.toString();
+    return Image.asset("$iconPath${iconType}_self.png", height: 40.0, width: 40.0);
   }
 }
 
