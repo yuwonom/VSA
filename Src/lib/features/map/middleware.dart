@@ -107,9 +107,14 @@ class MqttIntegration {
 
       // Level B messages
       if (settings.topicLevel == TopicLevelDto.levelB && user.type == VehicleTypeDto.cycle) {
-        final topic = "${settings.levelBPropertiesPublishTopic}";
-        final message = MqttApi.propertiesMessage(user.id, user.name, user.type, user.dimension);
-        store.dispatch(PublishMessageToMqttBroker(topic, message));
+        final propertiesTopic = "${settings.levelBPropertiesPublishTopic}";
+        final propertiesMessage = MqttApi.propertiesMessage(user.id, user.name, user.type, user.dimension);
+        store.dispatch(PublishMessageToMqttBroker(propertiesTopic, propertiesMessage));
+
+        const radius = 5000; // 5km
+        final eventsTopic = "${settings.eventsRequestPublishTopic}/${user.id}";
+        final eventsMessage = MqttApi.eventsRequestMessage(user.id, user.point, radius);
+        store.dispatch(PublishMessageToMqttBroker(eventsTopic, eventsMessage));
       }
       
       // Intersection messages
@@ -234,7 +239,11 @@ class MqttIntegration {
     }
 
     void _handleEventsRequestCallback(String data) {
-      // TODO: Handle events request callback
+      final eventsJson = jsonDecode(data) as List;
+      final events = eventsJson
+        .map((json) => EventDto.fromJson(json))
+        .toList();
+      store.dispatch(UpdateEvents(events.build()));
     }
 
     void _handleLevelAIntersectionCallback(String data) {
@@ -267,6 +276,8 @@ class MqttIntegration {
         _handleEventsRequestCallback(data);
       } else if (topic.startsWith(settingsState.levelAIntersectionSubscribeTopic)) {
         _handleLevelAIntersectionCallback(data);
+      } else if (topic.startsWith(settingsState.levelBEventsSubscribeTopic)) {
+        _handleEventsRequestCallback(data);
       } else if (topic.startsWith(settingsState.intersectionsRequestSubscribeTopic)) {
         _handleIntersectionsRequestCallback(data);
       }

@@ -21,6 +21,7 @@ final Reducer<MapState> mapStateReducer = combineReducers([
     TypedReducer<MapState, LoadIntersections>(_loadIntersectionsReducer),
     TypedReducer<MapState, UpdateClosestOtherVehicleId>(_updateClosestOtherVehicleIdReducer),
     TypedReducer<MapState, UpdateCurrentIntersectionId>(_updateCurrentIntersectionIdReducer),
+    TypedReducer<MapState, UpdateEvents>(_updateEventsReducer),
     TypedReducer<MapState, UpdateVehicleId>(_updateVehicleIdReducer),
     TypedReducer<MapState, UpdateVehicleName>(_updateVehicleNameReducer),
     TypedReducer<MapState, UpdateVehicleType>(_updateVehicleTypeReducer),
@@ -107,6 +108,9 @@ MapState _updateClosestOtherVehicleIdReducer(MapState state, UpdateClosestOtherV
 
 MapState _updateCurrentIntersectionIdReducer(MapState state, UpdateCurrentIntersectionId action) => state.rebuild((b) => b
   ..currentIntersectionId = action.id);
+
+MapState _updateEventsReducer(MapState state, UpdateEvents action) => state.rebuild((b) => b
+  ..events.replace(action.events));
 
 MapState _updateVehicleIdReducer(MapState state, UpdateVehicleId action) => state.rebuild((b) => b
   ..userVehicle.id = action.value);

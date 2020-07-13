@@ -210,3 +210,107 @@ abstract class IntersectionDto implements Built<IntersectionDto, IntersectionDto
 
   static Serializer<IntersectionDto> get serializer => _$intersectionDtoSerializer;
 }
+
+abstract class EventDto implements Built<EventDto, EventDtoBuilder> {
+  factory EventDto([void updates(EventDtoBuilder b)]) = _$EventDto;
+
+  factory EventDto.fromJson(Map<String, dynamic> json) {
+    final int id = json["id"];
+    final List<GeometryDto> geometries = json["geometries"]
+      .map<GeometryDto>((geometry) => GeometryDto.fromJson(geometry))
+      .toList();
+    final String sourceName = json["source_name"];
+    final String eventType = json["event_type"];
+    final String eventSubtype = json["event_subtype"];
+    final String impactType = json["impact_type"];
+    final String impactSubtype = json["impact_subtype"];
+    final DateTime startTime = DateTime.parse(json["start_time"]);
+    final DateTime endTime = json["end_time"] != null
+      ? DateTime.parse(json["end_time"])
+      : DateTime.now();
+    final String eventPriority = json["event_priority"];
+    final String description = json["description"];
+    final String information = json["information"];
+
+    return _$EventDto._(
+      id: id,
+      geometries: geometries,
+      sourceName: sourceName,
+      eventType: eventType,
+      eventSubtype: eventSubtype,
+      impactType: impactType,
+      impactSubtype: impactSubtype,
+      startTime: startTime,
+      endTime: endTime,
+      eventPriority: eventPriority,
+      description: description,
+      information: information,
+    );
+  }
+
+  EventDto._();
+
+  int get id;
+  List<GeometryDto> get geometries;
+  String get sourceName;
+  String get eventType;
+  String get eventSubtype;
+  String get impactType;
+  @nullable
+  String get impactSubtype;
+  DateTime get startTime;
+  DateTime get endTime;
+  String get eventPriority;
+  @nullable
+  String get description;
+  @nullable
+  String get information;
+
+  static Serializer<EventDto> get serializer => _$eventDtoSerializer;
+}
+
+abstract class GeometryDto implements Built<GeometryDto, GeometryDtoBuilder> {
+  factory GeometryDto([void updates(GeometryDtoBuilder b)]) = _$GeometryDto;
+
+  factory GeometryDto.fromJson(Map<String, dynamic> json) {
+    final GeometryTypeDto type = GeometryTypeDto.of(json["type"]);
+    final List<LatLng> coordinates = json["coordinates"]
+      .map<LatLng>((coordinate) => LatLng(
+        coordinate["latitude"],
+        coordinate["longitude"]))
+      .toList();
+
+    return _$GeometryDto._(
+      type: type,
+      coordinates: coordinates,
+    );
+  }
+
+  GeometryDto._();
+
+  GeometryTypeDto get type;
+  List<LatLng> get coordinates;
+}
+
+class GeometryTypeDto extends EnumClass {
+  static const GeometryTypeDto point = _$point;
+  static const GeometryTypeDto lineString = _$lineString;
+
+  const GeometryTypeDto._(String name) : super(name);
+
+  static Serializer<GeometryTypeDto> get serializer => _$geometryTypeDtoSerializer;
+
+  static BuiltSet<GeometryTypeDto> get values => _$geometryTypeDtooValues;
+  static GeometryTypeDto valueOf(String name) => _$valueOf(name);
+
+  static GeometryTypeDto of(String name) {
+    switch (name) {
+      case 'Point':
+        return _$point;
+      case 'LineString':
+        return _$lineString;
+      default:
+        return null;
+    }
+  }
+}

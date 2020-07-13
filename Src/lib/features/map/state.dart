@@ -18,6 +18,7 @@ abstract class MapState implements Built<MapState, MapStateBuilder> {
     recordedPoints: BuiltList<GpsPointDto>(),
     otherVehicles: BuiltMap<String, VehicleDto>(),
     intersections: BuiltList<IntersectionDto>(),
+    events: BuiltList<EventDto>(),
     isBusy: false,
   );
 
@@ -33,6 +34,7 @@ abstract class MapState implements Built<MapState, MapStateBuilder> {
 
   BuiltMap<String, VehicleDto> get otherVehicles;
   BuiltList<IntersectionDto> get intersections;
+  BuiltList<EventDto> get events;
 
   @nullable
   String get closestOtherVehicleId;

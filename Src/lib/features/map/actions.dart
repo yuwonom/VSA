@@ -159,3 +159,13 @@ class UpdateCurrentIntersectionId {
   @override
   String toString() => "UpdateCurrentIntersectionId $id";
 }
+
+@immutable
+class UpdateEvents {
+  UpdateEvents(this.events) : assert (events != null);
+
+  final BuiltList<EventDto> events;
+
+  @override
+  String toString() => "UpdateEvents $events";
+}

@@ -74,6 +74,26 @@ final BuiltSet<SecurityLevelDto> _$securityLevelDtoValues =
   _$critical,
 ]);
 
+const GeometryTypeDto _$point = const GeometryTypeDto._('point');
+const GeometryTypeDto _$lineString = const GeometryTypeDto._('lineString');
+
+GeometryTypeDto _$valueOf(String name) {
+  switch (name) {
+    case 'point':
+      return _$point;
+    case 'lineString':
+      return _$lineString;
+    default:
+      throw new ArgumentError(name);
+  }
+}
+
+final BuiltSet<GeometryTypeDto> _$geometryTypeDtooValues =
+    new BuiltSet<GeometryTypeDto>(const <GeometryTypeDto>[
+  _$point,
+  _$lineString,
+]);
+
 Serializer<GpsPointDto> _$gpsPointDtoSerializer = new _$GpsPointDtoSerializer();
 Serializer<VehicleDto> _$vehicleDtoSerializer = new _$VehicleDtoSerializer();
 Serializer<VehicleDimensionDto> _$vehicleDimensionDtoSerializer =
@@ -84,6 +104,9 @@ Serializer<SecurityLevelDto> _$securityLevelDtoSerializer =
     new _$SecurityLevelDtoSerializer();
 Serializer<IntersectionDto> _$intersectionDtoSerializer =
     new _$IntersectionDtoSerializer();
+Serializer<EventDto> _$eventDtoSerializer = new _$EventDtoSerializer();
+Serializer<GeometryTypeDto> _$geometryTypeDtoSerializer =
+    new _$GeometryTypeDtoSerializer();
 
 class _$GpsPointDtoSerializer implements StructuredSerializer<GpsPointDto> {
   @override
@@ -390,6 +413,151 @@ class _$IntersectionDtoSerializer
 
     return result.build();
   }
+}
+
+class _$EventDtoSerializer implements StructuredSerializer<EventDto> {
+  @override
+  final Iterable<Type> types = const [EventDto, _$EventDto];
+  @override
+  final String wireName = 'EventDto';
+
+  @override
+  Iterable<Object> serialize(Serializers serializers, EventDto object,
+      {FullType specifiedType = FullType.unspecified}) {
+    final result = <Object>[
+      'id',
+      serializers.serialize(object.id, specifiedType: const FullType(int)),
+      'geometries',
+      serializers.serialize(object.geometries,
+          specifiedType:
+              const FullType(List, const [const FullType(GeometryDto)])),
+      'sourceName',
+      serializers.serialize(object.sourceName,
+          specifiedType: const FullType(String)),
+      'eventType',
+      serializers.serialize(object.eventType,
+          specifiedType: const FullType(String)),
+      'eventSubtype',
+      serializers.serialize(object.eventSubtype,
+          specifiedType: const FullType(String)),
+      'impactType',
+      serializers.serialize(object.impactType,
+          specifiedType: const FullType(String)),
+      'startTime',
+      serializers.serialize(object.startTime,
+          specifiedType: const FullType(DateTime)),
+      'endTime',
+      serializers.serialize(object.endTime,
+          specifiedType: const FullType(DateTime)),
+      'eventPriority',
+      serializers.serialize(object.eventPriority,
+          specifiedType: const FullType(String)),
+    ];
+    if (object.impactSubtype != null) {
+      result
+        ..add('impactSubtype')
+        ..add(serializers.serialize(object.impactSubtype,
+            specifiedType: const FullType(String)));
+    }
+    if (object.description != null) {
+      result
+        ..add('description')
+        ..add(serializers.serialize(object.description,
+            specifiedType: const FullType(String)));
+    }
+    if (object.information != null) {
+      result
+        ..add('information')
+        ..add(serializers.serialize(object.information,
+            specifiedType: const FullType(String)));
+    }
+    return result;
+  }
+
+  @override
+  EventDto deserialize(Serializers serializers, Iterable<Object> serialized,
+      {FullType specifiedType = FullType.unspecified}) {
+    final result = new EventDtoBuilder();
+
+    final iterator = serialized.iterator;
+    while (iterator.moveNext()) {
+      final key = iterator.current as String;
+      iterator.moveNext();
+      final dynamic value = iterator.current;
+      switch (key) {
+        case 'id':
+          result.id = serializers.deserialize(value,
+              specifiedType: const FullType(int)) as int;
+          break;
+        case 'geometries':
+          result.geometries = serializers.deserialize(value,
+                  specifiedType:
+                      const FullType(List, const [const FullType(GeometryDto)]))
+              as List<GeometryDto>;
+          break;
+        case 'sourceName':
+          result.sourceName = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String;
+          break;
+        case 'eventType':
+          result.eventType = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String;
+          break;
+        case 'eventSubtype':
+          result.eventSubtype = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String;
+          break;
+        case 'impactType':
+          result.impactType = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String;
+          break;
+        case 'impactSubtype':
+          result.impactSubtype = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String;
+          break;
+        case 'startTime':
+          result.startTime = serializers.deserialize(value,
+              specifiedType: const FullType(DateTime)) as DateTime;
+          break;
+        case 'endTime':
+          result.endTime = serializers.deserialize(value,
+              specifiedType: const FullType(DateTime)) as DateTime;
+          break;
+        case 'eventPriority':
+          result.eventPriority = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String;
+          break;
+        case 'description':
+          result.description = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String;
+          break;
+        case 'information':
+          result.information = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String;
+          break;
+      }
+    }
+
+    return result.build();
+  }
+}
+
+class _$GeometryTypeDtoSerializer
+    implements PrimitiveSerializer<GeometryTypeDto> {
+  @override
+  final Iterable<Type> types = const <Type>[GeometryTypeDto];
+  @override
+  final String wireName = 'GeometryTypeDto';
+
+  @override
+  Object serialize(Serializers serializers, GeometryTypeDto object,
+          {FullType specifiedType = FullType.unspecified}) =>
+      object.name;
+
+  @override
+  GeometryTypeDto deserialize(Serializers serializers, Object serialized,
+          {FullType specifiedType = FullType.unspecified}) =>
+      GeometryTypeDto.valueOf(serialized as String);
 }
 
 class _$GpsPointDto extends GpsPointDto {
@@ -931,6 +1099,349 @@ class IntersectionDtoBuilder
   _$IntersectionDto build() {
     final _$result =
         _$v ?? new _$IntersectionDto._(id: id, latLng: latLng, radius: radius);
+    replace(_$result);
+    return _$result;
+  }
+}
+
+class _$EventDto extends EventDto {
+  @override
+  final int id;
+  @override
+  final List<GeometryDto> geometries;
+  @override
+  final String sourceName;
+  @override
+  final String eventType;
+  @override
+  final String eventSubtype;
+  @override
+  final String impactType;
+  @override
+  final String impactSubtype;
+  @override
+  final DateTime startTime;
+  @override
+  final DateTime endTime;
+  @override
+  final String eventPriority;
+  @override
+  final String description;
+  @override
+  final String information;
+
+  factory _$EventDto([void Function(EventDtoBuilder) updates]) =>
+      (new EventDtoBuilder()..update(updates)).build();
+
+  _$EventDto._(
+      {this.id,
+      this.geometries,
+      this.sourceName,
+      this.eventType,
+      this.eventSubtype,
+      this.impactType,
+      this.impactSubtype,
+      this.startTime,
+      this.endTime,
+      this.eventPriority,
+      this.description,
+      this.information})
+      : super._() {
+    if (id == null) {
+      throw new BuiltValueNullFieldError('EventDto', 'id');
+    }
+    if (geometries == null) {
+      throw new BuiltValueNullFieldError('EventDto', 'geometries');
+    }
+    if (sourceName == null) {
+      throw new BuiltValueNullFieldError('EventDto', 'sourceName');
+    }
+    if (eventType == null) {
+      throw new BuiltValueNullFieldError('EventDto', 'eventType');
+    }
+    if (eventSubtype == null) {
+      throw new BuiltValueNullFieldError('EventDto', 'eventSubtype');
+    }
+    if (impactType == null) {
+      throw new BuiltValueNullFieldError('EventDto', 'impactType');
+    }
+    if (startTime == null) {
+      throw new BuiltValueNullFieldError('EventDto', 'startTime');
+    }
+    if (endTime == null) {
+      throw new BuiltValueNullFieldError('EventDto', 'endTime');
+    }
+    if (eventPriority == null) {
+      throw new BuiltValueNullFieldError('EventDto', 'eventPriority');
+    }
+  }
+
+  @override
+  EventDto rebuild(void Function(EventDtoBuilder) updates) =>
+      (toBuilder()..update(updates)).build();
+
+  @override
+  EventDtoBuilder toBuilder() => new EventDtoBuilder()..replace(this);
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(other, this)) return true;
+    return other is EventDto &&
+        id == other.id &&
+        geometries == other.geometries &&
+        sourceName == other.sourceName &&
+        eventType == other.eventType &&
+        eventSubtype == other.eventSubtype &&
+        impactType == other.impactType &&
+        impactSubtype == other.impactSubtype &&
+        startTime == other.startTime &&
+        endTime == other.endTime &&
+        eventPriority == other.eventPriority &&
+        description == other.description &&
+        information == other.information;
+  }
+
+  @override
+  int get hashCode {
+    return $jf($jc(
+        $jc(
+            $jc(
+                $jc(
+                    $jc(
+                        $jc(
+                            $jc(
+                                $jc(
+                                    $jc(
+                                        $jc(
+                                            $jc($jc(0, id.hashCode),
+                                                geometries.hashCode),
+                                            sourceName.hashCode),
+                                        eventType.hashCode),
+                                    eventSubtype.hashCode),
+                                impactType.hashCode),
+                            impactSubtype.hashCode),
+                        startTime.hashCode),
+                    endTime.hashCode),
+                eventPriority.hashCode),
+            description.hashCode),
+        information.hashCode));
+  }
+
+  @override
+  String toString() {
+    return (newBuiltValueToStringHelper('EventDto')
+          ..add('id', id)
+          ..add('geometries', geometries)
+          ..add('sourceName', sourceName)
+          ..add('eventType', eventType)
+          ..add('eventSubtype', eventSubtype)
+          ..add('impactType', impactType)
+          ..add('impactSubtype', impactSubtype)
+          ..add('startTime', startTime)
+          ..add('endTime', endTime)
+          ..add('eventPriority', eventPriority)
+          ..add('description', description)
+          ..add('information', information))
+        .toString();
+  }
+}
+
+class EventDtoBuilder implements Builder<EventDto, EventDtoBuilder> {
+  _$EventDto _$v;
+
+  int _id;
+  int get id => _$this._id;
+  set id(int id) => _$this._id = id;
+
+  List<GeometryDto> _geometries;
+  List<GeometryDto> get geometries => _$this._geometries;
+  set geometries(List<GeometryDto> geometries) =>
+      _$this._geometries = geometries;
+
+  String _sourceName;
+  String get sourceName => _$this._sourceName;
+  set sourceName(String sourceName) => _$this._sourceName = sourceName;
+
+  String _eventType;
+  String get eventType => _$this._eventType;
+  set eventType(String eventType) => _$this._eventType = eventType;
+
+  String _eventSubtype;
+  String get eventSubtype => _$this._eventSubtype;
+  set eventSubtype(String eventSubtype) => _$this._eventSubtype = eventSubtype;
+
+  String _impactType;
+  String get impactType => _$this._impactType;
+  set impactType(String impactType) => _$this._impactType = impactType;
+
+  String _impactSubtype;
+  String get impactSubtype => _$this._impactSubtype;
+  set impactSubtype(String impactSubtype) =>
+      _$this._impactSubtype = impactSubtype;
+
+  DateTime _startTime;
+  DateTime get startTime => _$this._startTime;
+  set startTime(DateTime startTime) => _$this._startTime = startTime;
+
+  DateTime _endTime;
+  DateTime get endTime => _$this._endTime;
+  set endTime(DateTime endTime) => _$this._endTime = endTime;
+
+  String _eventPriority;
+  String get eventPriority => _$this._eventPriority;
+  set eventPriority(String eventPriority) =>
+      _$this._eventPriority = eventPriority;
+
+  String _description;
+  String get description => _$this._description;
+  set description(String description) => _$this._description = description;
+
+  String _information;
+  String get information => _$this._information;
+  set information(String information) => _$this._information = information;
+
+  EventDtoBuilder();
+
+  EventDtoBuilder get _$this {
+    if (_$v != null) {
+      _id = _$v.id;
+      _geometries = _$v.geometries;
+      _sourceName = _$v.sourceName;
+      _eventType = _$v.eventType;
+      _eventSubtype = _$v.eventSubtype;
+      _impactType = _$v.impactType;
+      _impactSubtype = _$v.impactSubtype;
+      _startTime = _$v.startTime;
+      _endTime = _$v.endTime;
+      _eventPriority = _$v.eventPriority;
+      _description = _$v.description;
+      _information = _$v.information;
+      _$v = null;
+    }
+    return this;
+  }
+
+  @override
+  void replace(EventDto other) {
+    if (other == null) {
+      throw new ArgumentError.notNull('other');
+    }
+    _$v = other as _$EventDto;
+  }
+
+  @override
+  void update(void Function(EventDtoBuilder) updates) {
+    if (updates != null) updates(this);
+  }
+
+  @override
+  _$EventDto build() {
+    final _$result = _$v ??
+        new _$EventDto._(
+            id: id,
+            geometries: geometries,
+            sourceName: sourceName,
+            eventType: eventType,
+            eventSubtype: eventSubtype,
+            impactType: impactType,
+            impactSubtype: impactSubtype,
+            startTime: startTime,
+            endTime: endTime,
+            eventPriority: eventPriority,
+            description: description,
+            information: information);
+    replace(_$result);
+    return _$result;
+  }
+}
+
+class _$GeometryDto extends GeometryDto {
+  @override
+  final GeometryTypeDto type;
+  @override
+  final List<LatLng> coordinates;
+
+  factory _$GeometryDto([void Function(GeometryDtoBuilder) updates]) =>
+      (new GeometryDtoBuilder()..update(updates)).build();
+
+  _$GeometryDto._({this.type, this.coordinates}) : super._() {
+    if (type == null) {
+      throw new BuiltValueNullFieldError('GeometryDto', 'type');
+    }
+    if (coordinates == null) {
+      throw new BuiltValueNullFieldError('GeometryDto', 'coordinates');
+    }
+  }
+
+  @override
+  GeometryDto rebuild(void Function(GeometryDtoBuilder) updates) =>
+      (toBuilder()..update(updates)).build();
+
+  @override
+  GeometryDtoBuilder toBuilder() => new GeometryDtoBuilder()..replace(this);
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(other, this)) return true;
+    return other is GeometryDto &&
+        type == other.type &&
+        coordinates == other.coordinates;
+  }
+
+  @override
+  int get hashCode {
+    return $jf($jc($jc(0, type.hashCode), coordinates.hashCode));
+  }
+
+  @override
+  String toString() {
+    return (newBuiltValueToStringHelper('GeometryDto')
+          ..add('type', type)
+          ..add('coordinates', coordinates))
+        .toString();
+  }
+}
+
+class GeometryDtoBuilder implements Builder<GeometryDto, GeometryDtoBuilder> {
+  _$GeometryDto _$v;
+
+  GeometryTypeDto _type;
+  GeometryTypeDto get type => _$this._type;
+  set type(GeometryTypeDto type) => _$this._type = type;
+
+  List<LatLng> _coordinates;
+  List<LatLng> get coordinates => _$this._coordinates;
+  set coordinates(List<LatLng> coordinates) =>
+      _$this._coordinates = coordinates;
+
+  GeometryDtoBuilder();
+
+  GeometryDtoBuilder get _$this {
+    if (_$v != null) {
+      _type = _$v.type;
+      _coordinates = _$v.coordinates;
+      _$v = null;
+    }
+    return this;
+  }
+
+  @override
+  void replace(GeometryDto other) {
+    if (other == null) {
+      throw new ArgumentError.notNull('other');
+    }
+    _$v = other as _$GeometryDto;
+  }
+
+  @override
+  void update(void Function(GeometryDtoBuilder) updates) {
+    if (updates != null) updates(this);
+  }
+
+  @override
+  _$GeometryDto build() {
+    final _$result =
+        _$v ?? new _$GeometryDto._(type: type, coordinates: coordinates);
     replace(_$result);
     return _$result;
   }

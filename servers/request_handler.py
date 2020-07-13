@@ -143,7 +143,7 @@ def topic_events_nearby_req_callback(mqttc, obj, msg):
 			events_res.append(event)
 	
 	print(str(len(events_res)) + " events found.")
-	client.publish(vsa.TOPIC_EVENTS_NEARBY_RETURN + "/" + veh_id, json.dumps(events_res, default = vsa.serialize))
+	client.publish(vsa.TOPIC_LEVEL_B_EVENTS_RETURN + "/" + veh_id, json.dumps(events_res, default = vsa.serialize))
 	
 def topic_vehsim_callback(mqttc, obj, msg):
 	payload = str(msg.payload.decode("utf-8"))

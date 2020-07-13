@@ -22,6 +22,8 @@ class _$MapState extends MapState {
   @override
   final BuiltList<IntersectionDto> intersections;
   @override
+  final BuiltList<EventDto> events;
+  @override
   final String closestOtherVehicleId;
   @override
   final String currentIntersectionId;
@@ -41,6 +43,7 @@ class _$MapState extends MapState {
       this.recordedPoints,
       this.otherVehicles,
       this.intersections,
+      this.events,
       this.closestOtherVehicleId,
       this.currentIntersectionId,
       this.isBusy,
@@ -63,6 +66,9 @@ class _$MapState extends MapState {
     }
     if (intersections == null) {
       throw new BuiltValueNullFieldError('MapState', 'intersections');
+    }
+    if (events == null) {
+      throw new BuiltValueNullFieldError('MapState', 'events');
     }
     if (isBusy == null) {
       throw new BuiltValueNullFieldError('MapState', 'isBusy');
@@ -87,6 +93,7 @@ class _$MapState extends MapState {
         recordedPoints == other.recordedPoints &&
         otherVehicles == other.otherVehicles &&
         intersections == other.intersections &&
+        events == other.events &&
         closestOtherVehicleId == other.closestOtherVehicleId &&
         currentIntersectionId == other.currentIntersectionId &&
         isBusy == other.isBusy &&
@@ -104,13 +111,15 @@ class _$MapState extends MapState {
                             $jc(
                                 $jc(
                                     $jc(
-                                        $jc($jc(0, userVehicle.hashCode),
-                                            connectionState.hashCode),
-                                        securityLevel.hashCode),
-                                    startTime.hashCode),
-                                recordedPoints.hashCode),
-                            otherVehicles.hashCode),
-                        intersections.hashCode),
+                                        $jc(
+                                            $jc($jc(0, userVehicle.hashCode),
+                                                connectionState.hashCode),
+                                            securityLevel.hashCode),
+                                        startTime.hashCode),
+                                    recordedPoints.hashCode),
+                                otherVehicles.hashCode),
+                            intersections.hashCode),
+                        events.hashCode),
                     closestOtherVehicleId.hashCode),
                 currentIntersectionId.hashCode),
             isBusy.hashCode),
@@ -127,6 +136,7 @@ class _$MapState extends MapState {
           ..add('recordedPoints', recordedPoints)
           ..add('otherVehicles', otherVehicles)
           ..add('intersections', intersections)
+          ..add('events', events)
           ..add('closestOtherVehicleId', closestOtherVehicleId)
           ..add('currentIntersectionId', currentIntersectionId)
           ..add('isBusy', isBusy)
@@ -176,6 +186,11 @@ class MapStateBuilder implements Builder<MapState, MapStateBuilder> {
   set intersections(ListBuilder<IntersectionDto> intersections) =>
       _$this._intersections = intersections;
 
+  ListBuilder<EventDto> _events;
+  ListBuilder<EventDto> get events =>
+      _$this._events ??= new ListBuilder<EventDto>();
+  set events(ListBuilder<EventDto> events) => _$this._events = events;
+
   String _closestOtherVehicleId;
   String get closestOtherVehicleId => _$this._closestOtherVehicleId;
   set closestOtherVehicleId(String closestOtherVehicleId) =>
@@ -205,6 +220,7 @@ class MapStateBuilder implements Builder<MapState, MapStateBuilder> {
       _recordedPoints = _$v.recordedPoints?.toBuilder();
       _otherVehicles = _$v.otherVehicles?.toBuilder();
       _intersections = _$v.intersections?.toBuilder();
+      _events = _$v.events?.toBuilder();
       _closestOtherVehicleId = _$v.closestOtherVehicleId;
       _currentIntersectionId = _$v.currentIntersectionId;
       _isBusy = _$v.isBusy;
@@ -240,6 +256,7 @@ class MapStateBuilder implements Builder<MapState, MapStateBuilder> {
               recordedPoints: recordedPoints.build(),
               otherVehicles: otherVehicles.build(),
               intersections: intersections.build(),
+              events: events.build(),
               closestOtherVehicleId: closestOtherVehicleId,
               currentIntersectionId: currentIntersectionId,
               isBusy: isBusy,
@@ -256,6 +273,8 @@ class MapStateBuilder implements Builder<MapState, MapStateBuilder> {
         otherVehicles.build();
         _$failedField = 'intersections';
         intersections.build();
+        _$failedField = 'events';
+        events.build();
       } catch (e) {
         throw new BuiltValueNestedFieldError(
             'MapState', _$failedField, e.toString());
