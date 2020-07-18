@@ -1,3 +1,5 @@
+import 'dart:math';
+
 /// Authored by `@yuwonom (Michael Yuwono)`
 
 import 'package:built_collection/built_collection.dart';
@@ -33,6 +35,21 @@ abstract class GpsPointDto implements Built<GpsPointDto, GpsPointDtoBuilder> {
   static Serializer<GpsPointDto> get serializer => _$gpsPointDtoSerializer;
 
   LatLng toLatLng() => LatLng(latitude, longitude);
+
+  GpsPointDto withDistance(double meters) {
+    const converter = 0.000009;
+    final distance = meters * converter;
+    final radians = heading * pi / 180;
+
+    final newLatitude = latitude + distance * cos(radians);
+    final newLongitude = longitude + distance * sin(radians);
+
+    return rebuild((b) => b
+      ..latitude = newLatitude
+      ..longitude = newLongitude
+      ..accuracy = 20
+    );
+  }
 }
 
 abstract class VehicleDto implements Built<VehicleDto, VehicleDtoBuilder> {
@@ -73,6 +90,8 @@ abstract class VehicleDto implements Built<VehicleDto, VehicleDtoBuilder> {
   VehicleTypeDto get type;
   @nullable
   GpsPointDto get point;
+  @nullable
+  GpsPointDto get securityPoint => point?.withDistance(15);
 
   static Serializer<VehicleDto> get serializer => _$vehicleDtoSerializer;
 }

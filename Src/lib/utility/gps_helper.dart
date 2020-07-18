@@ -19,6 +19,7 @@ class GpsHelper {
 
     return totalDistance / 1000; // convert to kms
   }
+
   /// Calculate distance in metres from two gps points.
   /// Formula referenced from https://en.wikipedia.org/wiki/Haversine_formula
   static double distance(GpsPointDto point1, GpsPointDto point2) {

@@ -367,12 +367,12 @@ class CollisionCheck {
     }
     
     final userVehicle = store.state.map.userVehicle;
-    final userPoint = userVehicle.point;
+    final userSecurityPoint = userVehicle.securityPoint;
     
     final closestOtherVehicle = store.state.map.otherVehicles.values
       .reduce((VehicleDto node, VehicleDto next) => 
-        GpsHelper.distance(node.point, userPoint) <= GpsHelper.distance(next.point, userPoint) ? node : next);
-    final distance = GpsHelper.distance(closestOtherVehicle.point, userPoint);
+        GpsHelper.distance(node.point, userSecurityPoint) <= GpsHelper.distance(next.point, userSecurityPoint) ? node : next);
+    final distance = GpsHelper.distance(closestOtherVehicle.point, userSecurityPoint);
 
     const SAFE_DISTANCE = 10.0;
     var securityLevel = SecurityLevelDto.unknown;
@@ -380,9 +380,9 @@ class CollisionCheck {
       securityLevel = SecurityLevelDto.withLevel(5);
     } else if (distance <= userVehicle.dimension.average + closestOtherVehicle.point.accuracy) {
       securityLevel = SecurityLevelDto.withLevel(4);
-    } else if (distance <= userPoint.accuracy + closestOtherVehicle.point.accuracy) {
+    } else if (distance <= userSecurityPoint.accuracy + closestOtherVehicle.point.accuracy) {
       securityLevel = SecurityLevelDto.withLevel(3);
-    } else if (distance <= userPoint.accuracy + closestOtherVehicle.point.accuracy + SAFE_DISTANCE) {
+    } else if (distance <= userSecurityPoint.accuracy + closestOtherVehicle.point.accuracy + SAFE_DISTANCE) {
       securityLevel = SecurityLevelDto.withLevel(2);
     } else {
       securityLevel = SecurityLevelDto.withLevel(1);

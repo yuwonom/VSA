@@ -29,7 +29,11 @@ class MapViewModel {
   VehicleDto get userVehicle => _mapState.userVehicle;
 
   LatLng get userPoint => hasUserPoint
-    ? LatLng(_mapState.userVehicle.point.latitude, _mapState.userVehicle.point.longitude)
+    ? userVehicle.point.toLatLng()
+    : BRISBANE_LATLNG;
+
+  LatLng get userSecurityPoint => hasUserPoint
+    ? userVehicle.securityPoint.toLatLng()
     : BRISBANE_LATLNG;
 
   MqttConnectionState get connectionState => _mapState.connectionState;
