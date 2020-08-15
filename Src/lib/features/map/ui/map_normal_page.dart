@@ -308,7 +308,9 @@ class _MapNormalPageState extends State<MapNormalPage> {
         _gpsPointStream = Geolocator.instance
           .getEvents()
           .listen((GpsPointDto point) {
-              store.dispatch(UpdateUserGpsPoint(point));
+              final newPoint = point.rebuild((b) => b
+                ..heading = store.state.map.userVehicle.point?.heading ?? 0);
+              store.dispatch(UpdateUserGpsPoint(newPoint));
               _stickMap(point);
             },
             cancelOnError: true,
@@ -552,7 +554,9 @@ class _CyclePageState extends State<_CyclePage> with TickerProviderStateMixin {
     _gpsPointStream = Geolocator.instance
       .getEvents()
       .listen((GpsPointDto point) {
-          store.dispatch(UpdateUserGpsPoint(point));
+          final newPoint = point.rebuild((b) => b
+            ..heading = store.state.map.userVehicle.point?.heading ?? 0);
+          store.dispatch(UpdateUserGpsPoint(newPoint));
         },
         cancelOnError: true,
       );

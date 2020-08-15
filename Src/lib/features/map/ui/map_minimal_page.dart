@@ -76,7 +76,9 @@ class _MapMinimalPageState extends State<MapMinimalPage> {
     _gpsPointStream = Geolocator.instance
       .getEvents()
       .listen((GpsPointDto point) {
-          store.dispatch(UpdateUserGpsPoint(point));
+          final newPoint = point.rebuild((b) => b
+            ..heading = store.state.map.userVehicle.point?.heading ?? 0);
+          store.dispatch(UpdateUserGpsPoint(newPoint));
         },
         cancelOnError: true,
       );
@@ -113,7 +115,7 @@ class _CarPage extends StatelessWidget {
       ? Transform.translate(
           offset: Offset(0, 100.0 - distance),
           child: Transform.rotate(
-            angle: viewModel.userVehicle.point.heading / 180 * pi,
+            angle: viewModel.userVehicle.point.heading / 180 * pi * -1,
             origin: Offset(0, distance),
             child: map,
           ),
@@ -137,10 +139,11 @@ class _CarPage extends StatelessWidget {
       ),
     );
 
+    final bottomPosition = canvasHeight * 0.0575;
     final userVehicleMarker = Positioned(
       left: 0,
       right: 0,
-      bottom: 180,
+      bottom: bottomPosition,
       child: _buildUserVehicleMarker(viewModel),
     );
 
@@ -263,10 +266,18 @@ class _CarPage extends StatelessWidget {
     );
 
     final bottomBar = Container(
-      color: AppColors.white,
+      decoration: BoxDecoration(
+        color: AppColors.white,
+        border: Border(
+          top: BorderSide(
+            color: AppColors.lightGray,
+            width: 1.0,
+          ),
+        ),
+      ),
       padding: AppEdges.smallAll,
       width: MediaQuery.of(context).size.width,
-      child: contents,
+      child: SafeArea(child: contents)
     );
 
     return bottomBar;

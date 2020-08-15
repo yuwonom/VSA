@@ -80,6 +80,7 @@ class _MapDetailsPageState extends State<MapDetailsPage> {
     );
 
     final page = SafeArea(
+      bottom: false,
       child: Stack(
         alignment: Alignment.topCenter,
         children: <Widget>[
@@ -307,7 +308,9 @@ class _MapDetailsPageState extends State<MapDetailsPage> {
         _gpsPointStream = Geolocator.instance
           .getEvents()
           .listen((GpsPointDto point) {
-              store.dispatch(UpdateUserGpsPoint(point));
+              final newPoint = point.rebuild((b) => b
+                ..heading = store.state.map.userVehicle.point?.heading ?? 0);
+              store.dispatch(UpdateUserGpsPoint(newPoint));
               _stickMap(point);
             },
             cancelOnError: true,
@@ -354,8 +357,8 @@ class _MapDetailsPageState extends State<MapDetailsPage> {
 
   Circle _buildAccuracyCircle(VehicleDto vehicle, bool isUser) => Circle(
       circleId: CircleId("Accuracy_${vehicle.id}"),
-      center: vehicle.point.toLatLng(),
-      radius: vehicle.point.accuracy,
+      center: vehicle.securityPoint.toLatLng(),
+      radius: vehicle.securityPoint.accuracy,
       fillColor: isUser ? AppColors.blue.withAlpha(100) : AppColors.red.withAlpha(100),
       strokeWidth: 1,
       strokeColor: AppColors.white,

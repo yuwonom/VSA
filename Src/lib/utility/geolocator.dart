@@ -19,7 +19,7 @@ class Geolocator {
  
   Geolocator._() {
     const int interval = 1000;
-    const double distanceFilter = 1;
+    const double distanceFilter = 5;
 
     _location = Location()
       ..changeSettings(
